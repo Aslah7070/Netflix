@@ -1,0 +1,47 @@
+.scrollbar-hide {
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For IE and Edge */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
+  
+  /* Hover effect for movie cards */
+  .group:hover img {
+    transform: scale(1.05);
+    transition: transform 2s ease-in-out;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Minimalistic styles for the cards */
+  .group img {
+    border-radius: 10px;
+    transition: all 1s linear;
+  }
+  
+  /* General minimalistic design for the page */
+  body {
+    font-family: 'Helvetica Neue', sans-serif;
+  }
+  
+  h1, h2 {
+    font-weight: bold;
+  }
+  
+  button, select {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  button:hover,
+  select:hover {
+    opacity: 0.8;
+  }
+  
+  /* Responsive images */
+  @media (max-width: 768px) {
+    .group img {
+      width: 120px;
+      height: 180px;
+    }
+  }
+  
