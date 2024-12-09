@@ -1,13 +1,18 @@
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../axiosInstance/api';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoginStatus, setUserData } from '../../redux/slice';
 
 const SignUpPage = () => {
+
+  const dispatch=useDispatch()
   const navigate = useNavigate();
 const emailFromStore=useSelector((state)=>state.user.email)
+
+
 console.log("value",emailFromStore);
 
   // Single state for all input fields
@@ -25,24 +30,39 @@ console.log("Fd",formData);
       [name]: value, 
     });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-     
-      const response = await api.post("/signup",formData);
-      console.log("Response:", response.data.success);
- if(response.data.success){
-
-   navigate("/verifyemail")
- }
-      // navigate('/next-step'); 
+      const response = await api.post('/signup', formData);
+      console.log("API Response:", response.data);
+  
+      if (response.data.success) {
+        const user = response.data.user;
+  
+        console.log("User Data:", user);
+        dispatch(setUserData(user));
+        console.log("setUserData Dispatched");
+  
+        dispatch(setLoginStatus(true)); 
+        console.log("setLoginStatus Dispatched");
+  
+      } else {
+        console.error("Sign-Up Failed:", response.data.message);
+      }
     } catch (error) {
-     
-
       console.error("Error during sign-up:", error);
     }
   };
+  
+
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
+useEffect(() => {
+  console.log("isLoggedIn changed:", isLoggedIn);
+  if (isLoggedIn) {
+    navigate('/verifyemail');
+  }
+}, [isLoggedIn]);
 
   return (
     <div className="min-h-screen flex justify-center bg-white">

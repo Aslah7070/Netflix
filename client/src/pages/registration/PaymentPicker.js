@@ -20,11 +20,36 @@ import lock from "../../assets/SECURITY_Final (1).webp"
 import visa from "../../assets/images.jpg"
 import gpay from "../../assets/payment-logo-icons-300x80.webp"
 import { SlArrowRight } from "react-icons/sl";
+import { useNavigate } from 'react-router-dom';
+import api from '../../axiosInstance/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { clientSecret, setClientSecret, setUserData } from '../../redux/slice';
 const PaymentPicker = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+const navigate=useNavigate()
+const dispatch=useDispatch()
+const price=useSelector((state)=>state.user.premiumPrice)
 
-  const handlePaymentMethodSelect = (method) => {
-    setSelectedPaymentMethod(method);
+const currentUser=useSelector((state)=>state.user.islog)
+  const handlePaymentMethodSelect =async (method) => {
+    
+
+   
+    try {
+      const response= await api.post("/create-payment-intent",{amount:price,userEmail:currentUser})
+     const user= response.data.primeUser
+      dispatch(setClientSecret(response.data.clientSecret))
+    dispatch(setUserData(user))
+    console.log("reeree",response);
+    } catch (error) {
+      console.log("err",error);
+      
+    }
+    
+  
+   setSelectedPaymentMethod(method);
+   navigate("/paymetStrip")
+    
   };
 
   return (
@@ -69,7 +94,7 @@ const PaymentPicker = () => {
           className={`p-4 rounded-lg border-2 flex ${selectedPaymentMethod === 'upi' ? 'border-purple-500' : 'border-gray-300'} hover:border-purple-500 cursor-pointer`}
           onClick={() => handlePaymentMethodSelect('upi')}
         >
-          <div className="flex items-center space-x-4 me-5">
+          <div  className="flex items-center space-x-4 me-5">
             <PhoneIcon className="h-6 w-6 text-gray-600" />
             <span className="text-gray-800 font-medium ">UPI AutoPay </span>
           </div>

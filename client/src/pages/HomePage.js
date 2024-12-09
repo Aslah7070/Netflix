@@ -10,7 +10,7 @@ import heart from "../assets/heart.webp";
 import "../style/HomePage.css"; 
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { isLogin, setEmail } from "../redux/slice";
+import {  setEmail, setLoginStatus } from "../redux/slice";
 import api from "../axiosInstance/api";
 import { AiOutlineCheck } from 'react-icons/ai';
 import { FaPlus } from "react-icons/fa6";
@@ -107,7 +107,7 @@ Kids profiles come with PIN-protected parental controls that let you restrict th
         },
       ];
 
-    const user=useSelector((state)=>state.user.islog)
+    const user=useSelector((state)=>state.user.isLoggedIn)
     console.log("user",user);
     
     const dispatch=useDispatch()
@@ -179,7 +179,8 @@ const submitt = (e) => {
     const display=async()=>{
         const response=await api.post("/logout")
         console.log(response);
-         dispatch(isLogin(""))
+      
+         dispatch(setLoginStatus(false))
     }
     display()
   }

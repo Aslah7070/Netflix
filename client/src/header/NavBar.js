@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import NetflixLogo from "../assets/netflix-logo.png";
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
-import { isLogin } from '../redux/slice';
+import { isLogin, setLoginStatus } from '../redux/slice';
 import api from '../axiosInstance/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
 const navigate=useNavigate()
-  const email=useSelector((state)=>state.user.islog)
+  const email=useSelector((state)=>state.user.isLoggedIn)
   const dispatch=useDispatch()
 
   console.log("emailss",email);
@@ -16,11 +16,13 @@ const navigate=useNavigate()
 const location=useLocation()
     let a=location.pathname===`/verifyemail`
     console.log("aaa",a);
-    
+      const active=useSelector((state)=>state.user.isLoggedIn)
+      console.log("navactive",active);
+      
   useEffect(() => {
     const userCookie = Cookies.get("user");
     console.log("userCookie:", userCookie);
-  
+     
     if (userCookie) {
       try {
         
@@ -29,7 +31,8 @@ const location=useLocation()
         console.log("Parsed user:", user);
   
         if (user.email) {
-          dispatch(isLogin(user.email)); 
+          
+          // dispatch(setLoginStatus(user.isLoggedIn)); 
         }
       } catch (error) {
         console.error("Error parsing cookie JSON:", error.message);
@@ -41,11 +44,11 @@ const location=useLocation()
   
 
   const handleSignOut = () => {
-    // Clear the cookie when the user logs out
+    
     const display=async()=>{
         const response=await api.post("/logout")
         console.log(response);
-         dispatch(isLogin(""))
+         dispatch(setLoginStatus(false))
          navigate("/")
     }
     display()
@@ -62,7 +65,7 @@ const location=useLocation()
             <option>हिंदी</option>
           </select>
 
-          {email ? (
+          {active ? (
             <button
               className="bg-white h-8 w-24 text-black px-3 py-1 rounded-3xl hover:bg-red-700 transition-all"
               onClick={handleSignOut}

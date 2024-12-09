@@ -1,8 +1,11 @@
 import React from 'react';
 import verifyImage from  "../../assets/safe-download.png"
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 const VerifyEmail = () => {
     const navigate=useNavigate()
+const email=useSelector((state)=>state.user.islog)
+console.log("verify",email);
 
     const verificationSkip=()=>{
 navigate("/plancomponent")
@@ -20,7 +23,7 @@ navigate("/plancomponent")
         {/* Email Display */}
         <div className="text-gray-600 text-lg mt-4">
           <p className='text-center'>
-            Click the link we sent to <b>sahadmo23@gmail.com to </b>verify.
+            Click the link we sent to <b>{email}to </b>verify.
           </p>
         </div>
 

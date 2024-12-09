@@ -6,4 +6,9 @@ router.post("/signup",auth.signup)
 router.post("/login",auth.login)
 router.post("/logout",auth.logOut)
 router.post("/checkignemail",auth.checkingEmail)
+router.post('/create-payment-intent',auth.createPaymentIntent);
+
+
+
+// router.post("/subscription",auth.subscription)
 module.exports=router

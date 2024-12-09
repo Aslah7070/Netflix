@@ -3,11 +3,15 @@ import loginBg from "../assets/hero.png";
 import api from '../axiosInstance/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { isLogin } from '../redux/slice';
+import {  setLoginStatus, setUserData } from '../redux/slice';
 
 const LoginPage = () => {
     const navigate=useNavigate()
     const emailFromRedux=useSelector((state)=>state.user.email)
+    const all=useSelector((state)=>state.user)
+
+  
+    
   const [formData, setFormData] = useState({ email:emailFromRedux|| '', password: '' });
   
   useEffect(() => {
@@ -34,7 +38,9 @@ const dispatch=useDispatch()
       console.log("loginnnn ",response.data);
       const user=response.data.uset 
       
-      dispatch(isLogin(user.email)); 
+      dispatch(setUserData(user))
+      dispatch(setLoginStatus(true))
+      
       navigate("/")
     } catch (error) {
       console.error("Error during login:", error);
