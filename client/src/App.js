@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useParams } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/registration/SignUpPage';
@@ -13,6 +13,7 @@ import PaymentPicker from './pages/registration/PaymentPicker';
 import Checkoutpayment from './pages/registration/PaymentStripe';
 import HomePagePremium from './pages/HomePagePremium';
 import { useSelector } from 'react-redux';
+import Success from './pages/registration/Success';
 
 function App() {
   const location =useLocation()
@@ -21,14 +22,19 @@ function App() {
   const active=useSelector((state)=>state.user.isLoggedIn)
   console.log("appRole",role);
   console.log("activeeeee",active);
+  const {sessionId}=useParams()
+  console.log("sessionId",sessionId);
+  
   return (
     <>
-    {(location.pathname !== "/" && location.pathname !== "/login"&&location.pathname!=="/premiumhome") && <NavBar />}
+    {(location.pathname !== "/"&&location.pathname !== "/:sessionId" && location.pathname !== "/login"&&location.pathname!=="/premiumhome") && <NavBar />}
+    
 
  
-   {role==="premium"&&active?(
+   {((role==="premium"||sessionId)&&active)?(
     <Routes>
     <Route path='/' element={<HomePagePremium/>}/>
+   
         </Routes>
    ):(
  
@@ -44,6 +50,7 @@ function App() {
  <Route path='/UpgredOnUs' element={<UpgredOnUs/>}/>
  <Route path='/paymentpicker' element={<PaymentPicker/>}/>
  <Route path='/paymetStrip' element={<Checkoutpayment/>}/>
+ <Route path='/success' element={<Success/>}/>
  
 </Routes>
    )

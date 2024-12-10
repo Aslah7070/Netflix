@@ -38,9 +38,10 @@ const currentUser=useSelector((state)=>state.user.islog)
     try {
       const response= await api.post("/create-payment-intent",{amount:price,userEmail:currentUser})
      const user= response.data.primeUser
+     console.log("reereeadsfdsgsdfgsdfjhfdg",response);
       dispatch(setClientSecret(response.data.clientSecret))
     dispatch(setUserData(user))
-    console.log("reeree",response);
+   
     } catch (error) {
       console.log("err",error);
       

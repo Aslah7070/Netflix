@@ -25,7 +25,11 @@ const userSlice = createSlice({
       state.clientSecretKey = action.payload;
     },
     setUserData: (state, action) => {
+      console.log("slice",action.payload);
+      
       const { email, role, username, image } = action.payload;
+      console.log("roorle",role);
+      
       state.email = email || state.email;
       state.role = role || state.role;
       state.username = username || state.username;

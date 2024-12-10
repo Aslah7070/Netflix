@@ -11,6 +11,60 @@ const { generateTokenAndCookies } = require("../utils/generateTokens");
 const Subscription = require('../models/subscription.models'); 
 
 
+
+const verifyPremium=async(req,res)=>{
+  const {email,amount}=  req.body
+    const user=await User.findOne({email:email}) 
+    console.log("userrr",user);
+    
+const {sessionId}=req.params
+console.log("params",sessionId);
+
+// const {userEmail,amount}=req.body
+console.log("userEmail",user);
+if (!sessionId) {
+    return res.status(404).json({ error: 'Session not found' });
+}
+
+console.log('Session Details:', sessionId);
+user.role = 'premium';
+        await user.save();
+// Process session details, e.g., update subscription
+// const { customer_email, amount_total } = sessionId;
+// console.log("customer_email, amount_total",customer_email, amount_total);
+
+// await verifyPremiumLogic(customer_email, amount_total / 100); // Call your verification logic here
+
+res.status(200).json({ success: true, sessionId ,user:user});
+
+    // const user = await User.findOne({ email: userEmail });
+    //     console.log("user",user);
+        
+    //     if (!user) {
+    //         throw new Error('User not found');
+    //     }
+
+    // let subscription = await Subscription.findOne({ userId: user._id });
+
+    //     if (!subscription) {
+    //         console.log("subscrip",subscription);
+            
+    //     }
+
+        
+    //     // user.role = 'premium';
+    //     // await user.save();
+
+    //     console.log("uuu",user);
+        
+
+    //     console.log("Updated subscription:", subscription);
+
+
+       
+}
+
+
 const createPaymentIntent = async (req, res) => {
     try {
         const { amount,userEmail } = req.body;
@@ -36,13 +90,15 @@ const createPaymentIntent = async (req, res) => {
                     quantity: 1,
                 },
             ],
-            return_url: 'http://localhost:3000/'
+
+            return_url: 'http://localhost:3000/success/?session_id={CHECKOUT_SESSION_ID}'
         })
         
       
+        console.log("he",session);
         
         const user = await User.findOne({ email: userEmail });
-        console.log("user",user);
+        console.log("user",user);    
         
         if (!user) {
             throw new Error('User not found');
@@ -54,15 +110,15 @@ const createPaymentIntent = async (req, res) => {
             
             subscription = new Subscription({
                 userId: user._id,
-                plan: 'premium',
+                plan: 'pending',
                 price: amount,
                 active: true,
                 startDate: new Date(),
-                endDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)), // 1 year later
+                endDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)), 
             });
         } else {
             
-            subscription.plan = 'premium';
+            subscription.plan = 'pending';
             subscription.price = amount;
             subscription.active = true;
             subscription.startDate = new Date();
@@ -72,8 +128,8 @@ const createPaymentIntent = async (req, res) => {
         await subscription.save();
 
         
-        user.role = 'premium';
-        await user.save();
+        // user.role = 'premium';
+        // await user.save();
 
         console.log("Updated subscription:", subscription);
 
@@ -87,7 +143,7 @@ const createPaymentIntent = async (req, res) => {
         res.status(200).json({
             clientSecret: session.client_secret,
             url: session.url,
-            primeUser: user, 
+           
         });
     } catch (error) {
         console.error('Error creating checkout session:', error.message);
@@ -258,4 +314,4 @@ const checkingEmail = async (req, res) => {
 };
 
 
-module.exports = { signup, logOut, login, checkingEmail, createPaymentIntent }
+module.exports = { signup, logOut, login, checkingEmail, createPaymentIntent,verifyPremium }
