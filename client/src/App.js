@@ -11,9 +11,13 @@ import PremiumComponent from './pages/registration/PremiumComponent';
 import UpgredOnUs from './pages/registration/UpgredOnUs';
 import PaymentPicker from './pages/registration/PaymentPicker';
 import Checkoutpayment from './pages/registration/PaymentStripe';
-import HomePagePremium from './pages/HomePagePremium';
+import HomePagePremium from './pages/premiumPages/HomePagePremium';
 import { useSelector } from 'react-redux';
 import Success from './pages/registration/Success';
+import MoviesAndTvShows from './pages/premiumPages/MoviesAndTvShows';
+import MySwiperComponent from './pages/premiumPages/MoviesAndTvShows';
+import SouthIndian from './pages/premiumPages/SouthIndian';
+import MyList from './pages/premiumPages/MyList';
 
 function App() {
   const location =useLocation()
@@ -34,6 +38,9 @@ function App() {
    {((role==="premium"||sessionId)&&active)?(
     <Routes>
     <Route path='/' element={<HomePagePremium/>}/>
+    {/* <Route path='/moviestvshows' element={<MySwiperComponent/>}/> */}
+    {/* <Route path='/southindian' element={<SouthIndian/>}/> */}
+    {/* <Route path='/mylist' element={<MyList/>}/> */}
    
         </Routes>
    ):(

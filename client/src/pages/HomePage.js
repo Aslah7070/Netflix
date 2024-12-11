@@ -14,18 +14,11 @@ import {  setEmail, setLoginStatus } from "../redux/slice";
 import api from "../axiosInstance/api";
 import { AiOutlineCheck } from 'react-icons/ai';
 import { FaPlus } from "react-icons/fa6";
-import { useTranslation } from "react-i18next";
+
 
 const HomePage = () => {
 const [show,setShow]=useState("")
 
-
-const { t, i18n } = useTranslation();
-
-const handleLanguageChange = (event) => {
-    const selectedLang = event.target.value; 
-    i18n.changeLanguage(selectedLang); 
-  };
 
     const FAQ=[
         {
@@ -196,7 +189,7 @@ const submitt = (e) => {
         <div className="flex items-center space-x-6">
         <select
       className="bg-transparent h-8 w-24 text-white px-3 py-1 rounded-3xl border border-white cursor-pointer"
-      onChange={handleLanguageChange}
+      
     >
       <option value="en">English</option>
       <option value="hi">हिंदी</option>
@@ -371,8 +364,7 @@ const submitt = (e) => {
       </div>
 
 
-      <h1>{t("welcom")}</h1> {/* Display translation for 'welcome' */}
-      <p>{t("description")}</p> {/* Display translation for 'description' */}
+    
 
           
 
