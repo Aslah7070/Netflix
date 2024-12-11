@@ -2,14 +2,92 @@
 const User = require("../models/user.models")
 const bcrypt = require('bcrypt');
 require('dotenv').config();
-
-
+const nodemailer = require('nodemailer');
+const crypto = require("crypto");
 const stripe = require('stripe')
 const { v4: uuidv4 } = require('uuid');
 const signUpSchema = require("../validations/signupValidation");
 const { generateTokenAndCookies } = require("../utils/generateTokens");
 const Subscription = require('../models/subscription.models'); 
 
+
+
+
+
+const otpStorage = {};
+
+// Generate OTP and send it to the user
+const generateOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email is required" });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: `No registration with ${email}. Please sign-up.`,
+            });
+        }
+
+        const otp = crypto.randomInt(100000, 999999).toString(); // Generate a 6-digit OTP
+        otpStorage[email] = otp; // Store OTP temporarily
+  console.log("111");
+  
+//   const transporter = nodemailer.createTransport({
+//     service: "gmail",
+//     host: 'smtp.gmail.com',
+//     port: 465,  // Use port 465 for SSL
+//     secure: true,  // Use secure connection (SSL)
+//     requireTLS: true,  // Enforce TLS
+//     auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS,
+//     },
+// });
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'aslahvava9048@gmail.com', // Your email address
+        pass: 'ibbr jzat oyoh xetp', // The generated App Password
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
+
+        try {
+            const a = await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: 'aslah.c77@gmail.com',
+                subject: 'Test Email',
+                text: `Your OTP for login is: ${otp}. This code is valid for 5 minutes.`,
+            });
+            console.log("Email sent:", a);  // Log the result of the email sending
+        } catch (error) {
+            console.error('Error sending email:', error);  // Handle the error here
+        }
+         
+        
+       
+        setTimeout(() => {
+            delete otpStorage[email];
+        }, 5 * 60 * 1000);
+
+        res.status(200).json({
+            success: true,
+            message: "OTP sent successfully",
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Failed to send OTP" });
+    }
+};
 
 
 const verifyPremium=async(req,res)=>{
@@ -29,37 +107,9 @@ if (!sessionId) {
 console.log('Session Details:', sessionId);
 user.role = 'premium';
         await user.save();
-// Process session details, e.g., update subscription
-// const { customer_email, amount_total } = sessionId;
-// console.log("customer_email, amount_total",customer_email, amount_total);
 
-// await verifyPremiumLogic(customer_email, amount_total / 100); // Call your verification logic here
 
 res.status(200).json({ success: true, sessionId ,user:user});
-
-    // const user = await User.findOne({ email: userEmail });
-    //     console.log("user",user);
-        
-    //     if (!user) {
-    //         throw new Error('User not found');
-    //     }
-
-    // let subscription = await Subscription.findOne({ userId: user._id });
-
-    //     if (!subscription) {
-    //         console.log("subscrip",subscription);
-            
-    //     }
-
-        
-    //     // user.role = 'premium';
-    //     // await user.save();
-
-    //     console.log("uuu",user);
-        
-
-    //     console.log("Updated subscription:", subscription);
-
 
        
 }
@@ -235,13 +285,14 @@ const login = async (req, res) => {
         }
         const user = await User.findOne({ email: email })
         if (!user) {
-            res.status(404).json({ success: false, message })
+            res.status(404).json({ success: false, message:` no registration with ${email} . please sign-up` })
         }
         const isPasswordCorrect = await bcrypt.compare(password, user.password)
         console.log(isPasswordCorrect);
 
         if (!isPasswordCorrect) {
-            res.status(404).json({ success: "false", message: "password not match" })
+            res.status(404).json({ success: "falsePassword", message:`Incorrect password for ${email}
+             You can use a sign-in code, reset your password or try again.` })
         }
         res.cookie("user", user, {
             httpOnly: false,
@@ -264,6 +315,47 @@ const login = async (req, res) => {
 
     }
 }
+
+
+
+// Login using OTP
+const loginWithOtp = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            return res.status(400).json({ success: false, message: "Email and OTP are required" });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: `No registration with ${email}. Please sign-up.`,
+            });
+        }
+
+        if (otpStorage[email] === otp) {
+            delete otpStorage[email]; // Remove OTP after successful verification
+
+            generateTokenAndCookies(user._id, res);
+
+            return res.status(200).json({
+                success: true,
+                message: "Login successful via OTP",
+                user: {
+                    ...user._doc,
+                    password: "",
+                },
+            });
+        } else {
+            return res.status(400).json({ success: false, message: "Invalid OTP" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Login with OTP failed" });
+    }
+};
 
 const logOut = async (req, res) => {
     try {
@@ -314,4 +406,4 @@ const checkingEmail = async (req, res) => {
 };
 
 
-module.exports = { signup, logOut, login, checkingEmail, createPaymentIntent,verifyPremium }
+module.exports = { signup, logOut, login, checkingEmail, createPaymentIntent,verifyPremium,generateOtp,loginWithOtp }

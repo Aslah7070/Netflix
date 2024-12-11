@@ -18,6 +18,7 @@ import MoviesAndTvShows from './pages/premiumPages/MoviesAndTvShows';
 import MySwiperComponent from './pages/premiumPages/MoviesAndTvShows';
 import SouthIndian from './pages/premiumPages/SouthIndian';
 import MyList from './pages/premiumPages/MyList';
+import LoginWithOTP from './pages/registration/LoginWithOTP';
 
 function App() {
   const location =useLocation()
@@ -58,6 +59,7 @@ function App() {
  <Route path='/paymentpicker' element={<PaymentPicker/>}/>
  <Route path='/paymetStrip' element={<Checkoutpayment/>}/>
  <Route path='/success' element={<Success/>}/>
+ <Route path='/otp' element={<LoginWithOTP/>}/>
  
 </Routes>
    )

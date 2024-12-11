@@ -10,6 +10,10 @@ router.post("/checkignemail",auth.checkingEmail)
 router.post('/create-payment-intent',auth.createPaymentIntent);
 router.post('/verifypremium/:sessionId',auth.verifyPremium);
 
+//otp based login
+router.post("/generate-otp", auth.generateOtp); 
+router.post("/login-otp", auth.loginWithOtp); 
+
 // router.post("/videoUploading",uploadVideo.single('video'),premium.videoUploading)
 
 router.post("/videoUploading", upload, premium.videoUploading); // for up to 10 files
