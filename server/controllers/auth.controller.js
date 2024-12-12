@@ -33,7 +33,7 @@ const generateOtp = async (req, res) => {
             });
         }
 
-        const otp = crypto.randomInt(100000, 999999).toString(); // Generate a 6-digit OTP
+        const otp = crypto.randomInt(1000, 9999).toString(); // Generate a 6-digit OTP
         otpStorage[email] = otp; // Store OTP temporarily
   console.log("111");
   
@@ -334,7 +334,10 @@ const loginWithOtp = async (req, res) => {
                 message: `No registration with ${email}. Please sign-up.`,
             });
         }
-
+             console.log("otp",otp);
+             console.log("otpStorage[email]",otpStorage[email]);
+             
+             
         if (otpStorage[email] === otp) {
             delete otpStorage[email]; // Remove OTP after successful verification
 

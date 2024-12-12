@@ -19,6 +19,7 @@ import MySwiperComponent from './pages/premiumPages/MoviesAndTvShows';
 import SouthIndian from './pages/premiumPages/SouthIndian';
 import MyList from './pages/premiumPages/MyList';
 import LoginWithOTP from './pages/registration/LoginWithOTP';
+import TrendingNow from './pages/TrendingNow';
 
 function App() {
   const location =useLocation()
@@ -32,7 +33,7 @@ function App() {
   
   return (
     <>
-    {(location.pathname !== "/"&&location.pathname !== "/:sessionId" && location.pathname !== "/login"&&location.pathname!=="/premiumhome") && <NavBar />}
+    {(location.pathname !== "/"&&location.pathname !== "/:sessionId"&&location.pathname!=="/loginotp"  && location.pathname !== "/login"&&location.pathname!=="/premiumhome") && <NavBar />}
     
 
  
@@ -49,7 +50,15 @@ function App() {
 
 <Routes>
  <Route path='/' element={<HomePage/>}/>
- <Route path='/login' element={<LoginPage/>}/>
+ {/* <Route path='/login' element={<LoginPage/>}>
+
+ <Route path='/loginotp' element={<LoginWithOTP/>}/>
+ 
+ </Route> */}
+
+<Route path="/login" element={<LoginPage />}/>
+<Route path='/loginotp' element={<LoginWithOTP/>}/>
+          
  <Route path='/signup' element={<SignUpPage/>}/>
  <Route path='/registration' element={<Registration/>}/>
  <Route path='/verifyemail' element={<VerifyEmail/>}/>
@@ -59,7 +68,8 @@ function App() {
  <Route path='/paymentpicker' element={<PaymentPicker/>}/>
  <Route path='/paymetStrip' element={<Checkoutpayment/>}/>
  <Route path='/success' element={<Success/>}/>
- <Route path='/otp' element={<LoginWithOTP/>}/>
+ <Route path='/Trendingnow' element={<TrendingNow/>}/>
+ 
  
 </Routes>
    )
