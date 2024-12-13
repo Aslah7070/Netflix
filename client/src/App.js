@@ -32,12 +32,16 @@ function App() {
   console.log("activeeeee",active);
   const {sessionId}=useParams()
   console.log("sessionId",sessionId);
-  
+
+
+  const excludedPaths = ["/", "/:sessionId", "/loginotp", "/login", "/premiumhome","/sendemail"];
   return (
     <>
-    {(location.pathname !== "/"&&location.pathname !== "/:sessionId"&&location.pathname!=="/loginotp"  && location.pathname !== "/login"&&location.pathname!=="/premiumhome") && <NavBar />}
+    {/* {(location.pathname !== "/"&&location.pathname !== "/:sessionId"&&location.pathname!=="/loginotp"  && location.pathname !== "/login"&&location.pathname!=="/premiumhome") && <NavBar />}
+     */}
     
 
+      {!excludedPaths.includes(location.pathname) && <NavBar />}
  
    {((role==="premium"||sessionId)&&active)?(
     <Routes>

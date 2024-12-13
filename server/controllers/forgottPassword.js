@@ -11,10 +11,10 @@ const forgotpass=async(req,res)=>{
    console.log("user",user);
    
 if(!user){
-    res.status(404).json({success:false,message:"not found the user"})
+   return res.status(404).json({success:false,message:"not found the user"})
 }
 const token=jwt.sign({id:user._id,email:user.email},process.env.JWT_SECRET,{expiresIn:"3d"})
-
+  
 const transporter=nodemailer.createTransport({
     service:"gmail",
     auth:{
@@ -48,7 +48,7 @@ res.status(200).json({success:true,message:"reset link send successull" ,id:user
 const decoded=jwt.verify(token,process.env.JWT_SECRET)
 
 console.log("decoded",decoded);
-
+ 
 const hashedPassword=await bcrypt.hash(password,10)
 
 await User.findByIdAndUpdate(id,{password:hashedPassword})
@@ -56,7 +56,7 @@ await User.findByIdAndUpdate(id,{password:hashedPassword})
 
 res.status(200).json({success:true,message:"password changed"})
 
-   
+     
    } catch (error) {
     console.error(err);
     if (err.name === 'JsonWebTokenError') {
@@ -64,6 +64,6 @@ res.status(200).json({success:true,message:"password changed"})
     }
     res.send({ Status: err.message });
    }
-}
+} 
 
 module.exports = { forgotpass,verifyForgotPassword }
