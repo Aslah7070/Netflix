@@ -330,7 +330,7 @@ const videoUploading = async (req, res) => {
     // Save the new movie to the database
     const savedMovie = await newMovie.save();
 
-    // Respond with a success message and the saved movie details
+
     res.status(201).json({
       message: "Movie uploaded successfully!",
       movie: savedMovie,

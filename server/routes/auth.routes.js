@@ -3,6 +3,9 @@ const router= express.Router()
 const auth=require("../controllers/auth.controller")
 const premium=require("../controllers/admin-side/premium")
 const upload=require("../middlewares/videoUploading")
+const forgott=require("../controllers/forgottPassword")
+
+
 router.post("/signup",auth.signup)
 router.post("/login",auth.login)
 router.post("/logout",auth.logOut)
@@ -14,8 +17,15 @@ router.post('/verifypremium/:sessionId',auth.verifyPremium);
 router.post("/generate-otp", auth.generateOtp); 
 router.post("/login-otp", auth.loginWithOtp); 
 
-// router.post("/videoUploading",uploadVideo.single('video'),premium.videoUploading)
 
-router.post("/videoUploading", upload, premium.videoUploading); // for up to 10 files
+//forgotpassword....
+router.post("/forgorpassword",forgott.forgotpass)
+router.post("/verifyforgotpassword/:id/:token",forgott.verifyForgotPassword)
+
+
+
+
+
+router.post("/videoUploading", upload, premium.videoUploading); 
 
 module.exports=router

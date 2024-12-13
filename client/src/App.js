@@ -20,6 +20,8 @@ import SouthIndian from './pages/premiumPages/SouthIndian';
 import MyList from './pages/premiumPages/MyList';
 import LoginWithOTP from './pages/registration/LoginWithOTP';
 import TrendingNow from './pages/TrendingNow';
+import ChangePassword from './pages/LoginPages/ChangePassword';
+import ForgotSendMail from './pages/LoginPages/ForgotSendMail';
 
 function App() {
   const location =useLocation()
@@ -69,6 +71,8 @@ function App() {
  <Route path='/paymetStrip' element={<Checkoutpayment/>}/>
  <Route path='/success' element={<Success/>}/>
  <Route path='/Trendingnow' element={<TrendingNow/>}/>
+ <Route path='/reset_password/id/token' element={<ChangePassword/>}/>
+ <Route path='/sendemail' element={<ForgotSendMail/>}/>
  
  
 </Routes>

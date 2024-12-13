@@ -348,7 +348,7 @@
 
               {/* Forgot Password Link */}
               <div className="text-sm text-center mt-4">
-                <a href="#" className="text-blue-500 hover:underline">Forgot password?</a>
+                <a href="#" className="text-blue-500 hover:underline" >Forgot password?</a>
               </div>
 
               {/* Sign Up Option */}
