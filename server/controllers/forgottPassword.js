@@ -17,7 +17,7 @@ const token=jwt.sign({id:user._id,email:user.email},process.env.JWT_SECRET,{expi
   
 const transporter=nodemailer.createTransport({
     service:"gmail",
-    auth:{
+    auth:{ 
         user:process.env.EMAIL_USER,
         pass:process.env.EMAIL_PASS,
     }
@@ -43,13 +43,31 @@ res.status(200).json({success:true,message:"reset link send successull" ,id:user
    const verifyForgotPassword=async(req,res)=>{
    try {
     const {id,token}=req.params
- const {password}=  req.body
-
+ const {password,email}=  req.body
+ console.log("password",password);
+ 
+ console.log("token",token);
+ console.log("id",id);
+ 
+const user=await User.findOne({email:email})
+ console.log("user",user) 
+console.log("password",user.password);
+const matching=await bcrypt.compare(password,user.password)
+if(matching){
+    return res.status(200).json({success:true,message:"password is same"})
+}
 const decoded=jwt.verify(token,process.env.JWT_SECRET)
 
 console.log("decoded",decoded);
  
 const hashedPassword=await bcrypt.hash(password,10)
+if(hashedPassword===user.password){
+    console.log("hahahahahah");
+    
+}
+
+console.log("hashedPassword",hashedPassword);
+
 
 await User.findByIdAndUpdate(id,{password:hashedPassword})
     
@@ -58,11 +76,11 @@ res.status(200).json({success:true,message:"password changed"})
 
      
    } catch (error) {
-    console.error(err);
-    if (err.name === 'JsonWebTokenError') {
+    console.error(error);
+    if (error.name === 'JsonWebTokenError') {
       return res.json({ Status: "Error with token" });
     }
-    res.send({ Status: err.message });
+    res.send({ Status: error.message });
    }
 } 
 

@@ -1,19 +1,78 @@
 
 
 
-import React from "react";
+import React, { useState } from "react";
 import api from "../../axiosInstance/api";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ChangePassword = () => {
+   
+const {id,token}=useParams()
 
-let userId=0;
-let token=1;
+const [data,setData]=useState({
+    password:"",
+    cpassword:"",
+    email:""
+})
+const [validError,setValidErro]=useState("")
+const [validSix,setValidSsix]=useState("")
+const navigate=useNavigate()
+console.log("id",id);
+console.log("token",token);
+console.log("dsfds",data.email);
 
-    const handleVarifyPassword=async()=>{
-        const response=await api.post(`/verifyforgotpassword/${userId}/${token}`)
+
+
+ 
+    const handleVarifyPassword=async(e)=>{
+        e.preventDefault()
+       try {
+        const {password,cpassword,email}=data
+        
+        if (password !== cpassword) {
+            setValidErro("Must match your new password")
+            return; 
+        }else{
+            setValidErro("")
+        }
+        const response=await api.post(`/verifyforgotpassword/${id}/${token}`,{password:password,email:email})
 
         console.log(response);
+        console.log("status",response.status);
+
+        if(response.status===200&&response.data.message==="password is same"){
+            setValidSsix("Sorry, you cannot use a previous password. Please try another password.")
+            return
+        }else{
+            setValidSsix("")
+        }
+        navigate("/")
         
+       } catch (error) {
+        console.log("error",error);
+        
+       }
+        
+    }
+
+    const handlePassword=(e)=>{
+        const {name,value}=e.target
+        setData((prevState)=>({
+            ...prevState,
+            [name]:value,
+        }))
+    }
+
+    const handleBlur=()=>{
+        const {password}=data
+    
+        if(password.length<6){
+            console.log("dsfds");
+            setValidSsix("Password should be between 6 and 60 characters long.")
+            
+        }else{
+            setValidSsix("")
+        }
     }
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-between ">
@@ -41,9 +100,11 @@ let token=1;
               <input
                 type="email"
                 id="email"
+                name="email"
                 className="w-full border-gray-300 rounded-md border border-10  p-2 shadow-sm"
-                value="aslah.c77@gmail.com"
-                disabled
+                value={data.email}
+                onChange={(e)=>handlePassword(e)}
+                
               />
             </div>
 
@@ -52,10 +113,14 @@ let token=1;
                 New password (6-60 characters)
               </label>
               <input
+              onBlur={handleBlur} 
                 type="password"
                 id="new-password"
                 className="w-full border-gray-300 rounded-md border border-10 p-2 shadow-sm"
+                 name="password"
+                onChange={(e)=>handlePassword(e)}
               />
+              <span className="text-red-700">{validSix&&validSix}</span>
             </div>
 
             <div className="mb-4">
@@ -65,8 +130,11 @@ let token=1;
               <input
                 type="password"
                 id="confirm-password"
-                className="w-full border-gray-300 rounded-md p-2 shadow-sm"
+                name="cpassword"
+                className="w-full border-gray-300 rounded-md border border-10 p-2 shadow-sm"
+                onChange={(e)=>handlePassword(e)}
               />
+              <span className="text-red-800">{validError&&validError}</span>
             </div>
 
             <div className="mb-4">

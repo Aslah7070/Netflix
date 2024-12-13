@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 const VerifyEmail = () => {
     const navigate=useNavigate()
-const email=useSelector((state)=>state.user.islog)
+const email=useSelector((state)=>state.user.email)
 console.log("verify",email);
 
     const verificationSkip=()=>{

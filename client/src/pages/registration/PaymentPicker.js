@@ -30,7 +30,7 @@ const navigate=useNavigate()
 const dispatch=useDispatch()
 const price=useSelector((state)=>state.user.premiumPrice)
 
-const currentUser=useSelector((state)=>state.user.islog)
+const currentUser=useSelector((state)=>state.user.email)
   const handlePaymentMethodSelect =async (method) => {
     
 

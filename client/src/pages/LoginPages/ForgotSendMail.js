@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import api from "../../axiosInstance/api";
 import crossicon from "../../assets/crossImage.png"
+import { useNavigate } from "react-router-dom";
 
 const ForgotSendMail = () => {
+
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState(""); // For success feedback
-    const [isLoading, setIsLoading] = useState(false); // For loading state
+    const [success, setSuccess] = useState(""); 
+    const [isLoading, setIsLoading] = useState(false);
     
-    const handlesendmail = async () => {
-        setError(""); // Clear previous errors
-        setSuccess(""); // Clear previous success messages
-        setIsLoading(true); // Start loading
+    const navigate=useNavigate()
+    
+    const handlesendmail = async (e) => {
+        e.preventDefault()
+        setError(""); 
+        setSuccess(""); 
+        setIsLoading(true); 
 
         console.log("user",email);
         
@@ -19,7 +24,8 @@ const ForgotSendMail = () => {
         try {
             const response = await api.post("/forgorpassword", { email });
             console.log(response);
-            setSuccess("An email has been sent to reset your password."); // Show success message
+            setSuccess("An email has been sent to reset your password.");
+            
         } catch (error) {
             console.log(error);
             if (error.response) {

@@ -37,17 +37,7 @@ const generateOtp = async (req, res) => {
         otpStorage[email] = otp; // Store OTP temporarily
   console.log("111");
   
-//   const transporter = nodemailer.createTransport({
-//     service: "gmail",
-//     host: 'smtp.gmail.com',
-//     port: 465,  // Use port 465 for SSL
-//     secure: true,  // Use secure connection (SSL)
-//     requireTLS: true,  // Enforce TLS
-//     auth: {
-//         user: process.env.EMAIL_USER,
-//         pass: process.env.EMAIL_PASS,
-//     },
-// });
+
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -118,9 +108,10 @@ res.status(200).json({ success: true, sessionId ,user:user});
 const createPaymentIntent = async (req, res) => {
     try {
         const { amount,userEmail } = req.body;
-
+     console.log("userEmail",userEmail);
+     
         if (!amount) {
-            throw new Error('Amount is required.');
+            throw new Error('Amount is required.'); 
         }
         const amountInINR = amount * 100;
         console.log("amountInINR", amount);
@@ -178,8 +169,7 @@ const createPaymentIntent = async (req, res) => {
         await subscription.save();
 
         
-        // user.role = 'premium';
-        // await user.save();
+      
 
         console.log("Updated subscription:", subscription);
 

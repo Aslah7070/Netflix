@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes, useLocation, useParams } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/LoginPages/LoginPage';
 import SignUpPage from './pages/registration/SignUpPage';
 import Registration from './pages/registration/Registration';
 import NavBar from './header/NavBar';
@@ -75,7 +75,7 @@ function App() {
  <Route path='/paymetStrip' element={<Checkoutpayment/>}/>
  <Route path='/success' element={<Success/>}/>
  <Route path='/Trendingnow' element={<TrendingNow/>}/>
- <Route path='/reset_password/id/token' element={<ChangePassword/>}/>
+ <Route path='/reset_password/:id/:token' element={<ChangePassword/>}/>
  <Route path='/sendemail' element={<ForgotSendMail/>}/>
  
  
