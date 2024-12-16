@@ -16,6 +16,7 @@ import { setEmail, setLoginStatus } from "../redux/slice";
 import api from "../axiosInstance/api";
 import { FaPlus } from "react-icons/fa6";
 import TrendingNow from "./TrendingNow";
+import axios from "axios";
 
 
 const HomePage = () => {
@@ -114,6 +115,12 @@ const HomePage = () => {
 
     navigate(`/registration`);
   };
+
+  const handletmdb=async()=>{
+   const responce=await axios.get("https://api.themoviedb.org/3/watch/providers/movie?api_key=5ae26a19a68042a00dd9534dc8b4ab03")
+   console.log("res",responce);
+   
+  }
 
   const navigate = useNavigate()
   const [movies, setMovies] = useState([
@@ -335,7 +342,7 @@ const HomePage = () => {
     ))}
 </div>
 
-
+<button onClick={handletmdb}>tmdb</button>
 
     </div>
 

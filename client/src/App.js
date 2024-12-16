@@ -6,22 +6,27 @@ import SignUpPage from './pages/registration/SignUpPage';
 import Registration from './pages/registration/Registration';
 import NavBar from './header/NavBar';
 import VerifyEmail from './pages/registration/VerifyEmail';
-import PlanComponent from './pages/registration/PlanComponent';
-import PremiumComponent from './pages/registration/PremiumComponent';
-import UpgredOnUs from './pages/registration/UpgredOnUs';
-import PaymentPicker from './pages/registration/PaymentPicker';
-import Checkoutpayment from './pages/registration/PaymentStripe';
+import PlanComponent from './pages/premiumPages/PlanComponent';
+import PremiumComponent from './pages/premiumPages/PremiumComponent';
+import UpgredOnUs from './pages/premiumPages/UpgredOnUs';
+import PaymentPicker from './pages/premiumPages/PaymentPicker';
+import Checkoutpayment from './pages/premiumPages/PaymentStripe';
 import HomePagePremium from './pages/premiumPages/HomePagePremium';
 import { useSelector } from 'react-redux';
-import Success from './pages/registration/Success';
+import Success from './pages/premiumPages/Success';
 import MoviesAndTvShows from './pages/premiumPages/MoviesAndTvShows';
 import MySwiperComponent from './pages/premiumPages/MoviesAndTvShows';
 import SouthIndian from './pages/premiumPages/SouthIndian';
 import MyList from './pages/premiumPages/MyList';
-import LoginWithOTP from './pages/registration/LoginWithOTP';
+import LoginWithOTP from './pages/LoginPages/LoginWithOTP';
 import TrendingNow from './pages/TrendingNow';
 import ChangePassword from './pages/LoginPages/ChangePassword';
 import ForgotSendMail from './pages/LoginPages/ForgotSendMail';
+import ShowHidePassword from './header/Test';
+import IndianMovies from './pages/premiumPages/categories/IndianMovies';
+import AdminMovieUpload from './pages/admin-part/UploadMovies';
+import MovieUploadForm from './pages/admin-part/UploadMovies';
+import FetchMovies from './pages/premiumPages/FetchMovies';
 
 function App() {
   const location =useLocation()
@@ -37,18 +42,15 @@ function App() {
   const excludedPaths = ["/", "/:sessionId", "/loginotp", "/login", "/premiumhome","/sendemail"];
   return (
     <>
-    {/* {(location.pathname !== "/"&&location.pathname !== "/:sessionId"&&location.pathname!=="/loginotp"  && location.pathname !== "/login"&&location.pathname!=="/premiumhome") && <NavBar />}
-     */}
-    
 
       {!excludedPaths.includes(location.pathname) && <NavBar />}
- 
+     
+
    {((role==="premium"||sessionId)&&active)?(
     <Routes>
     <Route path='/' element={<HomePagePremium/>}/>
-    {/* <Route path='/moviestvshows' element={<MySwiperComponent/>}/> */}
-    {/* <Route path='/southindian' element={<SouthIndian/>}/> */}
-    {/* <Route path='/mylist' element={<MyList/>}/> */}
+    <Route path='/indianmovies' element={<IndianMovies/>}/>
+    <Route path='/fetchmovies' element={<FetchMovies/>}/>
    
         </Routes>
    ):(
@@ -56,11 +58,7 @@ function App() {
 
 <Routes>
  <Route path='/' element={<HomePage/>}/>
- {/* <Route path='/login' element={<LoginPage/>}>
-
- <Route path='/loginotp' element={<LoginWithOTP/>}/>
  
- </Route> */}
 
 <Route path="/login" element={<LoginPage />}/>
 <Route path='/loginotp' element={<LoginWithOTP/>}/>
@@ -77,6 +75,8 @@ function App() {
  <Route path='/Trendingnow' element={<TrendingNow/>}/>
  <Route path='/reset_password/:id/:token' element={<ChangePassword/>}/>
  <Route path='/sendemail' element={<ForgotSendMail/>}/>
+ <Route path='/uploadmovies' element={ <MovieUploadForm/>}/>
+
  
  
 </Routes>
@@ -92,32 +92,3 @@ export default App;
 
 
 
-
-// // src/App.js
-// import React from 'react';
-// import { useTranslation } from 'react-i18next'; // Import the translation hook
-
-// const App = () => {
-//   const { t, i18n } = useTranslation(); // Access the translation function and i18n instance
-
-//   // Function to change the language
-//   const handleLanguageChange = (lang) => {
-//     i18n.changeLanguage(lang); // Change the language when a button is clicked
-//   };
-
-//   return (
-//     <div>
-//       <header>
-//         <h1>{t('welcome')}</h1> {/* Display translated text */}
-//         <p>{t('description')}</p> {/* Display translated description */}
-        
-//         {/* Language Switcher */}
-//         <button onClick={() => handleLanguageChange('en')}>English</button>
-//         <button onClick={() => handleLanguageChange('es')}>Español</button>
-//         <button onClick={() => handleLanguageChange('fr')}>Français</button>
-//       </header>
-//     </div>
-//   );
-// };
-
-// export default App;

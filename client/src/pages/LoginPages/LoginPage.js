@@ -6,6 +6,8 @@
   import { useDispatch, useSelector } from 'react-redux';
   import { Link, useNavigate } from 'react-router-dom';
   import { setLoginStatus, setUserData } from '../../redux/slice';
+  import { FaEye, FaEyeSlash } from 'react-icons/fa';
+
 
   const LoginPage = () => {
     const emailFromRedux = useSelector((state) => state.user.email);
@@ -23,13 +25,11 @@
       display()
   navigate("/loginotp")
     }
-  
-
-
     const [formData, setFormData] = useState({ email: emailFromRedux || '', password: '' });
     const [loginError, setLoginError] = useState('');
-    const [showSignInCodeButton, setShowSignInCodeButton] = useState(true); // state for showing/hiding buttons
-    const [showEnterSignInCode, setShowEnterSignInCode] = useState(false); // state to toggle visibility of the "Enter sign-in code" button
+    const [showSignInCodeButton, setShowSignInCodeButton] = useState(true); 
+    const [showEnterSignInCode, setShowEnterSignInCode] = useState(false); 
+    const [showPassword,setShowPassword]=useState(false)
 
     useEffect(() => {
       setFormData((prev) => ({ ...prev, email: emailFromRedux || '' }));
@@ -46,7 +46,7 @@
     const dispatch = useDispatch();
 
     const display = async (e) => {
-      e.preventDefault(); // Prevent page reload on form submit
+      e.preventDefault(); 
 
       try {
         const response = await api.post("/login", formData);
@@ -63,43 +63,39 @@
         } else if (error.response && error.response.data.message) {
           setLoginError(error.response.data.message, "dfasd");
         } else {
-          setLoginError("Login failed. Please check your credentials."); // Generic fallback message
+          setLoginError("Login failed. Please check your credentials.");
         }
       }
     };
+    const togglePasswordVisibility=()=>{
+      setShowPassword((prevState)=>!prevState)
+    }
 
     const handleSignInCodeClick = () => {
-      setShowSignInCodeButton(false); // Hide "Enter your sign-in code" button
-      setShowEnterSignInCode(true); // Show the new button to go back to the sign-in code button
+      setShowSignInCodeButton(false); 
+      setShowEnterSignInCode(true); 
     };
 
     const handleBackToSignInCode = () => {
-      setShowSignInCodeButton(true); // Show "Enter your sign-in code" button
-      setShowEnterSignInCode(false); // Hide the back button
+      setShowSignInCodeButton(true); 
+      setShowEnterSignInCode(false); 
     };
     const [isFocused, setIsFocused] = useState(false);
     const [isFocusedPassword, setIsFocusedisFocusedPassword] = useState(false);
 
     return (
     
-      <div className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: `url(${loginBg})` }}>
-        {/* Overlay */}
-       
-        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
-
-        {/* Content */}
+      <div className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: `url(${loginBg})` }}>     
+        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>     
         <div className="relative z-10 flex items-center justify-center w-full h-full">
           <div className="w-full max-w-sm px-8 py-8 bg-black bg-opacity-70 rounded-lg">
             <h1 className="text-3xl font-bold text-center text-white mb-6">Sign In</h1>
-
             <form onSubmit={display} className="space-y-4">
               {loginError && (
                 <div className="p-2 text-sm text-black bg-yellow-500 border border-red-300 rounded">
                   {loginError}
                 </div>
-              )}
-
-              {/* Email */}
+              )}   
               <div className="relative">
               <label
           htmlFor="email"
@@ -120,10 +116,9 @@
           className="w-full px-4 py-4 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
           placeholder=""
         />
-
               </div>
 
-              {/* Password */}
+              
               {!showEnterSignInCode && (
                 <div className="relative">
                 <label
@@ -135,7 +130,7 @@
                   Enter your password
                 </label>
                 <input
-                  type="password"
+                  type={showPassword?"text":"password"}
                   id="password"
                   name="password"
                   onFocus={() => setIsFocusedisFocusedPassword(true)}
@@ -145,10 +140,16 @@
                   className="w-full px-4 py-4 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder=""
                 />
+                  <span
+        onClick={togglePasswordVisibility}
+        className="absolute top-3.5 right-4 cursor-pointer text-gray-500"
+      >
+        {showPassword ? <FaEyeSlash /> : <FaEye />}
+      </span>
               </div>
               )}
 
-              {/* Sign In Button */}
+              
               {!showEnterSignInCode&&(<button
                 type="submit"
                 className="w-full py-2 mt-4 text-white bg-red-600 rounded-md hover:bg-red-700"
@@ -156,10 +157,10 @@
                 Sign In
               </button>)}
 
-              {/* OR Divider */}
+              
               {!showEnterSignInCode&&(<div className="text-center my-4 text-sm text-gray-600">OR</div>)}
 
-              {/* Sign-in Code Button */}
+             
               {showSignInCodeButton && (
                 <button
                   type="button"
@@ -170,7 +171,7 @@
                 </button>
               )}
 
-              {/* Back to Sign-in Code Button */}
+              
               {showEnterSignInCode && (
                 <button
                   type="button"

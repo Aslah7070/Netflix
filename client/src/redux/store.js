@@ -1,31 +1,26 @@
-// import { configureStore } from '@reduxjs/toolkit';
-// import userReducer from './slice'; 
-
-// export const store = configureStore({
-//   reducer: {
-//     user: userReducer, 
-//   },
-// });
 
 
 
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './slice';
+import movieReducer from "./movieSlice"
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage
+import storage from 'redux-persist/lib/storage'; 
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-// Persist configuration
+
 const persistConfig = {
   key: 'root',
-  storage, // Use localStorage as the storage
+  storage, 
 };
 
-// Wrap the userReducer with persistReducer
+
 const persistedUserReducer = persistReducer(persistConfig, userReducer);
+const persistedMovieReducer = persistReducer(persistConfig, movieReducer);
 
 export const store = configureStore({
   reducer: {
-    user: persistedUserReducer, // Apply persisted reducer
+    user: persistedUserReducer, 
+    movies:persistedMovieReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

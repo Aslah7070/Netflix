@@ -10,21 +10,25 @@ const signUpSchema = require("../validations/signupValidation");
 const { generateTokenAndCookies } = require("../utils/generateTokens");
 const Subscription = require('../models/subscription.models'); 
 
-
+const CustomError=require("../utils/customErrorHandling")
 
 
 
 const otpStorage = {};
 
-// Generate OTP and send it to the user
-const generateOtp = async (req, res) => {
-    try {
+
+const hello=(req,res)=>{
+    console.log("hello eowdn");
+    res.send("dsfads")
+    
+}
+
+const generateOtp = async (req, res,next) => {
         const { email } = req.body;
-
         if (!email) {
-            return res.status(400).json({ success: false, message: "Email is required" });
+            // return res.status(400).json({ success: false, message: "Email is required" });
+            return next(new CustomError("Email is required",400))
         }
-
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({
@@ -32,39 +36,27 @@ const generateOtp = async (req, res) => {
                 message: `No registration with ${email}. Please sign-up.`,
             });
         }
-
-        const otp = crypto.randomInt(1000, 9999).toString(); // Generate a 6-digit OTP
-        otpStorage[email] = otp; // Store OTP temporarily
+        const otp = crypto.randomInt(1000, 9999).toString(); 
+        otpStorage[email] = otp; 
   console.log("111");
-  
-
-
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'aslahvava9048@gmail.com', // Your email address
-        pass: 'ibbr jzat oyoh xetp', // The generated App Password
+        user: 'aslahvava9048@gmail.com',
+        pass: 'ibbr jzat oyoh xetp', 
     },
     tls: {
         rejectUnauthorized: false
     }
-});
-
-
-        try {
+});  
             const a = await transporter.sendMail({
                 from: process.env.EMAIL_USER,
-                to: 'aslah.c77@gmail.com',
+                to: email,
                 subject: 'Test Email',
                 text: `Your OTP for login is: ${otp}. This code is valid for 5 minutes.`,
             });
-            console.log("Email sent:", a);  // Log the result of the email sending
-        } catch (error) {
-            console.error('Error sending email:', error);  // Handle the error here
-        }
-         
-        
-       
+            console.log("Email sent:", a);  
+
         setTimeout(() => {
             delete otpStorage[email];
         }, 5 * 60 * 1000);
@@ -72,11 +64,7 @@ const transporter = nodemailer.createTransport({
         res.status(200).json({
             success: true,
             message: "OTP sent successfully",
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Failed to send OTP" });
-    }
+        });  
 };
 
 
@@ -88,7 +76,7 @@ const verifyPremium=async(req,res)=>{
 const {sessionId}=req.params
 console.log("params",sessionId);
 
-// const {userEmail,amount}=req.body
+
 console.log("userEmail",user);
 if (!sessionId) {
     return res.status(404).json({ error: 'Session not found' });
@@ -106,7 +94,6 @@ res.status(200).json({ success: true, sessionId ,user:user});
 
 
 const createPaymentIntent = async (req, res) => {
-    try {
         const { amount,userEmail } = req.body;
      console.log("userEmail",userEmail);
      
@@ -177,7 +164,7 @@ const createPaymentIntent = async (req, res) => {
         res.cookie('payment_session', session.id, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 1000, // 1 hour
+            maxAge: 60 * 60 * 1000, 
         });
 
         res.status(200).json({
@@ -185,16 +172,13 @@ const createPaymentIntent = async (req, res) => {
             url: session.url,
            
         });
-    } catch (error) {
-        console.error('Error creating checkout session:', error.message);
-        res.status(500).json({ error: error.message });
-    }
+   
 };
 
 
 
 const signup = async (req, res) => {
-    try {
+    
         console.log("Request body:", req.body);
 
 
@@ -257,34 +241,31 @@ const signup = async (req, res) => {
                 password: "",
             },
         });
-
-
-    } catch (error) {
-        console.error("Error during sign-up:", error);
-        res.status(500).json({ error: "An error occurred during sign-up." });
-    }
 };
 
 
 
-const login = async (req, res) => {
-    try {
+const login = async (req, res,next) => {
         const { email, password } = req.body;
         if (!email || !password) {
-            return res.status(400).json({ success: false, message: "all field are required" })
+            console.log("adsfd");
+            
+            return next(new CustomError("all field are required",400))
+
         }
         const user = await User.findOne({ email: email })
         if (!user) {
             res.status(404).json({ success: false, message:` no registration with ${email} . please sign-up` })
         }
+
         const isPasswordCorrect = await bcrypt.compare(password, user.password)
-        console.log(isPasswordCorrect);
+        console.log("dfa",isPasswordCorrect);
 
         if (!isPasswordCorrect) {
-            res.status(404).json({ success: "falsePassword", message:`Incorrect password for ${email}
+           return res.status(404).json({ success: "falsePassword", message:`Incorrect password for ${email}
              You can use a sign-in code, reset your password or try again.` })
         }
-        res.cookie("user", user, {
+        res.cookie("user", user, { 
             httpOnly: false,
             secure: true,
             maxAge: 24 * 60 * 60 * 1000,
@@ -299,18 +280,13 @@ const login = async (req, res) => {
                 password: ""
             }
         });
-
-    } catch (error) {
-        console.log(error);
-
-    }
 }
 
 
 
 // Login using OTP
 const loginWithOtp = async (req, res) => {
-    try {
+  
         const { email, otp } = req.body;
 
         if (!email || !otp) {
@@ -329,7 +305,7 @@ const loginWithOtp = async (req, res) => {
              
              
         if (otpStorage[email] === otp) {
-            delete otpStorage[email]; // Remove OTP after successful verification
+            delete otpStorage[email]; 
 
             generateTokenAndCookies(user._id, res);
 
@@ -344,15 +320,9 @@ const loginWithOtp = async (req, res) => {
         } else {
             return res.status(400).json({ success: false, message: "Invalid OTP" });
         }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Login with OTP failed" });
-    }
 };
 
 const logOut = async (req, res) => {
-    try {
-
         res.clearCookie("jwt-netflix", {
             httpOnly: true,
             secure: true,
@@ -364,15 +334,10 @@ const logOut = async (req, res) => {
             sameSite: 'lax'
         });
         res.status(200).json({ success: true, message: "Loggout successfully" })
-    } catch (error) {
-        console.log(error);
-
-    }
 }
 
 
 const checkingEmail = async (req, res) => {
-    try {
         const { email } = req.body;
 
         if (!email) {
@@ -389,14 +354,7 @@ const checkingEmail = async (req, res) => {
         }
 
         res.status(404).json({ success: false, message: "Email not found" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "An error occurred while checking the email" });
-    }
-
-
-
 };
 
 
-module.exports = { signup, logOut, login, checkingEmail, createPaymentIntent,verifyPremium,generateOtp,loginWithOtp }
+module.exports = { signup, logOut, login, checkingEmail, createPaymentIntent,verifyPremium,generateOtp,loginWithOtp,hello }

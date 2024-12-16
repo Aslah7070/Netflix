@@ -4,25 +4,27 @@ const auth=require("../controllers/auth.controller")
 const premium=require("../controllers/admin-side/premium")
 const upload=require("../middlewares/videoUploading")
 const forgott=require("../controllers/forgottPassword")
+const {tryCatch}=require("../utils/tryCatch")
+const {userAuthMiddleware}=require("../middlewares/authentication")
 
-
-router.post("/signup",auth.signup)
-router.post("/login",auth.login)
-router.post("/logout",auth.logOut)
-router.post("/checkignemail",auth.checkingEmail)
-router.post('/create-payment-intent',auth.createPaymentIntent);
-router.post('/verifypremium/:sessionId',auth.verifyPremium);
+router.post("/signup",tryCatch(auth.signup))
+router.post("/login",tryCatch(auth.login))
+router.post("/logout",tryCatch(auth.logOut))
+router.post("/checkignemail",tryCatch(auth.checkingEmail))
+router.post('/create-payment-intent',tryCatch(auth.createPaymentIntent));
+router.post('/verifypremium/:sessionId',tryCatch(auth.verifyPremium));
 
 //otp based login
-router.post("/generate-otp", auth.generateOtp); 
-router.post("/login-otp", auth.loginWithOtp); 
+router.post("/generate-otp", tryCatch(auth.generateOtp)); 
+router.post("/login-otp", tryCatch(auth.loginWithOtp)); 
 
 
 //forgotpassword....
-router.post("/forgorpassword",forgott.forgotpass)
-router.post("/verifyforgotpassword/:id/:token",forgott.verifyForgotPassword)
+router.post("/forgorpassword",tryCatch(forgott.forgotpass))
+router.post("/verifyforgotpassword/:id/:token",tryCatch(forgott.verifyForgotPassword))
 
 
+router.post("/hey",userAuthMiddleware,tryCatch(auth.hello))
 
 
 

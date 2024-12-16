@@ -1,14 +1,4 @@
-// import React from 'react'
 
-// const UpgredOnUs = () => {
-//   return (
-//     <div>
-//       hdsfnkj
-//     </div>
-//   )
-// }
-
-// export default UpgredOnUs
 
 
 import React from "react";

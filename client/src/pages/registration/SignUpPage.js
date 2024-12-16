@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../axiosInstance/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoginStatus, setUserData } from '../../redux/slice';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const SignUpPage = () => {
 
@@ -12,14 +13,13 @@ const SignUpPage = () => {
   const navigate = useNavigate();
 const emailFromStore=useSelector((state)=>state.user.email)
 
-
-console.log("value",emailFromStore);
-
-  // Single state for all input fields
   const [formData, setFormData] = useState({
     email: emailFromStore || '',
     password: '',
   });
+  const [showPassword,setShowPassword]=useState(false)
+  const [error,setError]=useState("")
+  const Icon = showPassword ? FaEye : FaEyeSlash;
 console.log("Fd",formData);
 
   // Handle input changes
@@ -30,6 +30,17 @@ console.log("Fd",formData);
       [name]: value, 
     });
   };
+
+
+const handlePasswordError=()=>{
+  const {password}=formData
+  if(password.length<6){
+    setError("Password must be at least 6 characters")
+  }else{
+    setError("")
+  }
+}
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -50,6 +61,7 @@ console.log("Fd",formData);
         console.error("Sign-Up Failed:", response.data.message);
       }
     } catch (error) {
+      
       console.error("Error during sign-up:", error);
     }
   };
@@ -94,17 +106,25 @@ useEffect(() => {
             </div>
 
             {/* Password Input */}
-            <div className="mb-4">
-              <input
-                type="password"
-                name="password" // Match with state field
-                className="w-full h-16 p-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-red-600"
-                placeholder="Create a password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <div className="mb-4 relative ">
+  <input
+    type={showPassword ? "text" : "password"}
+    name="password"
+    className="w-full h-16 p-3 border-2 border-gray-300 rounded-md focus:outline-none focus:border-red-600"
+    placeholder="Create a password"
+    value={formData.password}
+    onChange={handleChange}
+    required
+    onBlur={handlePasswordError}
+  />
+  <Icon
+    className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-600"
+    onClick={() => setShowPassword(!showPassword)}
+  />
+</div>
+<span className='text-red-900'>{error&&error}</span>
+
+           
 
             {/* Next Button */}
             <div className="mt-6">
