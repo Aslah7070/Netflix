@@ -12,10 +12,10 @@ const movieSchema = new mongoose.Schema({
   releaseYear: { type: Number, required: true },
   duration: { type: Number, required: true },
   videoUrl: { type: String},
-  thumbnailUrl: { type: String },
+  thumbnailUrl: { type: String }, 
   maturityRating: { type: String, required: true }, 
   rating:{type:String,required:true},
   createdAt: { type: Date, default: Date.now },
-});
+}); 
 
 module.exports = mongoose.model('Movie', movieSchema);

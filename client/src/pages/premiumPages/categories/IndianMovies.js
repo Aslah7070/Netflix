@@ -1,79 +1,102 @@
 
 
-
-import React, { useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css'; // Swiper core CSS
-import { useSelector } from 'react-redux';
+import React, { useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import { useSelector } from "react-redux";
 
 const IndianMovies = () => {
   const [currentVideo, setCurrentVideo] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isHovered, setIsHovered] = useState(null); // Track hovered video
+  const [isHovered, setIsHovered] = useState(null);
 
-  // Fetch movies from Redux state
   const movies = useSelector((state) => state.movies.movies) || [];
+  const dramaMovies = movies.filter((movie) => movie.genre.includes("Drama"));
 
-  // Function to handle hover and play video for 20 seconds
-  const handleMouseEnter = (videoUrl) => {
-    setIsHovered(videoUrl);
+  console.log(" dramaMovies:", dramaMovies);
+  const handleMouseEnter = (movieId) => {
+    setIsHovered(movieId);
   };
 
-  // Function to handle click and open full-screen
+  const handleMouseLeave = () => {
+    setIsHovered(null);
+  };
+
   const handleClick = (videoUrl) => {
     setCurrentVideo(videoUrl);
     setIsFullscreen(true);
   };
 
   return (
-    <div className="max-w-screen-lg mx-auto p-4">
-      <h2 className="text-center text-2xl font-semibold mb-8">Indian Movies</h2>
+    <div className="relative mx-auto mt-20 p-4  w-full">
+      <h2 className="text-start text-2xl font-semibold  text-white">
+        Indian Drama Movies
+      </h2>
 
-      {/* Swiper for Movie Thumbnails */}
       <Swiper
-        spaceBetween={15}
-        slidesPerView={10}
-        pagination={{ clickable: true }}
+        spaceBetween={5}
+        slidesPerView={6}
         navigation
+        modules={[Navigation]}
+        className="relative"
       >
-        {movies.map((movie) => (
-          <SwiperSlide key={movie._id}>
+        {dramaMovies.map((movie) => (
+          <SwiperSlide  key={movie._id}>
             <div
-              onMouseEnter={() => handleMouseEnter(movie.videoUrl)}
-              onMouseLeave={() => setIsHovered(null)} // Reset hover state
+              onMouseEnter={() => handleMouseEnter(movie._id)}
+              onMouseLeave={handleMouseLeave}
               onClick={() => handleClick(movie.videoUrl)}
-              className="cursor-pointer relative"
+              className="relative cursor-pointer rounded-sm overflow-hidden  w-full h-32"
+              style={{
+                transform:
+                  isHovered === movie._id ? "scale(1.1)" : "scale(1)",
+                transition: "transform 0.3s ease-in-out",
+                zIndex: isHovered === movie._id ? 10 : 1,
+              }}
             >
-              {/* Video shown during hover */}
-              {!isFullscreen && isHovered === movie.videoUrl && (
-                <div className="absolute inset-0 flex items-center justify-center bg-green-950 bg-opacity-50">
+              {/* Video Preview and Overlay on Hover */}
+              {isHovered === movie._id ? (
+                <div className="relative">
                   <video
                     src={movie.videoUrl}
                     autoPlay
                     muted
-                    className="w-full h-72 object-cover rounded-lg"
+                    className="w-full h-40 object-cover rounded-lg"
                   />
+                  {/* Overlay Content */}
+                  <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-end p-4">
+                    <h3 className="text-lg font-bold text-white">
+                      {movie.title || "Untitled"}
+                    </h3>
+                    <p className="text-sm text-gray-300">
+                      {movie.duration || "N/A"} •{" "}
+                      {movie.genre || "Genre"}
+                    </p>
+                    <button
+                      className="mt-2 bg-red-600 text-white py-1 px-3 rounded"
+                      onClick={() => handleClick(movie.videoUrl)}
+                    >
+                      Play
+                    </button>
+                  </div>
                 </div>
-              )}
-
-              {/* Thumbnail Image */}
-              {isHovered !== movie.videoUrl && (
+              ) : (
+                // Thumbnail Image
                 <img
                   src={movie.thumbnailUrl}
-                  alt={movie.title || 'Movie Thumbnail'}
-                  className="w-full h-40 object-cover rounded-lg"
+                  alt={movie.title || "Movie Thumbnail"}
+                  className="w-full h-full object-cover rounded-lg"
                   loading="lazy"
                 />
               )}
-
-              {/* Movie Title */}
-              <p className="text-center mt-2 text-base">{movie.title || 'Untitled'}</p>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
 
-      {/* Display Video in Fullscreen */}
+      {/* Fullscreen Video */}
       {currentVideo && isFullscreen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center">
           <div className="relative w-full h-full">
@@ -95,8 +118,5 @@ const IndianMovies = () => {
     </div>
   );
 };
-
-
-
 
 export default IndianMovies;

@@ -17,7 +17,7 @@ import Success from './pages/premiumPages/Success';
 import MoviesAndTvShows from './pages/premiumPages/MoviesAndTvShows';
 import MySwiperComponent from './pages/premiumPages/MoviesAndTvShows';
 import SouthIndian from './pages/premiumPages/SouthIndian';
-import MyList from './pages/premiumPages/MyList';
+
 import LoginWithOTP from './pages/LoginPages/LoginWithOTP';
 import TrendingNow from './pages/TrendingNow';
 import ChangePassword from './pages/LoginPages/ChangePassword';
@@ -63,12 +63,12 @@ function App() {
  
 
 <Route path="/login" element={<LoginPage />}/>
-<Route path='/loginotp' element={<LoginWithOTP/>}/>
+<Route path='/loginotp' element={<LoginWithOTP/>}/> 
           
  <Route path='/signup' element={<SignUpPage/>}/>
  <Route path='/registration' element={<Registration/>}/>
  <Route path='/verifyemail' element={<VerifyEmail/>}/>
- <Route path='/plancomponent' element={<PlanComponent/>}/>
+ <Route path='/plancomponent' element={<PlanComponent/>}/>  
  <Route path='/premiumslice' element={<PremiumComponent/>}/>
  <Route path='/UpgredOnUs' element={<UpgredOnUs/>}/>
  <Route path='/paymentpicker' element={<PaymentPicker/>}/>
