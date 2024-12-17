@@ -27,6 +27,7 @@ import IndianMovies from './pages/premiumPages/categories/IndianMovies';
 import AdminMovieUpload from './pages/admin-part/UploadMovies';
 import MovieUploadForm from './pages/admin-part/UploadMovies';
 import FetchMovies from './pages/premiumPages/FetchMovies';
+import VideoPlayer from './pages/premiumPages/TestingComponent';
 
 function App() {
   const location =useLocation()
@@ -51,7 +52,8 @@ function App() {
     <Route path='/' element={<HomePagePremium/>}/>
     <Route path='/indianmovies' element={<IndianMovies/>}/>
     <Route path='/fetchmovies' element={<FetchMovies/>}/>
-   
+    <Route path='/uploadmovies' element={ <MovieUploadForm/>}/>
+    <Route path='/testtt' element={ <VideoPlayer/>}/>
         </Routes>
    ):(
  
@@ -75,7 +77,7 @@ function App() {
  <Route path='/Trendingnow' element={<TrendingNow/>}/>
  <Route path='/reset_password/:id/:token' element={<ChangePassword/>}/>
  <Route path='/sendemail' element={<ForgotSendMail/>}/>
- <Route path='/uploadmovies' element={ <MovieUploadForm/>}/>
+
 
  
  

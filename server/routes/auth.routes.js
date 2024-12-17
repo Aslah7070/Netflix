@@ -28,6 +28,6 @@ router.post("/hey",userAuthMiddleware,tryCatch(auth.hello))
 
 
 
-router.post("/videoUploading", upload, premium.videoUploading); 
+// router.post("/videoUploading", upload, premium.videoUploading); 
 
 module.exports=router

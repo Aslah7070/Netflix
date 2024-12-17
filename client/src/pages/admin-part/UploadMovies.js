@@ -53,6 +53,7 @@ const MovieUploadForm = () => {
       data.append('imageFile', imageFile);
 
       // Post to backend
+      console.log("helloe")
       const response = await api.post('/videoUploading', data);
       console.log("res",response);
       
