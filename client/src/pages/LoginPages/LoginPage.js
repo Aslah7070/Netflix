@@ -52,6 +52,7 @@
         const response = await api.post("/login", formData);
         console.log("loginnnn ", response.data);
         const user = response.data.uset;
+console.log("user",user);
 
         dispatch(setUserData(user));
         dispatch(setLoginStatus(true));

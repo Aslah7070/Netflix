@@ -28,6 +28,7 @@ import AdminMovieUpload from './pages/admin-part/UploadMovies';
 import MovieUploadForm from './pages/admin-part/UploadMovies';
 import FetchMovies from './pages/premiumPages/FetchMovies';
 import VideoPlayer from './pages/premiumPages/TestingComponent';
+import MoviePlayer from './pages/premiumPages/MoviePlayer';
 
 function App() {
   const location =useLocation()
@@ -36,24 +37,24 @@ function App() {
   const active=useSelector((state)=>state.user.isLoggedIn)
   console.log("appRole",role);
   console.log("activeeeee",active);
-  const {sessionId}=useParams()
-  console.log("sessionId",sessionId);
 
 
-  const excludedPaths = ["/", "/:sessionId", "/loginotp", "/login", "/premiumhome","/sendemail"];
+
+  const excludedPaths = ["/", "/:sessionId", "/loginotp", "/login", "/premiumhome","/sendemail","/success/"];
   return (
     <>
 
       {!excludedPaths.includes(location.pathname) && <NavBar />}
      
 
-   {((role==="premium"||sessionId)&&active)?(
+   {((role==="premium")&&active)?(
     <Routes>
     <Route path='/' element={<HomePagePremium/>}/>
     <Route path='/indianmovies' element={<IndianMovies/>}/>
     <Route path='/fetchmovies' element={<FetchMovies/>}/>
     <Route path='/uploadmovies' element={ <MovieUploadForm/>}/>
     <Route path='/testtt' element={ <VideoPlayer/>}/>
+    <Route path='/movieplayer' element={ <MoviePlayer/>}/>
         </Routes>
    ):(
  

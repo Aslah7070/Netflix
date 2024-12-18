@@ -116,6 +116,8 @@ import { setMovies } from '../../redux/movieSlice';
 import IndianMovies from './categories/IndianMovies';
 import FunMovies from './categories/FunMovies';
 import ActionMovies from './categories/ActionMovies';
+import HindiMovies from './categories/HindiMovies';
+import ThamilMovies from './categories/ThamilMovies';
 
 const HomePagePremium = () => {
   const dispatch = useDispatch();
@@ -145,6 +147,18 @@ const HomePagePremium = () => {
       console.error('Error logging out:', error.message);
     }
   };
+
+  const handleCheck=async()=>{
+try {
+  const responce=await api.post("/hey")
+  console.log("resss",responce)
+  
+} catch (error) {
+  console.log("error",error);
+  
+}
+  
+  }
 
   return (
     <div className="relative w-full bg-gray-950  h-auto">
@@ -191,12 +205,12 @@ const HomePagePremium = () => {
               ? 'Enjoy unlimited streaming of your favorite movies and TV shows!'
               : 'Upgrade to Premium for the best experience.'}
           </p>
-          {/* <button
+          <button
             onClick={handleLogout}
             className="mt-5 px-6 py-3 bg-red-600 rounded-md hover:bg-red-700"
           >
             Logout
-          </button> */}
+          </button>
 
           <button className="mt-5 px-10 py-3 bg-white text-black rounded-md hover:bg-red-700 me-5">Play</button>
           <button className="mt-5 px-14 py-3 bg-white text-black rounded-md hover:bg-red-700">More-info</button>
@@ -206,8 +220,14 @@ const HomePagePremium = () => {
       {/* Movie Categories */}
       <div className="relative  bg-opacity-90 text-white space-y-8 pt-5">
         <IndianMovies />
+       
         <FunMovies />
         <ActionMovies />
+        <HindiMovies/>
+        <button onClick={handleCheck}>checkinggg</button>
+        <ThamilMovies/>
+
+
       </div>
     </div>
   );

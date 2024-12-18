@@ -1,122 +1,75 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
-import api from '../../axiosInstance/api';
-import { setUserData } from '../../redux/slice';
 
-const Success = () => {
 
-    const location = useLocation()
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { setUserData } from "../../redux/slice";
+import api from "../../axiosInstance/api";
+
+const WelcomePage = () => {
+
+
+      const location = useLocation()
     const queryParams = new URLSearchParams(location.search);
     const sessionId = queryParams.get('session_id');
+  const email = useSelector((state) => state.user.email);
+  const amount = useSelector((state) => state.user.premiumPrice);
 
-    const email= useSelector((state)=>state.user.email)
-    const amount= useSelector((state)=>state.user.premiumPrice)
-  
-    console.log('Session ID:', sessionId);
-const dispatch=useDispatch()
-const navigete=useNavigate()
-    useEffect(()=>{
-        try {
-       
- 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Handle the action of verifying the user's premium status
+  const verifyPremium = async () => {
+    try {
+      if(sessionId){
+        
+          const display=async()=>{
+            const response= await api.post(`/verifypremium/${sessionId}`,{email:email,amount:amount})
+            console.log("mu prime",response);
+            const user=response.data.user
+            console.log("priii",user);
+            
      
-        } catch (error) {
-         
+            dispatch(setUserData(user))
+            navigate("/")
         }
-        
-     },[])
-
-     
-     const handle=()=>{
-try {
-    if(sessionId){
-        const display=async()=>{
-          const response= await api.post(`/verifypremium/${sessionId}`,{email:email,amount:amount})
-          console.log("mu prime",response);
-          const user=response.data.user
-          console.log("priii",user);
           
-   
-          dispatch(setUserData(user))
-          navigete("/")
-      }
-        
-      display()
-     }
-} catch (error) {
-    console.log("err",error);
-    
-}
-     }
+        display()
+       }
+  } catch (error) {
+      console.log("err",error);
+      
+  }
+  };
+
+
+
+
+
+
+
+  useEffect(() => {
+    // Add any initial logic here if necessary
+  }, []);
+
   return (
-    <div>
-      <button onClick={()=>handle()}>move on</button>
+    <div className="relative w-full h-screen bg-gradient-to-b from-black to-gray-900 text-white flex items-center justify-center flex-col">
+      <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: "url('https://assets.nflxext.com/ffe/siteui/vlv3/5e0ea5c7-bf74-4b2b-b389-05ff5b290c9a/5a4fd2f7-5877-4095-972f-b9de9bb320c2/NG-en-2023-01-19.jpg')" }}></div>
+
+      <div className="relative z-10 text-center px-6 md:px-12">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">Welcome to Netflix</h1>
+        <p className="text-lg md:text-2xl mb-6">Enjoy unlimited movies and TV shows!</p>
+        <div className="cta-container">
+          <button
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition-transform hover:scale-105"
+            onClick={verifyPremium}
+          >
+            Get Started
+          </button>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Success
-
-
-
-
-// import React, { useEffect } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { useLocation, useNavigate } from 'react-router-dom';
-// import api from '../../axiosInstance/api';
-// import { setUserData } from '../../redux/slice';
-
-// const Success = () => {
-//   const location = useLocation();
-//   const queryParams = new URLSearchParams(location.search);
-//   const sessionId = queryParams.get('session_id');
-
-//   const email = useSelector((state) => state.user.email);
-//   const amount = useSelector((state) => state.user.premiumPrice);
-
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     if (sessionId) {
-//       const verifyPremium = async () => {
-//         try {
-//           const response = await api.post(`/verifypremium/${sessionId}`, {
-//             email,
-//             amount,
-//           });
-//           const user = response.data.user;
-//           dispatch(setUserData(user));
-//         } catch (error) {
-//           console.error('Error verifying premium:', error);
-//         }
-//       };
-//       verifyPremium();
-//     }
-//   }, [sessionId, email, amount, dispatch]);
-
-//   const handleNavigate = () => {
-//     navigate('/premium-home'); // Redirects to the premium home page
-//   };
-
-//   return (
-//     <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-b from-blue-500 to-purple-500 text-white">
-//       <div className="text-center p-8 bg-white text-gray-800 rounded shadow-lg">
-//         <h1 className="text-4xl font-bold mb-4">Welcome to Premium!</h1>
-//         <p className="text-lg mb-6">
-//           Thank you for subscribing. Enjoy exclusive features and a premium experience.
-//         </p>
-//         <button
-//           onClick={handleNavigate}
-//           className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-2 px-6 rounded-full shadow-md transition-transform transform hover:scale-105"
-//         >
-//           Go to Premium Home
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Success;
-
+export default WelcomePage;

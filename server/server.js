@@ -6,7 +6,9 @@
   const connectDB = require('./database/db'); 
   const auth=require("./routes/auth.routes")
   const movie=require("./routes/movies.routes")
+
   const errorHandler=require("./middlewares/customClassMiddleware")
+  
   dotenv.config();
   const cookieParser=require("cookie-parser")
 
@@ -17,14 +19,15 @@
     origin: "http://localhost:3000",
     credentials: true,                             
   }));
-  connectDB();
+
   app.use(cookieParser())
   app.use(express.json());
   app.use("/",auth)
   app.use("/",movie)
 
-  app.use(errorHandler)
 
+  app.use(errorHandler)
+  connectDB();
 
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

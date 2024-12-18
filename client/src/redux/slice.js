@@ -28,7 +28,8 @@ const userSlice = createSlice({
       console.log("slice",action.payload);
       
       const { email, role, username, image } = action.payload;
-      console.log("roorle",role);
+      console.log("roorleadsfdsf",role);
+      console.log("state.role",role);
       
       state.email = email || state.email;
       state.role = role || state.role;
@@ -36,7 +37,7 @@ const userSlice = createSlice({
       state.image = image || state.image;
     },
     logout: (state) => {
-      // Reset the state to initial values
+      
       state.email = '';
       state.isLoggedIn = false;
       state.premiumPrice = null;

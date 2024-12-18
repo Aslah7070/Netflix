@@ -2,6 +2,7 @@
 const User = require("../models/user.models")
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+const jwt=require("jsonwebtoken");
 const nodemailer = require('nodemailer');
 const crypto = require("crypto");
 const stripe = require('stripe')
@@ -68,30 +69,84 @@ const transporter = nodemailer.createTransport({
 };
 
 
-const verifyPremium=async(req,res)=>{
-  const {email,amount}=  req.body
-    const user=await User.findOne({email:email}) 
-    console.log("userrr",user);
+// const verifyPremium=async(req,res)=>{
+//   const {email,amount}=  req.body
+//     const user=await User.findOne({email:email}) 
+//     console.log("userrr",user);
+//     console.log(amount)
     
-const {sessionId}=req.params
-console.log("params",sessionId);
+// const {sessionId}=req.params
+// console.log("params",sessionId);
 
 
-console.log("userEmail",user);
-if (!sessionId) {
-    return res.status(404).json({ error: 'Session not found' });
-}
+// console.log("userEmail",user);
+// if (!sessionId) {
+//     return res.status(404).json({ error: 'Session not found' });
+// }
 
-console.log('Session Details:', sessionId);
-user.role = 'premium';
-        await user.save();
+// console.log('Session Details:', sessionId);
+// user.role = 'premium';
+//         await user.save();
 
 
-res.status(200).json({ success: true, sessionId ,user:user});
+
+// res.status(200).json({ success: true, sessionId ,user:user});
 
        
-}
+// }
 
+
+
+const verifyPremium = async (req, res) => {
+    const { email, amount } = req.body;
+    const { sessionId } = req.params;
+  
+    
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+  
+    
+    if (!sessionId) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+  
+    console.log('Session Details:', sessionId);
+  
+    
+    user.role = 'premium';
+    await user.save();
+  
+    const payload = {
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+      amount: amount,
+    };
+  
+    const secretKey = process.env.JWT_SECRET 
+  
+    const premiumToken = jwt.sign(payload, secretKey, { expiresIn: '30d' }); 
+
+    res.cookie('premiumToken', premiumToken, {
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: 'Strict', 
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+  
+    
+    res.status(200).json({
+      success: true,
+      sessionId,
+      user: {
+        email: user.email,
+        role: user.role,
+      },
+      premiumToken, 
+    });
+  };
 
 const createPaymentIntent = async (req, res) => {
         const { amount,userEmail } = req.body;

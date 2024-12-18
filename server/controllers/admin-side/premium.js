@@ -4,6 +4,7 @@
 
 // const Movie = require("../../models/video.models");
 // const upload = require('../../middlewares/videoUploading'); 
+const mongoose = require("mongoose");
 
 const Movie = require("../../models/video.models");
 const { uploadToCloudinary } = require("../../middlewares/videoUploading");
@@ -294,7 +295,7 @@ const streamVideo = async (req, res) => {
       responseType: "stream",
     });
 
-    // Pipe the video chunk to the response
+    
     videoStream.data.pipe(res);
   } catch (error) {
     console.error("Error streaming video:", error.message);
@@ -302,4 +303,50 @@ const streamVideo = async (req, res) => {
   }
 };
 
-module.exports = { videoUploading,fetchMovies,fetchMovieIdBased,streamVideo };
+
+const findthVideo = async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    // Validate movieId
+    if (!movieId) {
+      return res.status(400).json({
+        success: false,
+        message: "Movie ID is required",
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(movieId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Movie ID format",
+      });
+    }
+
+    // Fetch movie details
+    const movieDetails = await Movie.findOne({ _id: movieId });
+    if (!movieDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "Movie not found",
+      });
+    }
+
+    // Send response with video URL
+    const video = movieDetails.videoUrl;
+    return res.status(200).json({
+      success: true,
+      message: "Video found",
+      video,
+    });
+  } catch (error) {
+    console.error("Error fetching video:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching the video",
+    });
+  }
+};
+
+
+module.exports = { videoUploading,fetchMovies,fetchMovieIdBased,streamVideo,findthVideo };

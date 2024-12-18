@@ -8,12 +8,12 @@ import "slick-carousel/slick/slick-theme.css";
 import { useSelector } from "react-redux";
 import { FaPlay, FaPlus, FaThumbsUp, FaChevronDown } from "react-icons/fa";
 
-const IndianMovies = () => {
-  // Fetch movies (filtering Drama)
+const HindiMovies = () => {
+ 
   const movies = useSelector((state) => state.movies.movies) || [];
-  const dramaMovies = movies.filter((movie) => movie.genre.includes("Drama"));
 
-  // Slider settings
+  const Hindi = movies.filter((movie) => movie.language === "Hindi");
+  
   const settings = {
     dots: false,
     infinite: true,
@@ -52,7 +52,7 @@ const IndianMovies = () => {
 
       {/* Slider Component */}
       <Slider {...settings}>
-        {dramaMovies.map((movie) => (
+        {Hindi.map((movie) => (
           <div
             key={movie._id}
             className="p-2 "
@@ -111,4 +111,4 @@ const IndianMovies = () => {
   );
 };
 
-export default IndianMovies;
+export default HindiMovies;

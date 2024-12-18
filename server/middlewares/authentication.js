@@ -4,13 +4,13 @@ const { tryCatch } = require("../utils/tryCatch");
 
 const userAuthMiddleware=async(req,res,next)=>{
     try {
-        console.log("req",req);
+       
     
 const token=req.cookies.jwtnetflix
 console.log("token",token);
 
 if(!token){
-    res.status(404).json({success:false,message:"Authentication token missing"})
+   return res.status(404).json({success:false,message:"Authentication token missing"})
 }
 if(token){
     jwt.verify(token,process.env.JWT_SECRET,(error,user)=>{
@@ -19,7 +19,7 @@ if(token){
         }else{
             req.user=user
             console.log("user",user);
-            console.log("hellooooo rinuuu");
+            console.log("hellooooo rinuuu"); 
             
             next()
         }

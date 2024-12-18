@@ -6,6 +6,7 @@ const upload=require("../middlewares/videoUploading")
 const forgott=require("../controllers/forgottPassword")
 const {tryCatch}=require("../utils/tryCatch")
 const {userAuthMiddleware}=require("../middlewares/authentication")
+const {premiumAuthentication}=require("../middlewares/premiumAuthentication")
 
 router.post("/signup",tryCatch(auth.signup))
 router.post("/login",tryCatch(auth.login))
@@ -24,7 +25,7 @@ router.post("/forgorpassword",tryCatch(forgott.forgotpass))
 router.post("/verifyforgotpassword/:id/:token",tryCatch(forgott.verifyForgotPassword))
 
 
-router.post("/hey",userAuthMiddleware,tryCatch(auth.hello))
+router.post("/hey",userAuthMiddleware,premiumAuthentication,tryCatch(auth.hello))
 
 
 
