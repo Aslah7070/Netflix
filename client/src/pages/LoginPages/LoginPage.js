@@ -52,7 +52,7 @@
         const response = await api.post("/login", formData);
         console.log("loginnnn ", response.data);
         const user = response.data.uset;
-console.log("user",user);
+    console.log("user",user);
 
         dispatch(setUserData(user));
         dispatch(setLoginStatus(true));
@@ -81,7 +81,7 @@ console.log("user",user);
       setShowSignInCodeButton(true); 
       setShowEnterSignInCode(false); 
     };
-    const [isFocused, setIsFocused] = useState(false);
+    const [isFocused,setIsFocused] = useState(false);
     const [isFocusedPassword, setIsFocusedisFocusedPassword] = useState(false);
 
     return (
@@ -198,7 +198,7 @@ console.log("user",user);
               <div className="text-sm text-center mt-4">
                 <a href="#" className="text-blue-500 hover:underline" onClick={()=>navigate("/sendemail")} >Forgot password?</a>
               </div>
-
+    
               {/* Sign Up Option */}
               <div className="text-center mt-4 text-sm text-gray-600">
                 <p>
