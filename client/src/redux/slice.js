@@ -30,6 +30,7 @@ const userSlice = createSlice({
       const { email, role, username, image } = action.payload;
       console.log("roorleadsfdsf",role);
       console.log("state.role",role);
+      console.log("username",email);
       
       state.email = email || state.email;
       state.role = role || state.role;

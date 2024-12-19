@@ -86,6 +86,7 @@ if (!sessionId) {
 
 console.log('Session Details:', sessionId);
 user.role = 'premium';
+
         await user.save();
 
 

@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { useSelector } from "react-redux";
 import { FaPlay, FaPlus, FaThumbsUp, FaChevronDown } from "react-icons/fa";
 
-const IndianMovies = () => {
+const ActionMovies = () => {
   // Fetch movies (filtering Drama)
   const movies = useSelector((state) => state.movies.movies) || [];
   const dramaMovies = movies.filter((movie) => movie.genre.includes("Action"));
@@ -45,9 +45,9 @@ const IndianMovies = () => {
   const [hoveredMovie, setHoveredMovie] = useState(null);
 
   return (
-    <div className="relative mx-auto mt-10 w-full px-6  z-10">
+    <div className="relative mx-auto mt-10 w-full px-6  z--10">
       <h2 className="text-start text-2xl font-semibold text-white mb-4">
-        Indian action Moviesdkjfhadsh
+        Indian action Movies
       </h2>
 
       {/* Slider Component */}
@@ -111,4 +111,4 @@ const IndianMovies = () => {
   );
 };
 
-export default IndianMovies;
+export default ActionMovies;

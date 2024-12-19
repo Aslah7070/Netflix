@@ -29,18 +29,25 @@ import MovieUploadForm from './pages/admin-part/UploadMovies';
 import FetchMovies from './pages/premiumPages/FetchMovies';
 import VideoPlayer from './pages/premiumPages/TestingComponent';
 import MoviePlayer from './pages/premiumPages/MoviePlayer';
+import MoviesDetails from './pages/premiumPages/MoviesDetails';
+import ThamilMovies from './pages/premiumPages/categories/ThamilMovies';
+import HindiMovies from './pages/premiumPages/categories/HindiMovies';
+import ActionMovies from './pages/premiumPages/categories/ActionMovies';
+import FunMovies from './pages/premiumPages/categories/FunMovies';
 
 function App() {
   const location =useLocation()
 
   const role=useSelector((state)=>state.user.role)
+  const email=useSelector((state)=>state.user.email)
   const active=useSelector((state)=>state.user.isLoggedIn)
   console.log("appRole",role);
   console.log("activeeeee",active);
+  console.log("email",email);
 
 
 
-  const excludedPaths = ["/", "/:sessionId", "/loginotp", "/login", "/premiumhome","/sendemail","/success/"];
+  const excludedPaths = ["/", "/:sessionId", "/loginotp", "/login", "/premiumhome","/sendemail","/success/" ,"details/:movieId"];
   return (
     <>
 
@@ -48,14 +55,32 @@ function App() {
      
 
    {((role==="premium")&&active)?(
+    // <Routes>
+    // <Route path='/' element={<HomePagePremium/>}/>
+    // <Route path='/indianmovies' element={<IndianMovies/>}>
+    // <Route path="details/:movieId" element={<MoviesDetails/>} />
+    // <Route path="watch/:movieId" element={<MoviePlayer />} />
+    
+    // </Route>
+    // <Route path='/fetchmovies' element={<FetchMovies/>}/>
+    // <Route path='/uploadmovies' element={ <MovieUploadForm/>}/>
+    // <Route path='/testtt' element={ <VideoPlayer/>}/>
+    // <Route path='/movieplayer/:movieId' element={ <MoviePlayer/>}/>
+    //     </Routes>
+
     <Routes>
-    <Route path='/' element={<HomePagePremium/>}/>
-    <Route path='/indianmovies' element={<IndianMovies/>}/>
-    <Route path='/fetchmovies' element={<FetchMovies/>}/>
-    <Route path='/uploadmovies' element={ <MovieUploadForm/>}/>
-    <Route path='/testtt' element={ <VideoPlayer/>}/>
-    <Route path='/movieplayer' element={ <MoviePlayer/>}/>
-        </Routes>
+    <Route path="/" element={<HomePagePremium />}>
+      {/* Nested Routes for Categories */}
+    
+      {/* Nested route for movie details */}
+      <Route path=":movieId" element={<MoviesDetails/>} />
+    
+      <Route path="funmovies" element={<FunMovies />} />
+      <Route path="actionmovies" element={<ActionMovies />} />
+      <Route path="hindimovies" element={<HindiMovies />} />
+      <Route path="thamilmovies" element={<ThamilMovies />} />
+    </Route>
+  </Routes>
    ):(
  
 

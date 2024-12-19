@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import api from "../../axiosInstance/api";
 
 const MoviePlayer = () => {
   const { movieId } = useParams(); // Get movieId from route params
@@ -11,14 +12,10 @@ const MoviePlayer = () => {
     const fetchMovie = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/movies/${movieId}`); // Fetch movie by ID
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          setVideoUrl(data.video);
-        } else {
-          setError(data.message || "Failed to fetch video");
-        }
+        const response = await api.post(`/findvideo/${movieId}`); // Fetch movie by ID
+        
+        console.log("response",response)
+        setVideoUrl(response.data.video)
       } catch (err) {
         setError("An error occurred while fetching the video");
       } finally {

@@ -251,7 +251,7 @@ const streamVideo = async (req, res) => {
 
     const { id } = req.params;
 
-    // Fetch movie data from database
+   
     const movie = await Movie.findById(id);
     if (!movie) {
       return res.status(404).json({ message: "Movie not found" });
@@ -259,21 +259,21 @@ const streamVideo = async (req, res) => {
 
     const videoUrl = movie.videoUrl;
 
-    // Fetch the video file's size
+
     const response = await axios.head(videoUrl);
-    const videoSize = Number(response.headers["content-length"]); // Convert to Number
+    const videoSize = Number(response.headers["content-length"]); 
     console.log("Video size:", videoSize);
 
-    // Get the Range header
+    
     const range = req.headers.range;
     if (!range) {
       return res.status(400).send("Range header is required for video streaming.");
     }
 
-    // Parse Range header
-    const CHUNK_SIZE = 10 ** 6; // 1MB chunk size
-    const start = Number(range.replace(/\D/g, "")); // Remove non-digits
-    const end = Math.min(start + CHUNK_SIZE - 1, videoSize - 1); // Ensure it doesn't exceed video size
+  
+    const CHUNK_SIZE = 10 ** 6; 
+    const start = Number(range.replace(/\D/g, "")); 
+    const end = Math.min(start + CHUNK_SIZE - 1, videoSize - 1);
 
     const contentLength = end - start + 1;
 
@@ -307,9 +307,9 @@ const streamVideo = async (req, res) => {
 const findthVideo = async (req, res) => {
   try {
     const { movieId } = req.params;
-
+console.log("movieId",movieId)
     // Validate movieId
-    if (!movieId) {
+    if (!movieId) { 
       return res.status(400).json({
         success: false,
         message: "Movie ID is required",

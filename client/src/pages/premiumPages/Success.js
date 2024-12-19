@@ -49,7 +49,7 @@ const WelcomePage = () => {
 
 
   useEffect(() => {
-    // Add any initial logic here if necessary
+    
   }, []);
 
   return (

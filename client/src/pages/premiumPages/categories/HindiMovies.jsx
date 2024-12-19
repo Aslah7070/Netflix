@@ -1,19 +1,15 @@
-
-
-
-import React, { useState } from "react";
+import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useSelector } from "react-redux";
 import { FaPlay, FaPlus, FaThumbsUp, FaChevronDown } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const HindiMovies = () => {
- 
   const movies = useSelector((state) => state.movies.movies) || [];
-
   const Hindi = movies.filter((movie) => movie.language === "Hindi");
-  
+const navigate=useNavigate()
   const settings = {
     dots: false,
     infinite: true,
@@ -42,44 +38,26 @@ const HindiMovies = () => {
     ],
   };
 
-  const [hoveredMovie, setHoveredMovie] = useState(null);
-
   return (
-    <div className="relative mx-auto mt-10 w-full px-6  z-10">
+    <div className="relative mx-auto mt-10 w-full px-6 z--10">
       <h2 className="text-start text-2xl font-semibold text-white mb-4">
-        Indian Drama Movies
+        Hindi Movies
       </h2>
 
       {/* Slider Component */}
       <Slider {...settings}>
         {Hindi.map((movie) => (
-          <div
-            key={movie._id}
-            className="p-2 "
-            onMouseEnter={() => setHoveredMovie(movie._id)}
-            onMouseLeave={() => setHoveredMovie(null)}
-          >
-            <div
-              className="rounded-lg h-32 overflow-hidden  relative cursor-pointer transition-transform transform ease-in-out"
+          <div key={movie._id} className="p-2">
+            <div className="rounded-lg h-32 overflow-hidden relative cursor-pointer transition-transform transform ease-in-out"
+            onClick={()=> navigate(`/movieplayer/${movie._id}`)}
             >
-            
-              {hoveredMovie === movie._id ? (
-                <video
-                  src={movie.videoUrl} 
-                  autoPlay
-                  muted
-                  loop
-                  className="w-full h-40 object-cover rounded-lg"
-                  loading="lazy"
-                />
-              ) : (
-                <img
-                  src={movie.thumbnailUrl}
-                  alt={movie.title || "Movie Thumbnail"}
-                  className="w-full h-40 object-cover rounded-lg"
-                  loading="lazy"
-                />
-              )}
+              {/* Always display the movie thumbnail */}
+              <img
+                src={movie.thumbnailUrl}
+                alt={movie.title || "Movie Thumbnail"}
+                className="w-full h-40 object-cover rounded-lg"
+                loading="lazy"
+              />
 
               <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4 opacity-0 hover:opacity-100 transition-opacity duration-300">
                 <h3 className="text-white text-lg font-semibold">

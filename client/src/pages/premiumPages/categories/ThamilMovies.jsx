@@ -130,7 +130,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { useSelector } from "react-redux";
 import { FaPlay, FaPlus, FaThumbsUp, FaChevronDown } from "react-icons/fa";
 
-const HindiMovies = () => {
+const ThamilMovies = () => {
   // Fetch movies (filtering Tamil)
   const movies = useSelector((state) => state.movies.movies) || [];
   const Hindi = movies.filter((movie) => movie.language === "Tamil");
@@ -167,7 +167,7 @@ const HindiMovies = () => {
   const [hoveredMovie, setHoveredMovie] = useState(null);
 
   return (
-    <div className="relative mx-auto mt-10 w-full px-6 z-10">
+    <div className="relative mx-auto mt-10 w-full px-6 z--10">
       <h2 className="text-start text-2xl font-semibold text-white mb-4">
         Indian Tamil Movies
       </h2>
@@ -232,5 +232,5 @@ const HindiMovies = () => {
   );
 };
 
-export default HindiMovies;
+export default ThamilMovies;
 

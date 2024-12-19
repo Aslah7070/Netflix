@@ -8,7 +8,6 @@
   import { setLoginStatus, setUserData } from '../../redux/slice';
   import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-
   const LoginPage = () => {
     const emailFromRedux = useSelector((state) => state.user.email);
     const all = useSelector((state) => state.user);
@@ -52,10 +51,13 @@
         const response = await api.post("/login", formData);
         console.log("loginnnn ", response.data);
         const user = response.data.uset;
-    console.log("user",user);
+console.log("userssssssss",user);
 
         dispatch(setUserData(user));
         dispatch(setLoginStatus(true));
+        
+       
+        
 
         navigate("/");
       } catch (error) {
@@ -81,7 +83,7 @@
       setShowSignInCodeButton(true); 
       setShowEnterSignInCode(false); 
     };
-    const [isFocused,setIsFocused] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
     const [isFocusedPassword, setIsFocusedisFocusedPassword] = useState(false);
 
     return (
@@ -198,7 +200,7 @@
               <div className="text-sm text-center mt-4">
                 <a href="#" className="text-blue-500 hover:underline" onClick={()=>navigate("/sendemail")} >Forgot password?</a>
               </div>
-    
+
               {/* Sign Up Option */}
               <div className="text-center mt-4 text-sm text-gray-600">
                 <p>
