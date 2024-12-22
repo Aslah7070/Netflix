@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useSelector } from "react-redux";
 import { FaPlay, FaPlus, FaThumbsUp, FaChevronDown } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const HindiMovies = () => {
   const movies = useSelector((state) => state.movies.movies) || [];
   const Hindi = movies.filter((movie) => movie.language === "Hindi");
+  
+    const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+    const [selectedMovie, setSelectedMovie] = useState(null);
+     const [hoveredMovie, setHoveredMovie] = useState(null);
 const navigate=useNavigate()
   const settings = {
     dots: false,
@@ -38,6 +42,26 @@ const navigate=useNavigate()
     ],
   };
 
+  const handleMovieDetails = (movie) => {
+    console.log("handle movie");
+    
+    setSelectedMovie(movie);
+    setIsOverlayVisible(true);
+    navigate(movie._id)
+  };
+
+  const playVideo=(movieID)=>{
+    console.log("work");
+    
+    navigate(`/movieplayer/${movieID}`)
+  }
+  const handleclose=()=>{
+    setIsOverlayVisible(false)
+    setSelectedMovie(null);
+    console.log("dsafd");
+    
+    navigate("/")
+  }
   return (
     <div className="relative mx-auto mt-10 w-full px-6 z--10">
       <h2 className="text-start text-2xl font-semibold text-white mb-4">
@@ -49,7 +73,9 @@ const navigate=useNavigate()
         {Hindi.map((movie) => (
           <div key={movie._id} className="p-2">
             <div className="rounded-lg h-32 overflow-hidden relative cursor-pointer transition-transform transform ease-in-out"
-            onClick={()=> navigate(`/movieplayer/${movie._id}`)}
+            onClick={()=>playVideo(movie._id)}
+            onMouseEnter={() => setHoveredMovie(movie._id)}
+            onMouseLeave={() => setHoveredMovie(null)}
             >
               {/* Always display the movie thumbnail */}
               <img
@@ -59,32 +85,73 @@ const navigate=useNavigate()
                 loading="lazy"
               />
 
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4 opacity-0 hover:opacity-100 transition-opacity duration-300">
-                <h3 className="text-white text-lg font-semibold">
-                  {movie.title || "Untitled"}
-                </h3>
-                <p className="text-gray-400 text-sm">
-                  {movie.duration || "N/A"} • {movie.genre.join(", ")}
-                </p>
-                <div className="flex gap-2 mt-2">
-                  <button className="bg-white text-black p-2 rounded-full">
-                    <FaPlay />
-                  </button>
-                  <button className="bg-gray-600 text-white p-2 rounded-full">
-                    <FaPlus />
-                  </button>
-                  <button className="bg-gray-600 text-white p-2 rounded-full">
-                    <FaThumbsUp />
-                  </button>
-                  <button className="bg-gray-600 text-white p-2 rounded-full">
-                    <FaChevronDown />
-                  </button>
-                </div>
-              </div>
+                {hoveredMovie === movie._id && (
+                              <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4 transition-opacity duration-300">
+                                <h3 className="text-white text-lg font-semibold">
+                                  {movie.title || "Untitled"}
+                                </h3>
+                                <p className="text-gray-400 text-sm">
+                                  {movie.duration || "N/A"} • {movie.genre.join(", ")}
+                                </p>
+                                <div className="flex gap-2 mt-2">
+                                  <button className="bg-white text-black p-2 rounded-full">
+                                    <FaPlay />
+                                  </button>
+                                  <button className="bg-gray-600 text-white p-2 rounded-full">
+                                    <FaPlus />
+                                  </button>
+                                  <button className="bg-gray-600 text-white p-2 rounded-full">
+                                    <FaThumbsUp />
+                                  </button>
+                                  <button
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setIsOverlayVisible(true);
+                                      handleMovieDetails(movie);
+                                    }}
+                                    className="bg-gray-600 text-white p-2 rounded-full"
+                                  >
+                                    <FaChevronDown />
+                                  </button>
+                                </div>
+                              </div>
+                            )}
             </div>
           </div>
         ))}
       </Slider>
+
+      {isOverlayVisible && selectedMovie && (
+  <div
+    className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
+    style={{
+      height: "100vh",
+      overflow: "hidden",
+    }}
+  >
+    <div
+      className="relative bg-gray-900 text-white rounded-lg shadow-lg max-w-3xl w-full"
+      style={{
+        maxHeight: "90vh",
+        overflowY: "auto",
+        scrollbarWidth: "none", // For Firefox
+        msOverflowStyle: "none", // For IE and Edge
+      }}
+    >
+    
+        <button
+        className="absolute top-2 right-2 bg-black text-white text-lg rounded-full px-2  focus:outline-none z-50"
+        onClick={handleclose}
+        aria-label="Close Overlay"
+      >
+        ✕
+      </button>
+
+      {/* Outlet for Nested Routes */}
+      <Outlet/>
+    </div>
+  </div>
+)}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { Route, Routes, useLocation, useParams ,matchPath} from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPages/LoginPage';
 import SignUpPage from './pages/registration/SignUpPage';
@@ -35,6 +35,12 @@ import HindiMovies from './pages/premiumPages/categories/HindiMovies';
 import ActionMovies from './pages/premiumPages/categories/ActionMovies';
 import FunMovies from './pages/premiumPages/categories/FunMovies';
 
+
+import UploadEpisods from './pages/admin-part/UploadEpisods';
+import UploadEpisodesForm from './pages/admin-part/UploadEpisods';
+import UploadTVShowForm from './pages/admin-part/UploadTvShows';
+import SearchResults from './pages/premiumPages/categories/SearchResults';
+
 function App() {
   const location =useLocation()
 
@@ -47,12 +53,32 @@ function App() {
 
 
 
-  const excludedPaths = ["/", "/:sessionId", "/loginotp", "/login", "/premiumhome","/sendemail","/success/" ,"details/:movieId"];
+  // const excludedPaths = ["/", "/:sessionId", "/loginotp", "/login", "/premiumhome","/sendemail","/success/" ,"details/:movieId",":movieId","/movieplayer/movieId"];
+  
+
+
+  const excludedPaths = [
+    "/",
+    "/:sessionId",
+    "/loginotp",
+    "/login",
+    "/premiumhome",
+    "/sendemail",
+    "/success/",
+    "/details/:movieId",
+    ":movieId",
+    "/movieplayer/:movieId",
+  ];
+  console.log("Current Pathname:", location.pathname);
+  const shouldDisplayNavBar = excludedPaths.every((path) => {
+    const match = matchPath({ path, end: false }, location.pathname);
+    return !match; // Exclude matching paths from showing NavBar
+  });
   return (
     <>
 
-      {!excludedPaths.includes(location.pathname) && <NavBar />}
-     
+      {/* {!excludedPaths.includes(location.pathname) && <NavBar />} */}
+      {shouldDisplayNavBar && <NavBar />}
 
    {((role==="premium")&&active)?(
     // <Routes>
@@ -74,16 +100,21 @@ function App() {
     
       {/* Nested route for movie details */}
       <Route path=":movieId" element={<MoviesDetails/>} />
-    
+      
       <Route path="funmovies" element={<FunMovies />} />
       <Route path="actionmovies" element={<ActionMovies />} />
       <Route path="hindimovies" element={<HindiMovies />} />
       <Route path="thamilmovies" element={<ThamilMovies />} />
     </Route>
+    <Route path='/movieplayer/:movieId' element={ <MoviePlayer/>}/>
+    <Route path='/uploadmovies' element={ <MovieUploadForm/>}/>
+    <Route path='/uploadtvshows' element={ <UploadTVShowForm/>}/>
+    <Route path='/uploadepisods' element={ <UploadEpisodesForm/>}/>
+    <Route path='/search' element={ <SearchResults/>}/>
   </Routes>
    ):(
  
-
+ 
 <Routes>
  <Route path='/' element={<HomePage/>}/>
  

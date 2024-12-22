@@ -21,9 +21,11 @@
                 console.log("user",user);
                 console.log("premium token is available");
                 
+                //  res.status(200).json({success:true,message:"yes"})
                 next()
+             
             }
-        })
+        }) 
     }
         } catch (error) {
             console.log("err",error);

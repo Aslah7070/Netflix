@@ -69,85 +69,88 @@ const transporter = nodemailer.createTransport({
 };
 
 
-const verifyPremium=async(req,res)=>{
-  const {email,amount}=  req.body
-    const user=await User.findOne({email:email}) 
-    console.log("userrr",user);
-    console.log(amount)
+// const verifyPremium=async(req,res)=>{
+//   const {email,amount}=  req.body
+//     const user=await User.findOne({email:email}) 
+//     console.log("userrr",user);
+//     console.log(amount)
     
-const {sessionId}=req.params
-console.log("params",sessionId);
+// const {sessionId}=req.params
+// console.log("params",sessionId);
 
 
-console.log("userEmail",user);
-if (!sessionId) {
-    return res.status(404).json({ error: 'Session not found' });
-}
+// console.log("userEmail",user);
+// if (!sessionId) {
+//     return res.status(404).json({ error: 'Session not found' });
+// }
 
-console.log('Session Details:', sessionId);
-user.role = 'premium';
+// console.log('Session Details:', sessionId);
+// user.role = 'premium';
 
-        await user.save();
+//         await user.save();
 
 
 
-res.status(200).json({ success: true, sessionId ,user:user});
+// res.status(200).json({ success: true, sessionId ,user:user});
 
        
-}
+// }
 
 
 
-// const verifyPremium = async (req, res) => {
-//     const { email, amount } = req.body;
-//     const { sessionId } = req.params;
+const verifyPremium = async (req, res) => {
+    const { email, amount } = req.body;
+    const { sessionId } = req.params;
   
     
-//     const user = await User.findOne({ email: email });
-//     if (!user) {
-//       return res.status(404).json({ error: 'User not found' });
-//     }
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
   
     
-//     if (!sessionId) {
-//       return res.status(404).json({ error: 'Session not found' });
-//     }
+    if (!sessionId) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
   
-//     console.log('Session Details:', sessionId);
+    console.log('Session Details:', sessionId);
   
     
-//     user.role = 'premium';
-//     await user.save();
+    user.role = 'premium';
+    user.premiumStartDate = new Date(); 
+    await user.save();
   
-//     const payload = {
-//       userId: user._id,
-//       email: user.email,
-//       role: user.role,
-//       amount: amount,
-//     };
+    const payload = {
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+      amount: amount,
+      
+    };
   
-//     const secretKey = process.env.JWT_SECRET 
+    const secretKey = process.env.JWT_SECRET 
   
-//     const premiumToken = jwt.sign(payload, secretKey, { expiresIn: '30d' }); 
+    const premiumToken = jwt.sign(payload, secretKey, { expiresIn: '30d' }); 
 
-//     res.cookie('premiumToken', premiumToken, {
-//         httpOnly: true, 
-//         secure: process.env.NODE_ENV === 'production', 
-//         sameSite: 'Strict', 
-//         maxAge: 30 * 24 * 60 * 60 * 1000,
-//       });
+    res.cookie('premiumToken', premiumToken, {
+        httpOnly: false, 
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: 'Strict', 
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+      
   
     
-//     res.status(200).json({
-//       success: true,
-//       sessionId,
-//       user: {
-//         email: user.email,
-//         role: user.role,
-//       },
-//       premiumToken, 
-//     });
-//   };
+    res.status(200).json({
+      success: true,
+      sessionId,
+      user: {
+        email: user.email,
+        role: user.role,
+      },
+      premiumToken, 
+    });
+  };
 
 const createPaymentIntent = async (req, res) => {
         const { amount,userEmail } = req.body;
@@ -171,7 +174,7 @@ const createPaymentIntent = async (req, res) => {
                         product_data: { name: 'Sample Product' },
                         unit_amount: amountInINR,
                     },
-                    quantity: 1,
+                    quantity: 1, 
                 },
             ],
 
@@ -330,6 +333,52 @@ const login = async (req, res,next) => {
 
         generateTokenAndCookies(user._id, res)
 
+        console.log("user.premiumStartDate!==null",user.premiumStartDate!==null);
+        
+
+        if (user.role === "premium" && user.premiumStartDate !== null) {
+                    const currentDate = new Date();
+                    const premiumStartDate = new Date(user.premiumStartDate);
+                    
+                    
+                    const differenceInTime = currentDate - premiumStartDate;
+                    const differenceInDays = Math.floor(differenceInTime / (1000 * 60 * 60 * 24));
+            
+                  
+                    const premiumValidityDays = 30;
+                    const remainingValidityDays = premiumValidityDays - differenceInDays;
+                    console.log("remainingValidityDays",remainingValidityDays);
+                    
+            
+                    if (remainingValidityDays > 0) {
+                        const payload = {
+                            userId: user._id,
+                            email: user.email,
+                            role: user.role,
+                            remainingValidityDays,
+                        };
+            
+                        const secretKey = process.env.JWT_SECRET;
+            
+                        const premiumToken = jwt.sign(payload, secretKey, {
+                            expiresIn: `${remainingValidityDays}d`,
+                        });
+            
+                        res.cookie('premiumToken', premiumToken, {
+                            httpOnly: false,
+                            secure: process.env.NODE_ENV === 'production',
+                            sameSite: 'lax',
+                            path: '/', // Make sure the cookie is accessible across the site
+                            maxAge: remainingValidityDays * 24 * 60 * 60 * 1000,
+                          });
+                    } else {
+                        return res.status(403).json({
+                            success: false,
+                            message: "Your premium membership has expired. Please renew to continue enjoying premium benefits.",
+                        });
+                    }
+                }
+
         res.status(201).json({
             success: true, message: "Sign-up successful!", uset: {
                 ...user._doc,
@@ -337,6 +386,7 @@ const login = async (req, res,next) => {
             }
         });
 }
+
 
 
 
@@ -384,6 +434,11 @@ const logOut = async (req, res) => {
             secure: true,
             sameSite: "none"
         })
+        res.clearCookie("premiumToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        })
         res.clearCookie('user', {
             httpOnly: true,
             secure: true,
@@ -399,7 +454,7 @@ const checkingEmail = async (req, res) => {
         if (!email) {
             return res.status(400).json({ success: false, message: "Email is required" });
         }
-
+ 
 
         console.log("email", email);
 

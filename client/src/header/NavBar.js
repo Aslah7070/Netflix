@@ -32,7 +32,7 @@ const location=useLocation()
   
         if (user.email) {
           
-          // dispatch(setLoginStatus(user.isLoggedIn)); 
+          
         }
       } catch (error) {
         console.error("Error parsing cookie JSON:", error.message);

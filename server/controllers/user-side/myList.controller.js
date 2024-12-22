@@ -17,7 +17,7 @@ const addToProfileMyList = async (req, res) => {
     if (!profile) {
       return res.status(404).json({ message: 'Profile not found' });
     }
-
+ 
     
     const movie = await Movie.findById(movieId);
     if (!movie) {

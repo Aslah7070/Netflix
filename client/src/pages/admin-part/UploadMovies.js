@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+
 import api from '../../axiosInstance/api';
 
 const MovieUploadForm = () => {
@@ -29,6 +29,8 @@ const MovieUploadForm = () => {
     if (name === 'videoFile') setVideoFile(files[0]);
     if (name === 'imageFile') setImageFile(files[0]);
   };
+
+  console.log("files",videoFile )
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -66,6 +66,7 @@ const userSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
+  premiumStartDate: { type: Date, default: null },
   profiles: [
     {
       name: {
