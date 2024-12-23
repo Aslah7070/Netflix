@@ -13,6 +13,8 @@ const MovieDetails = () => {
   const [isMuted, setIsMuted] = useState(true); // State to manage mute status
   const videoRef = useRef(null);
   const [movie, setMovie] = useState(null);
+  console.log("movie",movie);
+  
 console.log("murte",isMuted)
   useEffect(() => {
     const display = async () => {

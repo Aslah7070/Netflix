@@ -11,6 +11,7 @@ import { Modal, Button } from "react-bootstrap";
 import netflixLogo from "../assets/netflix-logo.png";
 import api from "../axiosInstance/api";
 import { searchQuery, searchVisible } from "../redux/movieSlice";
+import profileImage from "../../src/assets/Profile1.jpg"
 
 const PrimeNavBar = () => {
   const dispatch = useDispatch();
@@ -21,9 +22,8 @@ console.log("query",query);
   const email = useSelector((state) => state.user.email);
   const [menuVisible, setMenuVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
-//    const [searchVisible, setSearchVisible] = useState(false);
   const [show, setShow] = useState(false);
-//   const [searchQuery, setSearchQuery] = useState([]);
+
 const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
   const primeToken = Cookies.get("premiumToken");
   console.log("token", primeToken);
@@ -83,7 +83,7 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
   }, []);
 
   return (
-    <div className="relative w-full bg-gray-950 h-auto overflow-hidden">
+    <div className="relative w-full bg-gray-950 h-auto ">
       {show && (
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Body className="text-center bg-dark text-white p-4">
@@ -101,10 +101,9 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
           </Modal.Body>
         </Modal>
       )}
-      {/* Navbar code */}
       <div className="relative z-10 flex md845:flex-row justify-between px-5 py-3 text-white items-center bg-black">
         <div className="flex flex-wrap md845:flex-row space-x-2 md845:space-x-5 items-center">
-          <img className="w-16 md845:w-20" src={netflixLogo} alt="Netflix Logo" />
+          <img className="w-16 md845:w-20 lg:w-32" src={netflixLogo} alt="Netflix Logo" />
           <button
             className="md845:hidden text-white focus:outline-none border border-white px-2 py-1 rounded"
             onClick={toggleMenu}
@@ -118,24 +117,23 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
                 : "hidden"
             }`}
           >
-            <p className="lg:text-sm md845:text-xs">Home</p>
-            <p className="lg:text-sm md845:text-xs">TV Shows</p>
-            <p className="lg:text-sm md845:text-xs">Movies</p>
-            <p className="lg:text-sm md845:text-xs">New & Popular</p>
-            <p className="lg:text-sm md845:text-xs">My List</p>
-            <p className="lg:text-sm md845:text-xs">Browse by Language</p>
+            <p className="lg:text-lg md845:text-xs">Home</p>
+            <p className="lg:text-lg md845:text-xs">TV Shows</p>
+            <p className="lg:text-lg md845:text-xs">Movies</p>
+            <p className="lg:text-lg md845:text-xs">New & Popular</p>
+            <p className="lg:text-lg md845:text-xs">My List</p>
+            <p className="lg:text-lg md845:text-xs">Browse by Language</p>
           </nav>
         </div>
 
-        <div className="flex space-x-5 items-center mt-3 md845:mt-0 relative">
+        <div className="flex  space-x-5 items-start justify-center mt-3 md845:mt-0 relative">
           {!isSearchVisible && (
             <IoSearch
               className="hidden md845:block w-5 h-5 md845:w-6 md845:h-6 cursor-pointer"
               onClick={toggleSearch}
             />
           )}
-
-          <div
+        <div
             className={`absolute top-0 right-52 w-full max-w-md bg-gray-800 text-white rounded-md shadow-lg transition-all duration-500 ease-in-out ${
                 isSearchVisible
                 ? "opacity-100 transform translate-x-0"
@@ -160,17 +158,17 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
             )}
           </div>
 
-          <p className="hidden md845:block md845:text-xs">Children</p>
+          <p className="hidden md845:block md845:text-xs lg:text-lg">Children</p>
           <FaBell className="w-5 h-5 md845:w-6 md845:h-6" />
-          <div className="relative">
+          <div className="relative z-10">
             <img
               className="w-8 h-8 md845:w-10 md845:h-10 cursor-pointer"
-              src="https://via.placeholder.com/150"
+              src={profileImage}
               alt="Profile"
               onClick={toggleDropdown}
             />
             {dropdownVisible && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 text-white rounded-md shadow-lg py-2">
+              <div className="absolute right-0 mt-2 w-48 bg-gray-800 text-white rounded-md shadow-lg py-2  z-50">
                 <p className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Children</p>
                 <hr className="border-gray-700" />
                 <p className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Manage Profiles</p>

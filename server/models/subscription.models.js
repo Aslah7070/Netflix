@@ -10,4 +10,4 @@ const subscriptionSchema = new mongoose.Schema({
   endDate: { type: Date },
 }, { timestamps: true });
 
-module.exports = mongoose.model("Subscription", subscriptionSchema);
+module.exports = mongoose.model("Subscription", subscriptionSchema); 
