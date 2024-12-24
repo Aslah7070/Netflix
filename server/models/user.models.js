@@ -63,7 +63,7 @@ const userSchema = new mongoose.Schema({
     default: "",
   },
   searchHistory: {
-    type: Array,
+    type: Array,    
     default: [],
   },
   premiumStartDate: { type: Date, default: null },

@@ -12,10 +12,15 @@ import netflixLogo from "../assets/netflix-logo.png";
 import api from "../axiosInstance/api";
 import { searchQuery, searchVisible } from "../redux/movieSlice";
 import profileImage from "../../src/assets/Profile1.jpg"
+import children from "../../src/assets/children.avif"
+import profile2 from "../../src/assets/Profile2.jpg"
+import { MdOutlineEdit } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+import { IoMdHelpCircleOutline } from "react-icons/io";
 
 const PrimeNavBar = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 const query=useSelector((state)=>state.movies.search)
 console.log("query",query);
 
@@ -162,22 +167,38 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
           <FaBell className="w-5 h-5 md845:w-6 md845:h-6" />
           <div className="relative z-10">
             <img
-              className="w-8 h-8 md845:w-10 md845:h-10 cursor-pointer"
+              className="w-8  h-8  cursor-pointer"
               src={profileImage}
               alt="Profile"
-              onClick={toggleDropdown}
+              onClick={toggleDropdown}       
             />
             {dropdownVisible && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 text-white rounded-md shadow-lg py-2  z-50">
-                <p className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Children</p>
+              <div className="absolute right-0 mt-2 w-72 bg-black text-white rounded-md shadow-lg p-3 pt-5 py-2  z-50">
+                 <div className="flex">
+                <img className="w-10  h-10" src={profile2} alt="Profile" />  <p className="px-4 py-2 hover:underline cursor-pointer">aslah.c</p>
+                </div>
+                <div className="flex">
+                <img className="w-10  h-10" src={children} alt="" />  <p className="px-4 py-2 hover:underline cursor-pointer">Children</p>
+                </div>   
                 <hr className="border-gray-700" />
-                <p className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Manage Profiles</p>
-                <p className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Transfer Profile</p>
-                <p className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Account</p>
-                <p className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Help Centre</p>
+                <div className="flex items-center  ">
+               <span className="text-lg text-white">
+                 <MdOutlineEdit className="text-2xl" />
+               </span>
+               <p className="hover:underline cursor-pointer px-4 rounded">Manage Profiles</p>
+             </div>
+
+                <div className="flex">
+                  <span>< CgProfile className="text-2xl" /></span>
+                <p className="px-4  hover:underline cursor-pointer">Account</p>
+                </div>
+                <div className="flex">
+                  <span><IoMdHelpCircleOutline className="text-2xl"/></span>
+                <p className="px-4  hover:underline cursor-pointer">Help Centre</p>
+                </div>
                 <hr className="border-gray-700" />
                 <p
-                  className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
+                  className="px-4 py-2 hover:underline cursor-pointer" 
                   onClick={handleLogOut}
                 >
                   Sign out of Netflix

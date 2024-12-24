@@ -30,7 +30,7 @@ const movieSearch=async(req,res)=>{
 
     const movies = await Movie.find({
       $or: [
-        { title: { $regex: q, $options: 'i' } }, // Case-insensitive search
+        { title: { $regex: q, $options: 'i' } }, 
         { description: { $regex: q, $options: 'i' } },
         { director: { $regex: q, $options: 'i' } },
         { genre: { $regex: q, $options: 'i' } },
