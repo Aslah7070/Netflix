@@ -10,7 +10,8 @@ import FunMovies from './categories/FunMovies';
 import ActionMovies from './categories/ActionMovies';
 import HindiMovies from './categories/HindiMovies';
 import ThamilMovies from './categories/ThamilMovies';
-
+import { VscMute } from "react-icons/vsc";
+import { GoUnmute } from "react-icons/go";
 import { PiWarningCircle } from "react-icons/pi";
 import { FaPlay } from "react-icons/fa";
 
@@ -36,6 +37,9 @@ const HomePagePremium = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); 
+  console.log("isMuted",isMuted);
+  
 
 const navigate=useNavigate()
   const toggleMenu = () => {
@@ -97,6 +101,10 @@ console.log("show",show);
   }, [dispatch]);
 
 
+  const toggleMute = () => {
+    setIsMuted(prevMuted => !prevMuted);
+  };
+
   return (
     <div className="relative w-full bg-gray-950 h-full overflow-hidden pb-16 ">
      
@@ -123,7 +131,7 @@ console.log("show",show);
           src={backgroundVideo}
           autoPlay
           loop
-          muted
+          muted={isMuted}
         ></video>
       )}
       <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50"></div>
@@ -146,8 +154,17 @@ console.log("show",show);
       </button>
     </div>
   </div>
-  <div className="text-xl  text-gray-300">
-  <span className='border border-1 px-5 py-2'>{rating}</span>
+  <div className="text-xl flex flex-col  text-gray-300">
+  <span className='border border-1 px-5 py-2 mb-10'>{rating}</span>
+  {
+    isMuted?(
+      <span className=' text-4xl px-5 py-2' onClick={toggleMute} ><VscMute/></span>
+
+    ):(
+      <span className=' text-4xl px-5 py-2' onClick={toggleMute} ><GoUnmute/></span>
+    )
+  }
+  
   </div>
 </div>
 

@@ -10,7 +10,7 @@ import { GoUnmute } from "react-icons/go";
 const MovieDetails = () => {
   const { movieId } = useParams();
   const [isHovered, setIsHovered] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // State to manage mute status
+  const [isMuted, setIsMuted] = useState(true); 
   const videoRef = useRef(null);
   const [movie, setMovie] = useState(null);
   console.log("movie",movie);

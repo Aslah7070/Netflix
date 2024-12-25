@@ -28,6 +28,7 @@ import UploadEpisodesForm from './pages/admin-part/UploadEpisods';
 import UploadTVShowForm from './pages/admin-part/UploadTvShows';
 import MovieUploadForm from './pages/admin-part/UploadMovies';
 import SearchResults from './pages/premiumPages/categories/SearchResults';
+import UploadEpisodeForm from './pages/admin-part/UploadEpisods';
 
 function AppRoutes({ role, active }) {
     return (
@@ -54,7 +55,7 @@ function AppRoutes({ role, active }) {
         <Route path='/movieplayer/:movieId' element={ <MoviePlayer/>}/>
         <Route path='/uploadmovies' element={ <MovieUploadForm/>}/>
         <Route path='/uploadtvshows' element={ <UploadTVShowForm/>}/>
-        <Route path='/uploadepisods' element={ <UploadEpisodesForm/>}/>
+        <Route path='/uploadepisods' element={ <UploadEpisodeForm/>}/>
         <Route path='/search' element={ <SearchResults/>}/>
       </Routes>
        ):(

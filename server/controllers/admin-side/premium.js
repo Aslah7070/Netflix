@@ -296,50 +296,44 @@ console.log("movieId",movieId)
 
 
 
+
 const uploadTvShow = async (req, res) => {
-  console.log("working", req.body);
   const {
     title,
     rating,
     maturityRating,
-    seasons,
+    seasons, // optional
     numberOfSeasons,
-    durationPerEpisode,
     releaseYear,
     language,
-    genre,  
-    cast,   
+    genre,
+    cast,
     writer,
     director,
     description,
   } = req.body;
 
-
-  
   const genreArray = genre ? genre.split(",").map((item) => item.trim()) : [];
   const castArray = cast ? cast.split(",").map((item) => item.trim()) : [];
-  console.log("workingdsdsd", title);
+
   try {
-    // Create a new instance of the TVShow model
     const newTVShow = new TVShow({
       title,
       rating,
       maturityRating,
-      seasons,
+      seasons: seasons || [], // Default to an empty array if not provided
       numberOfSeasons,
-      durationPerEpisode,
       releaseYear,
       language,
-      genre: genreArray,   
-      cast: castArray,     
+      genre: genreArray,
+      cast: castArray,
       writer,
       director,
       description,
-      createdAt: new Date(),   
+      createdAt: new Date(),
     });
-    
+
     const savedTVShow = await newTVShow.save();
-    console.log("savedTVShow",savedTVShow)
     res.status(201).json({
       message: "TV Show uploaded successfully",
       tvShow: savedTVShow,
@@ -353,42 +347,64 @@ const uploadTvShow = async (req, res) => {
 };
 
 const uploadEpisodes = async (req, res) => {
-  const { id } = req.params; 
-  const { seasonNumber, episodes } = req.body; 
-
   try {
+    const { id } = req.params;
+    console.log("id",id);
     
+    const { seasonNumber, episodeNumber, title, description, duration, airDate, durationOfEpisode } = req.body;
+
+    console.log("Uploaded Files:", req.files);
+
+   
+    if (!req.files || !req.files.videoFile || !req.files.imageFile) {
+      return res.status(400).json({ message: "Both video and image files are required!" });
+    }
+    console.log("seasonNumber",seasonNumber);
+    
+    // Find the TV show
     const tvshow = await TVShow.findById(id);
     if (!tvshow) {
       return res.status(404).json({ success: false, message: "TV Show not found" });
     }
+    const videoUrl = req.files.videoFile[0].path;  
+    const thumbnailUrl = req.files.imageFile[0].path;  
 
-    
+    // Construct new episode object
+    console.log("videoUrl",videoUrl);
+    const newEpisode = {
+      episodeNumber: parseInt(episodeNumber, 10),
+      title,
+      description,
+      duration: parseInt(duration, 10),
+      airDate: new Date(airDate),
+      durationOfEpisode: parseInt(durationOfEpisode, 10),
+      videoUrl,
+      thumbnailUrl,
+    };
+
+    // Check if the season exists
     const seasonIndex = tvshow.seasons.findIndex(
-      (season) => season.seasonNumber === seasonNumber
+      (season) => season.seasonNumber === parseInt(seasonNumber, 10)
     );
 
     if (seasonIndex === -1) {
-      
+      // Add new season
       tvshow.seasons.push({
-        seasonNumber,
-        episodes,
+        seasonNumber: parseInt(seasonNumber, 10),
+        episodes: [newEpisode],
       });
     } else {
-  
-      tvshow.seasons[seasonIndex].episodes = [
-        ...tvshow.seasons[seasonIndex].episodes,
-        ...episodes,
-      ];
+      // Update existing season
+      tvshow.seasons[seasonIndex].episodes.push(newEpisode);
     }
 
- 
+    // Save the TV show
     await tvshow.save();
 
     res.status(200).json({
       success: true,
-      message: `Episodes successfully ${
-        seasonIndex === -1 ? "added to new season" : "updated"
+      message: `Episode successfully ${
+        seasonIndex === -1 ? "added to new season" : "updated in existing season"
       }`,
       tvShow: tvshow,
     });

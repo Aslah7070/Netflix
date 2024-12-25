@@ -9,7 +9,6 @@ const tvShowSchema = new mongoose.Schema({
   genre: { type: [String], required: true },
   language: { type: String, required: true },
   releaseYear: { type: Number, required: true },
-  durationPerEpisode: { type: Number, required: true }, 
   numberOfSeasons: { type: Number, required: true },
   seasons: [
     {
@@ -21,13 +20,13 @@ const tvShowSchema = new mongoose.Schema({
           description: { type: String },
           duration: { type: Number, required: true }, 
           airDate: { type: Date, required: true }, 
+          durationOfEpisode: { type: Number, required: true }, 
           videoUrl: { type: String }, 
           thumbnailUrl: { type: String },
         }
       ]
     }
   ],
-  network: { type: String,}, 
   maturityRating: { type: String, required: true },
   rating: { type: String, required: true }, 
   createdAt: { type: Date, default: Date.now },

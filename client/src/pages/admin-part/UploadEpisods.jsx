@@ -1,208 +1,217 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../../axiosInstance/api";
 
-const UploadEpisodesForm = ({ tvShowId }) => {
+const UploadEpisodeForm = ({ tvShowId }) => {
   const [seasonNumber, setSeasonNumber] = useState("");
-  const [episodes, setEpisodes] = useState([
-    {
-      episodeNumber: "",
-      title: "",
-      description: "",
-      duration: "",
-      airDate: "",
-      videoUrl: "",
-      thumbnailUrl: "",
-    },
-  ]);
+  const [episodeNumber, setEpisodeNumber] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [duration, setDuration] = useState("");
+  const [airDate, setAirDate] = useState("");
+  const [durationOfEpisode, setDurationOfEpisode] = useState("");
+  const [videoFile, setVideoFile] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleEpisodeChange = (index, field, value) => {
-    const updatedEpisodes = [...episodes];
-    updatedEpisodes[index][field] = value;
-    setEpisodes(updatedEpisodes);
-  };
-
-  const addEpisode = () => {
-    setEpisodes([
-      ...episodes,
-      {
-        episodeNumber: "",
-        title: "",
-        description: "",
-        duration: "",
-        airDate: "",
-        videoUrl: "",
-        thumbnailUrl: "",
-      },
-    ]);
-  };
-
-  const removeEpisode = (index) => {
-    const updatedEpisodes = episodes.filter((_, i) => i !== index);
-    setEpisodes(updatedEpisodes);
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (name === "videoFile") {
+      setVideoFile(files[0]);
+    } else if (name === "imageFile") {
+      setImageFile(files[0]);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        `/tvshow/${tvShowId}/episodes`, // Adjust the endpoint as needed
-        {
-          seasonNumber: parseInt(seasonNumber),
-          episodes,
-        }
-      );
-      alert(response.data.message);
-      setSeasonNumber("");
-      setEpisodes([
-        {
-          episodeNumber: "",
-          title: "",
-          description: "",
-          duration: "",
-          airDate: "",
-          videoUrl: "",
-          thumbnailUrl: "",
-        },
-      ]);
-    } catch (error) {
-      alert("Error uploading episodes");
+    setLoading(true);
+    setMessage("");
+
+    const formData = new FormData();
+    formData.append("seasonNumber", seasonNumber);
+    formData.append("episodeNumber", episodeNumber);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("duration", duration);
+    formData.append("airDate", airDate);
+    formData.append("durationOfEpisode", durationOfEpisode);
+
+    if (videoFile) formData.append("videoFile", videoFile); // Correct key name
+    if (imageFile) formData.append("imageFile", imageFile);
+
+    // Debugging FormData
+    for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
     }
-  };
+
+    try {
+        const response = await api.post("/tvshowseasonuploading/676c0700cc56dd188b40694a", formData);
+        setMessage(response.data.message);
+        console.log("Response:", response);
+    } catch (error) {
+        console.error("Upload error:", error.response || error.message);
+        setMessage("An error occurred while uploading the episode.");
+    } finally {
+        setLoading(false);
+    }
+};
+
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-2xl font-bold mb-4">Upload Episodes for TV Show</h1>
+    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-bold mb-6">Upload Episode</h2>
+
+      {message && <div className="mb-4 text-center text-red-600">{message}</div>}
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Season Number</label>
+          <label className="block text-sm font-medium text-gray-700" htmlFor="seasonNumber">
+            Season Number
+          </label>
           <input
             type="number"
-            className="w-full px-3 py-2 border rounded"
+            id="seasonNumber"
+            name="seasonNumber"
             value={seasonNumber}
             onChange={(e) => setSeasonNumber(e.target.value)}
+            className="mt-2 p-2 w-full border border-gray-300 rounded-md"
             required
           />
         </div>
 
-        {episodes.map((episode, index) => (
-          <div key={index} className="mb-4 border-b py-4">
-            <h3 className="font-medium text-lg">Episode {index + 1}</h3>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="episodeNumber">
+            Episode Number
+          </label>
+          <input
+            type="number"
+            id="episodeNumber"
+            name="episodeNumber"
+            value={episodeNumber}
+            onChange={(e) => setEpisodeNumber(e.target.value)}
+            className="mt-2 p-2 w-full border border-gray-300 rounded-md"
+            required
+          />
+        </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">Episode Number</label>
-              <input
-                type="number"
-                className="w-full px-3 py-2 border rounded"
-                value={episode.episodeNumber}
-                onChange={(e) =>
-                  handleEpisodeChange(index, "episodeNumber", e.target.value)
-                }
-                required
-              />
-            </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="title">
+            Episode Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="mt-2 p-2 w-full border border-gray-300 rounded-md"
+            required
+          />
+        </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">Title</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border rounded"
-                value={episode.title}
-                onChange={(e) => handleEpisodeChange(index, "title", e.target.value)}
-                required
-              />
-            </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="description">
+            Episode Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="mt-2 p-2 w-full border border-gray-300 rounded-md"
+            required
+          />
+        </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">Description</label>
-              <textarea
-                className="w-full px-3 py-2 border rounded"
-                value={episode.description}
-                onChange={(e) =>
-                  handleEpisodeChange(index, "description", e.target.value)
-                }
-                required
-              />
-            </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="duration">
+            Episode Duration (in minutes)
+          </label>
+          <input
+            type="number"
+            id="duration"
+            name="duration"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+            className="mt-2 p-2 w-full border border-gray-300 rounded-md"
+            required
+          />
+        </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">Duration (min)</label>
-              <input
-                type="number"
-                className="w-full px-3 py-2 border rounded"
-                value={episode.duration}
-                onChange={(e) =>
-                  handleEpisodeChange(index, "duration", e.target.value)
-                }
-                required
-              />
-            </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="airDate">
+            Air Date
+          </label>
+          <input
+            type="date"
+            id="airDate"
+            name="airDate"
+            value={airDate}
+            onChange={(e) => setAirDate(e.target.value)}
+            className="mt-2 p-2 w-full border border-gray-300 rounded-md"
+            required
+          />
+        </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">Air Date</label>
-              <input
-                type="date"
-                className="w-full px-3 py-2 border rounded"
-                value={episode.airDate}
-                onChange={(e) =>
-                  handleEpisodeChange(index, "airDate", e.target.value)
-                }
-                required
-              />
-            </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="durationOfEpisode">
+            Duration of Episode (in minutes)
+          </label>
+          <input
+            type="number"
+            id="durationOfEpisode"
+            name="durationOfEpisode"
+            value={durationOfEpisode}
+            onChange={(e) => setDurationOfEpisode(e.target.value)}
+            className="mt-2 p-2 w-full border border-gray-300 rounded-md"
+            required
+          />
+        </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">Video URL</label>
-              <input
-                type="url"
-                className="w-full px-3 py-2 border rounded"
-                value={episode.videoUrl}
-                onChange={(e) =>
-                  handleEpisodeChange(index, "videoUrl", e.target.value)
-                }
-                required
-              />
-            </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="videoFile">
+            Video File
+          </label>
+          <input
+            type="file"
+            id="videoFile"
+            name="videoFile"
+            onChange={handleFileChange}
+            className="mt-2 w-full"
+            accept="video/*"
+            required
+          />
+        </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">Thumbnail URL</label>
-              <input
-                type="url"
-                className="w-full px-3 py-2 border rounded"
-                value={episode.thumbnailUrl}
-                onChange={(e) =>
-                  handleEpisodeChange(index, "thumbnailUrl", e.target.value)
-                }
-                required
-              />
-            </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="thumbnailFile">
+            Thumbnail File
+          </label>
+          <input
+            type="file"
+            id="imageFile"
+            name="imageFile"
+            onChange={handleFileChange}
+            className="mt-2 w-full"
+            accept="image/*"
+            required
+          />
+        </div>
 
-            <button
-              type="button"
-              className="bg-red-500 text-white px-4 py-2 rounded mt-2"
-              onClick={() => removeEpisode(index)}
-            >
-              Remove Episode
-            </button>
-          </div>
-        ))}
-
-        <button
-          type="button"
-          className="bg-green-500 text-white px-4 py-2 rounded mt-4"
-          onClick={addEpisode}
-        >
-          Add Episode
-        </button>
-
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-4 ml-4"
-        >
-          Upload Episodes
-        </button>
+        <div className="mt-6">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-50"
+          >
+            {loading ? "Uploading..." : "Upload Episode"}
+          </button>
+        </div>
       </form>
     </div>
   );
 };
 
-export default UploadEpisodesForm;
+export default UploadEpisodeForm;

@@ -17,4 +17,4 @@ router.get("/moviedetails/:movieId",userMovei.movieDetails)
 router.post("/tvshowuploading",moveies.uploadTvShow)
 router.post("/tvshowseasonuploading/:id",upload,moveies.uploadEpisodes)
 router.get("/search",userMovei.movieSearch)
-module.exports=router
+module.exports=router  
