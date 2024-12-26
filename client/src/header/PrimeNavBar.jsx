@@ -17,22 +17,45 @@ import profile2 from "../../src/assets/Profile2.jpg"
 import { MdOutlineEdit } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { IoMdHelpCircleOutline } from "react-icons/io";
+import { allProfiles } from "../redux/profile.slice";
 
 const PrimeNavBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate(); 
 const query=useSelector((state)=>state.movies.search)
+const profiles=useSelector((state)=>state.profile.Profiles)
 console.log("query",query);
+console.log("profilesssss",profiles);
 
   const email = useSelector((state) => state.user.email);
   const [menuVisible, setMenuVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [show, setShow] = useState(false);
-
+   
 const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
   const primeToken = Cookies.get("premiumToken");
   console.log("token", primeToken);
   console.log("searchVisible", isSearchVisible);
+
+  useEffect(()=>{
+   try {
+    const display=async()=>{
+      const response=await api.get("/getcurrentprofile")
+      console.log("profiles",response.data.user.currentProfile.profiles);
+
+      dispatch(allProfiles(response.data.user.currentProfile.profiles))
+      
+     
+   }
+   display()
+ 
+   } catch (error) {
+    console.log("ddddddd",error);
+    
+   }
+  },[])
+
+  
 
   const display = async () => {
     if (!primeToken) {

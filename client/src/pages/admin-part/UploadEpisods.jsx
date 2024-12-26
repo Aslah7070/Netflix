@@ -38,7 +38,7 @@ const UploadEpisodeForm = ({ tvShowId }) => {
     formData.append("airDate", airDate);
     formData.append("durationOfEpisode", durationOfEpisode);
 
-    if (videoFile) formData.append("videoFile", videoFile); // Correct key name
+    if (videoFile) formData.append("videoFile", videoFile); 
     if (imageFile) formData.append("imageFile", imageFile);
 
     // Debugging FormData
@@ -47,7 +47,7 @@ const UploadEpisodeForm = ({ tvShowId }) => {
     }
 
     try {
-        const response = await api.post("/tvshowseasonuploading/676c0700cc56dd188b40694a", formData);
+        const response = await api.post("/tvshowseasonuploading/676cd8517084454e65f38d88", formData);
         setMessage(response.data.message);
         console.log("Response:", response);
     } catch (error) {

@@ -13,7 +13,6 @@ import PaymentPicker from './pages/premiumPages/PaymentPicker';
 import Checkoutpayment from './pages/premiumPages/PaymentStripe';
 import HomePagePremium from './pages/premiumPages/HomePagePremium';
 import Success from './pages/premiumPages/Success';
-import MoviesAndTvShows from './pages/premiumPages/MoviesAndTvShows';
 import LoginWithOTP from './pages/LoginPages/LoginWithOTP';
 import TrendingNow from './pages/TrendingNow';
 import ChangePassword from './pages/LoginPages/ChangePassword';
@@ -29,21 +28,20 @@ import UploadTVShowForm from './pages/admin-part/UploadTvShows';
 import MovieUploadForm from './pages/admin-part/UploadMovies';
 import SearchResults from './pages/premiumPages/categories/SearchResults';
 import UploadEpisodeForm from './pages/admin-part/UploadEpisods';
+import TVShows from './pages/premiumPages/categories/AllTvShows';
+import Footer from './pages/premiumPages/Footer';
 
 function AppRoutes({ role, active }) {
     return (
         <>
     
       
-          {/* {shouldDisplayNavBar && <NavBar />} */}
     
        {((role==="premium")&&active)?(
        
         <Routes>
         <Route path="/" element={<HomePagePremium />}>
-          {/* Nested Routes for Categories */}
-        
-          {/* Nested route for movie details */}
+          
           <Route path=":movieId" element={<MoviesDetails/>} />
           
           <Route path="funmovies" element={<FunMovies />} />
@@ -57,7 +55,10 @@ function AppRoutes({ role, active }) {
         <Route path='/uploadtvshows' element={ <UploadTVShowForm/>}/>
         <Route path='/uploadepisods' element={ <UploadEpisodeForm/>}/>
         <Route path='/search' element={ <SearchResults/>}/>
+        <Route path='/alltvshows' element={ <TVShows/>}/>
+        
       </Routes>
+      
        ):(
      
      
@@ -85,6 +86,7 @@ function AppRoutes({ role, active }) {
        )
         
        }
+       <Footer/>
         </>
       );
 }

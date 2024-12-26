@@ -7,6 +7,8 @@ const forgott=require("../controllers/forgottPassword")
 const {tryCatch}=require("../utils/tryCatch")
 const {userAuthMiddleware}=require("../middlewares/authentication")
 const {premiumAuthentication}=require("../middlewares/premiumAuthentication")
+const profile=require("../controllers/user-side/Profile-Setting/create-prodile")
+
 
 router.post("/signup",tryCatch(auth.signup))
 router.post("/login",tryCatch(auth.login))
@@ -28,8 +30,14 @@ router.post("/verifyforgotpassword/:id/:token",tryCatch(forgott.verifyForgotPass
 router.post("/hey",userAuthMiddleware,premiumAuthentication,tryCatch(auth.hello))
 
 
+//profile routes
+
+router.post("/createprofile",userAuthMiddleware,tryCatch(profile.createProfile))
+router.post("/currentprofile",userAuthMiddleware,tryCatch(profile.setCurrentProfile))
+router.get("/getcurrentprofile",userAuthMiddleware,tryCatch(profile.getProfile))
 
 
-// router.post("/videoUploading", upload, premium.videoUploading); 
+
+
 
 module.exports=router

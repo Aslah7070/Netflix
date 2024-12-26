@@ -1,7 +1,7 @@
 
 
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../axiosInstance/api";
 import { FaPlay, FaPlus, FaThumbsUp } from "react-icons/fa";
 import { BiLike } from "react-icons/bi";
@@ -14,6 +14,7 @@ const MovieDetails = () => {
   const videoRef = useRef(null);
   const [movie, setMovie] = useState(null);
   console.log("movie",movie);
+  const navigate=useNavigate()
   
 console.log("murte",isMuted)
   useEffect(() => {
@@ -49,6 +50,11 @@ console.log("murte",isMuted)
     setIsMuted(prevMuted => !prevMuted);
   };
 
+  const playVideo=(movieID)=>{
+    console.log("work");
+    
+    navigate(`/movieplayer/${movieID}`)
+  }
   return (
     <div className="grid grid-cols-1 md:grid-cols-1">
       <div
@@ -78,7 +84,7 @@ console.log("murte",isMuted)
         )}
         <div className="absolute bottom-4 flex space-x-4 w-full justify-around">
           <div className="flex justify-evenly w-1/3">
-            <button className="bg-white text-black py-2 px-4 rounded-lg font-semibold flex items-center space-x-2">
+            <button onClick={()=>playVideo(movie._id)}className="bg-white text-black py-2 px-4 rounded-lg font-semibold flex items-center space-x-2">
               <FaPlay />
               <span>Play</span>
             </button>

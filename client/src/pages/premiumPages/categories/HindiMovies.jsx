@@ -68,7 +68,7 @@ const navigate=useNavigate()
         Hindi Movies
       </h2>
 
-      {/* Slider Component */}
+      
       <Slider {...settings}>
         {Hindi.map((movie) => (
           <div key={movie._id} className="p-2">
@@ -77,7 +77,7 @@ const navigate=useNavigate()
             onMouseEnter={() => setHoveredMovie(movie._id)}
             onMouseLeave={() => setHoveredMovie(null)}
             >
-              {/* Always display the movie thumbnail */}
+           
               <img
                 src={movie.thumbnailUrl}
                 alt={movie.title || "Movie Thumbnail"}
@@ -134,8 +134,8 @@ const navigate=useNavigate()
       style={{
         maxHeight: "90vh",
         overflowY: "auto",
-        scrollbarWidth: "none", // For Firefox
-        msOverflowStyle: "none", // For IE and Edge
+        scrollbarWidth: "none", 
+        msOverflowStyle: "none", 
       }}
     >
     

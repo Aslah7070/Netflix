@@ -343,6 +343,9 @@ const login = async (req, res,next) => {
                     
                     const differenceInTime = currentDate - premiumStartDate;
                     const differenceInDays = Math.floor(differenceInTime / (1000 * 60 * 60 * 24));
+
+            console.log("differenceInTime",differenceInTime);
+            console.log("differenceInDays",differenceInDays);
             
                   
                     const premiumValidityDays = 30;
@@ -368,7 +371,7 @@ const login = async (req, res,next) => {
                             httpOnly: false,
                             secure: process.env.NODE_ENV === 'production',
                             sameSite: 'lax',
-                            path: '/', // Make sure the cookie is accessible across the site
+                            path: '/', 
                             maxAge: remainingValidityDays * 24 * 60 * 60 * 1000,
                           });
                     } else {
@@ -390,7 +393,7 @@ const login = async (req, res,next) => {
 
 
 
-// Login using OTP
+
 const loginWithOtp = async (req, res) => {
   
         const { email, otp } = req.body;
