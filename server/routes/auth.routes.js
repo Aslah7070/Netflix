@@ -8,6 +8,8 @@ const {tryCatch}=require("../utils/tryCatch")
 const {userAuthMiddleware}=require("../middlewares/authentication")
 const {premiumAuthentication}=require("../middlewares/premiumAuthentication")
 const profile=require("../controllers/user-side/Profile-Setting/create-prodile")
+const uploadProfileImages=require("../middlewares/profileIcon.middleware")
+const profileManagement=require("../controllers/admin-side/profiles/profile-management")
 
 
 router.post("/signup",tryCatch(auth.signup))
@@ -34,7 +36,13 @@ router.post("/hey",userAuthMiddleware,premiumAuthentication,tryCatch(auth.hello)
 
 router.post("/createprofile",userAuthMiddleware,tryCatch(profile.createProfile))
 router.post("/currentprofile",userAuthMiddleware,tryCatch(profile.setCurrentProfile))
-router.get("/getcurrentprofile",userAuthMiddleware,tryCatch(profile.getProfile))
+router.get("/getcurrentprofile",userAuthMiddleware,tryCatch(profile.getProfile))   
+router.get('/getallprofiles', tryCatch(profile.getAllProfiles));
+router.post('/uploadprofileicons', uploadProfileImages, profileManagement.uploadProfiles);
+router.post('/updateavatar', uploadProfileImages, profileManagement.createAvatar);
+router.get('/getavatar', uploadProfileImages, profileManagement.getAvatar);
+router.get('/getprofileicons', tryCatch(profileManagement.getprofiles));
+
 
 
 

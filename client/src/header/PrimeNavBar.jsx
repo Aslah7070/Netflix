@@ -17,13 +17,15 @@ import profile2 from "../../src/assets/Profile2.jpg"
 import { MdOutlineEdit } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { IoMdHelpCircleOutline } from "react-icons/io";
-import { allProfiles } from "../redux/profile.slice";
+import { allProfiles, setAvatars, setCurrentProfile } from "../redux/profile.slice";
 
 const PrimeNavBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate(); 
 const query=useSelector((state)=>state.movies.search)
 const profiles=useSelector((state)=>state.profile.Profiles)
+const activeProfile=useSelector((state)=>state.profile.currentProfile)
+console.log("activeProfile",activeProfile);
 console.log("query",query);
 console.log("profilesssss",profiles);
 
@@ -37,15 +39,14 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
   console.log("token", primeToken);
   console.log("searchVisible", isSearchVisible);
 
-  useEffect(()=>{
+  useEffect(()=>{ 
    try {
     const display=async()=>{
-      const response=await api.get("/getcurrentprofile")
-      console.log("profiles",response.data.user.currentProfile.profiles);
-
-      dispatch(allProfiles(response.data.user.currentProfile.profiles))
-      
+      const response=await api.get("/getallprofiles")
+     console.log("all profiles",response.data.allProfile);
      
+     dispatch(allProfiles(response.data.allProfile))
+ 
    }
    display()
  
@@ -55,6 +56,27 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
    }
   },[])
 
+  useEffect(()=>{
+      const display=async()=>{
+        const response=await api.get("/getavatar")
+        console.log("response form avatars",response.data[0].avatar);
+        dispatch(setAvatars(response.data[0].avatar))
+      }
+     display()
+     
+  },[])
+
+
+  
+  useEffect(()=>{
+    const getCurrentProfile=async()=>{
+      const response=await api.get("/getcurrentprofile")
+      console.log("response form",response.data.user.currentProfile);
+      dispatch(setCurrentProfile(response.data.user.currentProfile))
+    }
+    getCurrentProfile()
+   
+},[])
   
 
   const display = async () => {
@@ -77,7 +99,7 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
   const handleSearchChange = async (event) => {
     const query = event.target.value;
     dispatch(searchQuery(query))
-    // setSearchQuery(query);
+  
 
     if (query) {
       navigate(`/search?q=${query}`);
@@ -105,10 +127,20 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
-  // Check premium status
+
   useEffect(() => {
     display();
   }, []);
+
+
+  const handleCurrentProfile=async(profileId)=>{
+ 
+
+     const response=await api.post("/currentprofile",{profileId:profileId})
+     console.log("current profile",response.data.user.currentProfile);
+     dispatch(setCurrentProfile(response.data.user.currentProfile))
+     
+  }
 
   return (
     <div className="relative w-full bg-gray-950 h-auto ">
@@ -191,42 +223,53 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
           <div className="relative z-10">
             <img
               className="w-8  h-8  cursor-pointer"
-              src={profileImage}
-              alt="Profile"
+              src={activeProfile?.image||profile2}
+              alt={activeProfile?.name}
               onClick={toggleDropdown}       
             />
             {dropdownVisible && (
-              <div className="absolute right-0 mt-2 w-72 bg-black text-white rounded-md shadow-lg p-3 pt-5 py-2  z-50">
-                 <div className="flex">
-                <img className="w-10  h-10" src={profile2} alt="Profile" />  <p className="px-4 py-2 hover:underline cursor-pointer">aslah.c</p>
+              <div className="absolute right-0 mt-2 w-72 bg-black text-white rounded-md shadow-lg p-3 pt-5 py-2 z-50">
+              {profiles&&profiles.map((profile) => (
+                <div className="flex" key={profile._id} onClick={()=>handleCurrentProfile(profile._id)}>
+                  <img
+                    className="w-10 h-10"
+                    src={profile.image ||profile2} 
+                    alt={profile.name}
+                  />
+                  <p className="px-4 py-2 hover:underline cursor-pointer">{profile.name}</p>
                 </div>
-                <div className="flex">
+              ))}
+              <div className="flex">
                 <img className="w-10  h-10" src={children} alt="" />  <p className="px-4 py-2 hover:underline cursor-pointer">Children</p>
                 </div>   
-                <hr className="border-gray-700" />
-                <div className="flex items-center  ">
-               <span className="text-lg text-white">
-                 <MdOutlineEdit className="text-2xl" />
-               </span>
-               <p className="hover:underline cursor-pointer px-4 rounded">Manage Profiles</p>
-             </div>
-
-                <div className="flex">
-                  <span>< CgProfile className="text-2xl" /></span>
-                <p className="px-4  hover:underline cursor-pointer">Account</p>
-                </div>
-                <div className="flex">
-                  <span><IoMdHelpCircleOutline className="text-2xl"/></span>
-                <p className="px-4  hover:underline cursor-pointer">Help Centre</p>
-                </div>
-                <hr className="border-gray-700" />
-                <p
-                  className="px-4 py-2 hover:underline cursor-pointer" 
-                  onClick={handleLogOut}
-                >
-                  Sign out of Netflix
-                </p>
+              <hr className="border-gray-700" />
+              <div className="flex items-center" onClick={()=>navigate("/manageprofile")}>
+                <span className="text-lg text-white">
+                  <MdOutlineEdit className="text-2xl" />
+                </span>
+                <p  className="hover:underline cursor-pointer px-4 rounded">Manage Profiles</p>
               </div>
+              <div className="flex">
+                <span>
+                  <CgProfile className="text-2xl" />
+                </span>
+                <p className="px-4 hover:underline cursor-pointer">Account</p>
+              </div>
+              <div className="flex">
+                <span>
+                  <IoMdHelpCircleOutline className="text-2xl" />
+                </span>
+                <p className="px-4 hover:underline cursor-pointer">Help Centre</p>
+              </div>
+              <hr className="border-gray-700" />
+              <p
+                className="px-4 py-2 hover:underline cursor-pointer"
+                onClick={handleLogOut}
+              >
+                Sign out of Netflix
+              </p>
+            </div>
+            
             )}
           </div>
         </div>

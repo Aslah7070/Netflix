@@ -30,6 +30,8 @@ import SearchResults from './pages/premiumPages/categories/SearchResults';
 import UploadEpisodeForm from './pages/admin-part/UploadEpisods';
 import TVShows from './pages/premiumPages/categories/AllTvShows';
 import Footer from './pages/premiumPages/Footer';
+import ManageProfiles from './header/profiles/ManageProfiles';
+import SetProfile from './header/profiles/SetProfile';
 
 function AppRoutes({ role, active }) {
     return (
@@ -56,6 +58,11 @@ function AppRoutes({ role, active }) {
         <Route path='/uploadepisods' element={ <UploadEpisodeForm/>}/>
         <Route path='/search' element={ <SearchResults/>}/>
         <Route path='/alltvshows' element={ <TVShows/>}/>
+        <Route path='/manageprofile' element={ <ManageProfiles/>}>
+        
+        <Route path='addprofile' element={<SetProfile/>}/>
+        </Route>
+        
         
       </Routes>
       

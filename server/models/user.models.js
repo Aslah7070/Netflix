@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema({
     default: "user",
   },
   currentProfile: { type: mongoose.Schema.Types.ObjectId,ref:"Profile"},
+  
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);
