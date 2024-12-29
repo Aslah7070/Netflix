@@ -12,28 +12,12 @@ const ManageProfiles = () => {
 const navigate=useNavigate()
     const profiles=useSelector((state)=>state.profile.Profiles)
 
-    console.log("profilessssa",profiles.length);
   
    const activeUser= useSelector((state)=>state.profile.currentProfile)
    console.log("activeUser",activeUser);
    const dispatch=useDispatch()
-   useEffect(()=>{ 
-    try {
-     const display=async()=>{
-      
-       const response=await api.get("/getallprofiles")
-      console.log("all profiles",response.data.allProfile);
-      
-      dispatch(allProfiles(response.data.allProfile))
-  
-    }
-    display()
-  
-    } catch (error) {
-     console.log("ddddddd",error);
-     
-    }
-   },[])
+
+ 
 
 
    useEffect(()=>{
@@ -46,6 +30,23 @@ const navigate=useNavigate()
    
 },[])
 
+
+const display=async()=>{
+      
+  try {
+    const response=await api.get("/getallprofiles")
+ console.log("all profiles",response.data.allProfile);
+ 
+ dispatch(allProfiles(response.data.allProfile))
+  } catch (error) {
+    console.log("error",error);
+    
+  }
+
+}
+ useEffect(()=>{  
+  display() 
+ },[])
 const handlAddProfile=()=>{
   console.log("hrkkdis");
   
@@ -53,7 +54,8 @@ const handlAddProfile=()=>{
 }
   return (
     <div className="grid grid-cols-12 min-h-screen bg-gray-500   relative  ">
-      <div className='absolute w-full h-full flex justify-center items-center   '>
+    
+      <div className='absolute w-full  flex justify-center items-center   '>
      
       <Outlet className="  "/>
       
@@ -105,21 +107,21 @@ const handlAddProfile=()=>{
 
 
       {/* Profiles Section (8 columns) */}
-      <div className="col-span-8 p-6 bg-gray-100">
+      <div className="col-span-8 bg-white  p-10">
         <h2 className="text-4xl font-bold mb-4">Profiles</h2>
 
         {/* Parental Controls Section */}
         <section className="mb-8">
           <h3 className="text-lg font-medium">Parental controls and permissions</h3>
-          <div className="space-y-1 mt-4 border-2 border-gray-300 rounded-2xl p-1 bg-white">
+          <div className="space-y-1 w-5/6 mt-4 border-2 border-gray-300 rounded-2xl p-1 ">
 
           
-            <button className="w-full p-4 bg-white  text-left">
+            <button onClick={()=>navigate("parentalprofile")} className="w-full p-4   text-left ">
               <div className='flex items-center space-x-4'>
               <div >
                <span className='text-3xl'><PiWarningOctagon/> </span>
                </div>
-            <div >
+            <div  >
             <span className="font-semibold text-xl"> Adjust parental controls</span>
               <span className="block text-sm  text-gray-600">
                 Set maturity ratings, block titles
@@ -127,7 +129,7 @@ const handlAddProfile=()=>{
             </div>
               </div>
             </button>
-            <hr className='z-0' />
+            <hr />
             <button className="w-full p-4 bg-white rounded-lg text-left">
                <div className='flex items-center space-x-4'>
                <div>
@@ -145,19 +147,19 @@ const handlAddProfile=()=>{
         </section>
 
        
-        <section>
+        <section onClick={handlAddProfile}>
           <h3 className="text-xl font-medium">Profile settings</h3>
-          <div className="space-y-4 mt-4 border border-black rounded-lg">
+          <div className="space-y-4 mt-4 w-5/6 border border-black rounded-lg">
             {profiles&&profiles.map((profile, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between  bg-gray-100 p-4 rounded-lg"
               >
                 <div className="flex items-center space-x-4  w-full">
-                 <img className='w-8' src={profile.image} alt="" />
-                  <span className="font-medium">{profile.name}</span>
+                 <img className='w-8' src={profile?.image} alt="" />
+                  <span className="font-medium">{profile?.name}</span>
                  
-       {activeUser._id===profile._id && <span className=' ms-auto bg-blue-300 px-3 py-1 rounded-xl '>  your profile</span>}
+       {activeUser?._id===profile?._id && <span className=' ms-auto bg-blue-300 px-3 py-1 rounded-xl '>  your profile</span>}
                 </div>
                 
               </div>
@@ -165,7 +167,7 @@ const handlAddProfile=()=>{
             
             {profiles.length<=4&&(
              <>
-              <button onClick={handlAddProfile}  className="w-full mt-4 bg-gray-900 py-4 rounded-lg cursor-pointer ">
+              <button onClick={handlAddProfile}  className="w-full mt-4 bg-white py-4 rounded-lg cursor-pointer z-0">
               Add Profile
             </button>
              <div className='w-full text-center'>
@@ -174,15 +176,14 @@ const handlAddProfile=()=>{
              </>
             )}
 
-          
+
           </div>
   
         </section>
         
       </div>
       
-           
-      <button onClick={()=>handlAddProfile}>dnmhfsjmhkfj</button>
+
           
     </div>
   );

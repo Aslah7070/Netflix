@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import api from "../../axiosInstance/api";
 import { useNavigate } from "react-router-dom";
+import { allProfiles, setCurrentProfile } from "../../redux/profile.slice";
 
 
 const SetProfile = () => {
@@ -23,6 +24,23 @@ const navigate=useNavigate()
     }
   }, []);
 
+  const display=async()=>{
+      
+    try {
+      const response=await api.get("/getallprofiles")
+   console.log("all profiles",response.data.allProfile);
+   
+   dispatch(allProfiles(response.data.allProfile))
+    } catch (error) {
+      console.log("error",error);
+      
+    }
+
+ }
+   useEffect(()=>{  
+    display() 
+   },[])
+ 
   
 console.log("helloeoe",avatars[currentAvatarIndex]);
 
@@ -44,9 +62,12 @@ console.log("helloeoe",avatars[currentAvatarIndex]);
       setSuccess(false);
 
       const response = await api.post("/createprofile",{profileData:profileData})
-      console.log("responsesssssssssssssssssssssssss",response);
+      console.log("responsesssssssssssssssssssssssss",response.data.profile);
       if(response.status){
         console.log("dsaf");
+        display() 
+        
+        dispatch(setCurrentProfile(response.data.profile))
         navigate("/manageprofile")
         
       }
@@ -71,7 +92,7 @@ console.log("helloeoe",avatars[currentAvatarIndex]);
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center w-full h-full  py-8 z-10">
+    <div className="min-h-screen flex flex-col items-center justify-center w-full h-full  py-8  z-20">
       <div className="bg-white shadow-lg rounded-lg p-6 w-5/12 h-5/6">
         <div className="flex flex-col pb-5 mt-24">
           <h1 className="text-6xl text-center font-bold text-gray-800 mb-6">
@@ -118,6 +139,8 @@ console.log("helloeoe",avatars[currentAvatarIndex]);
           </button>
         </div>
       </div>
+
+      
     </div>
   );
 };

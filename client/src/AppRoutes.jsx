@@ -32,6 +32,9 @@ import TVShows from './pages/premiumPages/categories/AllTvShows';
 import Footer from './pages/premiumPages/Footer';
 import ManageProfiles from './header/profiles/ManageProfiles';
 import SetProfile from './header/profiles/SetProfile';
+import ParentalControll from './header/profiles/ParentalControll';
+import Restrictions from './header/profiles/Restrictions';
+import ViewRestrictions from './header/profiles/ViewRestrictions';
 
 function AppRoutes({ role, active }) {
     return (
@@ -61,7 +64,10 @@ function AppRoutes({ role, active }) {
         <Route path='/manageprofile' element={ <ManageProfiles/>}>
         
         <Route path='addprofile' element={<SetProfile/>}/>
+        <Route path='parentalprofile' element={<ParentalControll/>}/>
         </Route>
+        <Route path='/restrictions' element={<Restrictions/>}></Route>
+        <Route path='/viewrestrictions' element={<ViewRestrictions/>}></Route>
         
         
       </Routes>

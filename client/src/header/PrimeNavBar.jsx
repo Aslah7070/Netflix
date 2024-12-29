@@ -29,7 +29,13 @@ console.log("activeProfile",activeProfile);
 console.log("query",query);
 console.log("profilesssss",profiles);
 
+
+
+const profilesData=profiles.filter((profile)=>profile._id!==activeProfile._id)
+console.log("profilesData",profilesData);
+
   const email = useSelector((state) => state.user.email);
+     
   const [menuVisible, setMenuVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [show, setShow] = useState(false);
@@ -229,7 +235,7 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
             />
             {dropdownVisible && (
               <div className="absolute right-0 mt-2 w-72 bg-black text-white rounded-md shadow-lg p-3 pt-5 py-2 z-50">
-              {profiles&&profiles.map((profile) => (
+              {profilesData&&profilesData.map((profile) => (
                 <div className="flex" key={profile._id} onClick={()=>handleCurrentProfile(profile._id)}>
                   <img
                     className="w-10 h-10"
