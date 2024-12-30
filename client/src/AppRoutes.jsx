@@ -66,7 +66,7 @@ function AppRoutes({ role, active }) {
         <Route path='addprofile' element={<SetProfile/>}/>
         <Route path='parentalprofile' element={<ParentalControll/>}/>
         </Route>
-        <Route path='/restrictions' element={<Restrictions/>}></Route>
+        <Route path='/restrictions/:profileId' element={<Restrictions/>}></Route>
         <Route path='/viewrestrictions' element={<ViewRestrictions/>}></Route>
         
         

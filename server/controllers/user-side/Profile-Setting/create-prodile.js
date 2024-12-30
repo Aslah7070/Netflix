@@ -4,7 +4,8 @@ const User=require("../../../models/user.models")
 
 const Profile=require("../../../models/Profiles.model")
 const Avatar=require("../../../models/avatarcollection")
-
+const bcrypt=require("bcrypt");
+const { message } = require("../../../validations/signupValidation");
 
 
 const createProfile = async (req, res) => {
@@ -88,7 +89,7 @@ const setCurrentProfile = async (req, res) => {
         username: user.username,
         image: user.image,
         role: user.role,
-        currentProfile: profileToSet, // Return the populated profile
+        currentProfile: profileToSet, 
       },
     });
   } catch (error) {
@@ -98,28 +99,26 @@ const setCurrentProfile = async (req, res) => {
 };
 
 
-const getProfile=async(req,res)=>{
+
+
+const getAllProfiles=async(req,res)=>{
     try {
         const userId = req.user.userId;
+    console.log("userId",userId);
+    console.log("req.user",req.user);
     
        
-        const user = await User.findById(userId).populate("currentProfile")
+        const user = await Profile.find({ user: userId })
         
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }
-    console.log("user.currentProfile",user.currentProfile);
+    console.log("user.currentProfile",user);
     
         
         res.status(200).json({
-          message: "Current user found",
-          user: {
-            email: user.email,
-            username: user.username,
-            image: user.image,
-            role: user.role,
-            currentProfile: user.currentProfile, 
-          },
+          message: "all profiles",
+          allProfile:user
         });
       } catch (error) {
         console.error(error);
@@ -127,10 +126,85 @@ const getProfile=async(req,res)=>{
       }
 }
 
-const getAllProfiles=async(req,res)=>{
-  const allProfile=await Profile.find()
+const getCurrentProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId; // Extract user ID from authenticated request
 
-  res.status(200).json({success:true ,allProfile} )
+    // Fetch the user and populate the currentProfile field
+    const user = await User.findById(userId).populate("currentProfile");
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Check if currentProfile exists
+    if (!user.currentProfile) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Current profile not set" });
+    }
+
+    res.status(200).json({
+      success: true,
+      currentProfile: user.currentProfile, // Return the populated currentProfile
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
+const fidProfileById=async(req,res)=>{
+ const {profileId}= req.params
+ const userId=req.user
+ console.log("profileId",profileId);
+ 
+ const user=await Profile.find(userId)
+ console.log("user",user);
+ 
+ if(!user){
+ return res.status(200).json({success:true,message:"user not found"})
+ }
+ const pro=user.find((profile)=>profile._id.toString()===profileId)
+
+
+ 
+
+res.status(200).json({success:true,pro})
+
 }
 
-module.exports={createProfile,setCurrentProfile,getProfile,getAllProfiles}
+  const confirmViewRestrictionsPage=async(req,res)=>{
+    const userId = req.user.userId;
+    const { password } = req.body;
+
+    
+    if (!password) {
+      return res.status(400).json({ success: false, message: "Password is required" });
+    }
+
+  
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(400).json({ success: false, message: "Incorrect password" });
+    }
+
+   
+    const userResponse = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      
+    };
+
+    res.status(200).json({ success: true, user: userResponse });
+
+  }
+
+module.exports={createProfile,setCurrentProfile,getCurrentProfile,getAllProfiles,fidProfileById,confirmViewRestrictionsPage}

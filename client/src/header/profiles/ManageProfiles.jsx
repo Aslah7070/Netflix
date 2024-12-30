@@ -11,6 +11,7 @@ import api from '../../axiosInstance/api';
 const ManageProfiles = () => {
 const navigate=useNavigate()
     const profiles=useSelector((state)=>state.profile.Profiles)
+console.log("profilesppppppp",profiles);
 
   
    const activeUser= useSelector((state)=>state.profile.currentProfile)
@@ -20,15 +21,26 @@ const navigate=useNavigate()
  
 
 
-   useEffect(()=>{
-    const getCurrentProfile=async()=>{
-      const response=await api.get("/getcurrentprofile")
-      console.log("response form",response.data.user.currentProfile);
-      dispatch(setCurrentProfile(response.data.user.currentProfile))
-    }
-    getCurrentProfile()
-   
-},[])
+   useEffect(() => {
+    const getCurrentProfile = async () => {
+      try {
+        const response = await api.get("/getcurrentprofile");
+        console.log("response form", response.data);
+  
+        // Ensure response structure matches what you are expecting
+        if (response.data.success && response.data.currentProfile) {
+          dispatch(setCurrentProfile(response.data.currentProfile));
+        } else {
+          console.log("Unexpected response structure:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching current profile:", error.response || error.message || error);
+      }
+    };
+  
+    getCurrentProfile();
+  }, []); // Dependency array
+  
 
 
 const display=async()=>{
@@ -152,6 +164,7 @@ const handlAddProfile=()=>{
           <div className="space-y-4 mt-4 w-5/6 border border-black rounded-lg">
             {profiles&&profiles.map((profile, index) => (
               <div
+
                 key={index}
                 className="flex items-center justify-between  bg-gray-100 p-4 rounded-lg"
               >
@@ -165,7 +178,7 @@ const handlAddProfile=()=>{
               </div>
             ))}
             
-            {profiles.length<=4&&(
+            {(profiles?.length===undefined||profiles?.length<=4)&&(
              <>
               <button onClick={handlAddProfile}  className="w-full mt-4 bg-white py-4 rounded-lg cursor-pointer z-0">
               Add Profile

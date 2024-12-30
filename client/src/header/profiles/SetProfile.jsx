@@ -28,7 +28,7 @@ const navigate=useNavigate()
       
     try {
       const response=await api.get("/getallprofiles")
-   console.log("all profiles",response.data.allProfile);
+   console.log("all profiles",response.data);
    
    dispatch(allProfiles(response.data.allProfile))
     } catch (error) {

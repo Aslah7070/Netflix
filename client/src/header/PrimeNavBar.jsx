@@ -31,7 +31,9 @@ console.log("profilesssss",profiles);
 
 
 
-const profilesData=profiles.filter((profile)=>profile._id!==activeProfile._id)
+
+
+const profilesData=profiles&&profiles.filter((profile)=>profile._id!==activeProfile._id)
 console.log("profilesData",profilesData);
 
   const email = useSelector((state) => state.user.email);
@@ -73,16 +75,24 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
   },[])
 
 
-  
-  useEffect(()=>{
-    const getCurrentProfile=async()=>{
-      const response=await api.get("/getcurrentprofile")
-      console.log("response form",response.data.user.currentProfile);
-      dispatch(setCurrentProfile(response.data.user.currentProfile))
-    }
-    getCurrentProfile()
+ 
+
+  const currentProfile=async()=>{
+      
+    try {
+      const response=await api.get("/getallprofiles")
+   console.log("all profiles",response.data);
    
-},[])
+   dispatch(allProfiles(response.data.allProfile))
+    } catch (error) {
+      console.log("error",error);
+      
+    }
+
+ }
+   useEffect(()=>{  
+    currentProfile() 
+   },[])
   
 
   const display = async () => {

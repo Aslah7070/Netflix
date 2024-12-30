@@ -28,6 +28,7 @@ const ParentalControll = () => {
               <div
                 key={index}
                 className="flex items-center justify-between  bg-white p-4 rounded-lg "
+                onClick={()=>navigate(`/restrictions/${profile._id}`)}
               >
                 <div className="flex items-center space-x-4  w-full">
                  <img className='w-10' src={profile?.image} alt="" />

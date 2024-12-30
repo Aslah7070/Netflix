@@ -1,31 +1,183 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import api from '../../axiosInstance/api'
 
 const Restrictions = () => {
+  const {profileId}=useParams()
+  
+  const [data,setData]=useState("")
+  const [error,setError]=useState("")
+  const navigate=useNavigate()
+  
+  console.log("data",data);
+  console.log("error",error);
+  
 
     const activeUser=useSelector((state)=>state.profile.currentProfile)
     console.log("activeUser",activeUser);
+    const allProfile=useSelector((state)=>state.profile.Profiles)
+    console.log("allProfile",allProfile);
+   const selectedProfile=allProfile.find((profile)=>profile._id===profileId)
+   console.log("selectedProfile",selectedProfile);
+   
+const handleSubmit=async()=>{
+
+   try {
+    const response=await api.post("/confirmrestrictions",{password:data})
+
+    console.log("response",response);
+    if(response.status===200&&response.data.user.email){
+      // alert("success")
+      navigate("/viewrestrictions")
+      
+    }
+
+    setError("")
+   } catch (error) {
+    console.log("error",error);
+    if(error.response.status===400){
+    console.log("hello");
+    setError("incorrect password")
     
+    }else{
+      setError("")
+    }
+    
+   }
+    
+}
+   const handleChange=(e)=>{
+        setData(e.target.value)
+       }
   return (
     <div className='w-full h-screen bg-gray-200 flex flex-col items-center '>
-     <div className=' w-3/5 h-5/6 space-y-20'>
-     <div className='flex py-5 justify-between'> 
-      <h1 className='text-5xl '>Viwe Restrictions</h1>
-      <img className='w-14' src={activeUser?.image} alt="hello" />
+    <form 
+      className='w-3/5 h-5/6 space-y-20'
+      onSubmit={(e) => {
+        e.preventDefault(); 
+        
+        console.log("Form submitted");
+      }}
+    >
+      <div className='flex py-5 justify-between'> 
+        <h1 className='text-5xl'>View Restrictions</h1>
+        <img className='w-14' src={selectedProfile?.image} alt="hello" />
       </div>
-      <p className='text-2xl'>Enter your account password to edit Profile Maturity Rating and Title Restrictions for moosa sahad's profile.</p>
-      <div>
-        <input className='h-12 w-96 mr-10' type="text" />
-        <button className='text-xl text-blue-600 hover:underline'>Create or reset password</button>
+  
+      <p className='text-2xl'>
+        Enter your account password to edit Profile Maturity Rating and Title Restrictions for {selectedProfile?.name}'s profile.
+      </p>
+  
+      <div className='flex'>
+      <div className='flex flex-col '>
+        <input 
+          className={`h-12 w-96 mr-10 border-3 ${error ? "border-red-700" : "border-gray-300"}`}
+          type="password" 
+          placeholder="Enter your password" 
+          required 
+          onChange={handleChange}
+        />
+        <span className='text-red-700'>{error}</span>
+       
       </div>
-
-      <div className=' flex items-center justify-center'>
-        <button className='text-xl bg-blue-600 border w-28 p-2 px-3 me-2  border-black text-white' >Continue</button>
-        <button className='text-xl bg-gray-400 border w-28 p-2 px-3  border-black' >Cancel</button>
+      <button type="button" className='text-xl h-12  text-blue-600 hover:underline'>
+          Create or reset password
+        </button>
       </div>
-     </div>
-    </div>
+  
+      <div className='flex items-center justify-center'>
+        <button 
+        onClick={handleSubmit}
+          type="submit" 
+          className='text-xl bg-blue-600 border w-28 p-2 px-3 me-2 border-black text-white'
+        >
+          Continue
+        </button>
+        <button 
+          type="button" 
+          className='text-xl bg-gray-400 border w-28 p-2 px-3 border-black'
+          onClick={() => console.log("Cancel clicked")} 
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+  
   )
 }
 
 export default Restrictions
+
+
+// import React, { useState } from 'react'
+
+// const Restrictions = () => {
+//   const [data, setData] = useState({ password: "" })  // Initialize state
+
+//   // Handle input change and update state
+//   const handleChange = (e) => {
+//     console.log("handleChange triggered");  // Log when handleChange is triggered
+    
+//     const { name, value } = e.target  // Get the name and value of the input field
+//     console.log("Name:", name, "Value:", value);  // Log name and value to check if event works
+    
+//     setData((prevState) => ({
+//       ...prevState,  // Spread the previous state
+//       [name]: value  
+//     }))
+//   }
+
+//   return (
+//     <div className='w-full h-screen bg-gray-200 flex flex-col items-center'>
+//       <form
+//         className='w-3/5 h-5/6 space-y-20'
+//         onSubmit={(e) => {
+//           e.preventDefault();  // Prevent default form submission
+//           console.log("Form submitted with data:", data);  // Log the submitted data
+//         }}
+//       >
+//         <div className='flex py-5 justify-between'>
+//           <h1 className='text-5xl'>View Restrictions</h1>
+//         </div>
+
+//         <p className='text-2xl'>
+//           Enter your account password to edit Profile Maturity Rating and Title Restrictions.
+//         </p>
+
+//         <div>
+//           <input
+//             className='h-12 w-96 mr-10'
+//             type="password"
+//             name="password"  // Name must match the state key (password)
+//             placeholder="Enter your password"
+//             required
+//             value={data.password}  // Controlled input (bind value to state)
+//             onChange={handleChange}  // Directly call the handleChange function
+//           />
+//             <button type="button" className='text-xl text-blue-600 hover:underline'>
+//           Create or reset password
+//         </button>
+//         </div>
+
+//         <div className='flex items-center justify-center'>
+//           <button
+//             type="submit"
+//             className='text-xl bg-blue-600 border w-28 p-2 px-3 me-2 border-black text-white'
+//           >
+//             Continue
+//           </button>
+//           <button
+//             type="button"
+//             className='text-xl bg-gray-400 border w-28 p-2 px-3 border-black'
+//           >
+//             Cancel
+//           </button>
+//         </div>
+//       </form>
+//     </div>
+//   )
+// }
+
+// export default Restrictions

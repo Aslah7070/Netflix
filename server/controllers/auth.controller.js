@@ -471,4 +471,6 @@ const checkingEmail = async (req, res) => {
 };
 
 
+
+
 module.exports = { signup, logOut, login, checkingEmail, createPaymentIntent,verifyPremium,generateOtp,loginWithOtp,hello }
