@@ -22,5 +22,8 @@ router.post("/tvshowuploading",moveies.uploadTvShow)
 router.post("/tvshowseasonuploading/:id",upload,moveies.uploadEpisodes)
 router.get("/search",userMovei.movieSearch)
 router.get("/search",userMovei.movieSearch)
+router.get("/namebasedsearch",userMovei.nameBasedSearch)
 router.get("/allshows",tvshows.allTvShows)
+router.post("/restrictedMovies/:id",userMovei.restrictedMovies)
+router.post("/deleterestrictedmovies",userMovei.removeFromRestricted)
 module.exports=router  

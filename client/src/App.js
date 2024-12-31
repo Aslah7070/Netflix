@@ -5,6 +5,8 @@ import { useLocation } from 'react-router-dom';
 import NavBar from './header/NavBar';
 import AppRoutes from './AppRoutes';
 import { useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+
 
 function App() {
   const location = useLocation();
@@ -32,6 +34,7 @@ function App() {
     <>
       {shouldDisplayNavBar && <NavBar />}
       <AppRoutes role={role} active={active} />
+        <ToastContainer/>
     </>
   );
 }

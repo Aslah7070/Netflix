@@ -11,7 +11,7 @@ const avatarSchema=new mongoose.Schema({
             default:""
         }
        }
-    ]
+    ] 
 })
 
 module.exports=mongoose.model("Avatar",avatarSchema)

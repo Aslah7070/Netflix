@@ -198,9 +198,9 @@ res.status(200).json({success:true,pro})
    
     const userResponse = {
       _id: user._id,
-      name: user.name,
-      email: user.email,
-      
+      name: user.name, 
+      email: user.email, 
+       
     };
 
     res.status(200).json({ success: true, user: userResponse });

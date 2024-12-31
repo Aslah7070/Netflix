@@ -1,4 +1,6 @@
-const Movie=require("../../models/video.models")
+const Movie=require("../../models/video.models");
+const { message } = require("../../validations/signupValidation");
+const Restricted=require("../../models/restricted.modes")
 
 const movieDetails=async(req,res)=>{
 try {
@@ -45,4 +47,81 @@ const movieSearch=async(req,res)=>{
   }
 }
 
-module.exports={movieDetails,movieSearch}
+const nameBasedSearch=async(req,res)=>{
+  const {q}=req.query
+  console.log("q",q);
+  
+
+  if (!q) {
+    return res.status(400).json({ success: false, message: 'Search query is required' });
+  }
+  const movie=await Movie.find({ title: { $regex: q, $options: 'i' } })
+  res.status(200).json({success:movie})
+}
+
+const restrictedMovies=async(req,res)=>{
+     const {id}=req.params
+     console.log("id",id);
+        if(!id){
+          return res.status(404).json({success:false,message:"id not found"})
+        }
+     const movie= await Movie.findById(id)
+     if(!movie){
+      return res.status(404).json({success:false, message:"movie not found"})
+     }
+    
+
+     const excistingMovies=await Restricted.findOne({movie:movie.title}) 
+     if(excistingMovies){
+      return res.status(404).json({success:false,message:"movie is already excist"})
+     }
+
+     const newRestricted=new Restricted({
+        movie:movie.title
+     })
+
+  const savedMovie= await newRestricted.save()
+  
+    
+  
+console.log("movie",savedMovie);
+
+     res.status(200).json({success:true, title:savedMovie.movie})
+  
+     
+     
+}
+
+const removeFromRestricted = async (req, res) => {
+  const { title } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ success: false, message: "Movie title not provided" });
+  }
+
+  try {
+    const deleteResult = await Restricted.deleteOne({ movie: title });
+
+    if (deleteResult.deletedCount === 0) {
+      return res.status(404).json({ success: false, message: "Movie not found" });
+    }
+
+    let balanceMovies = await Restricted.find(); // Fetch updated list
+    balanceMovies = balanceMovies.map((movie) => movie.movie); // Extract movie titles
+    console.log("balanceMovies",balanceMovies);
+    
+
+    return res.status(200).json({
+      success: true,
+      message: "Deleted successfully",
+      balanceMovies,
+    });
+  } catch (error) {
+    console.error("Error removing restricted movie:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+module.exports={movieDetails,movieSearch,nameBasedSearch,restrictedMovies,removeFromRestricted}

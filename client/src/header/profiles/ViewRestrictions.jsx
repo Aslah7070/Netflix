@@ -1,57 +1,102 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactSlider from 'react-slider';
 import api from '../../axiosInstance/api';
-import { searchQuery, setMovies } from '../../redux/movieSlice';
+import { removeRestricted, searchQuery, setMovies, setRestricted } from '../../redux/movieSlice';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import { IoMdClose } from "react-icons/io";
 
 const ViewRestrictions = () => {
-  const [rating, setRating] = useState(3); 
+  const [rating, setRating] = useState(3);
   const [data, setData] = useState('');
-  console.log("data",data);
-  
-  const dispatch=useDispatch()
-  const navigate=useNavigate()
+  const [list, setList] = useState([]);
+  const [queries, setQueries] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const ratings = ['U', 'U/A 7+', 'U/A 13+', 'U/A 16+', 'A'];
-const query=useSelector((state)=>state.movies.search)
+  const query = useSelector((state) => state.movies.search);
+  const restrictedMovies = useSelector((state) => state.movies.restricted);
+
+  const allMovies = useSelector((state) => state.movies.movies);
+
   const handleSliderChange = (value) => {
-    console.log('rating', value);
     setRating(value);
   };
-const allMovies=useSelector((state)=>state.movies.movies)
+  console.log("restrictedMovies length", restrictedMovies); // Check if it's empty or populated
+  console.log("restrictedMovies", JSON.stringify(restrictedMovies));  // Logs the actual array
   
 
-  
-  useEffect(() => {
-    const fetchSearchResults = async () => {
-      try {
+  const handleList = async (id, title) => {
+    try {
+      const response = await api.post(`/restrictedMovies/${id}`);
+      if (response.data) {
+        setQueries(title); // Set the selected movie title to the input
+        setShowSearchResults(false); 
+        console.log("hello",response.data.title);
         
-        const response = await api.get(`/search?q=${query}`);
-        setMovies(response.data.data); 
-      } catch (error) {
-        console.error('Error fetching search results:', error);
+        dispatch(setRestricted(response.data.title));
+       
       }
-    };
-
-    if (query) {
-      fetchSearchResults();
+    } catch (error) {
+      if (error.response?.data?.message === "movie is already excist") {
+        toast.error("Movie already exists", {
+          position: "bottom-center",
+          style: {
+            backgroundColor: "black",
+            color: "white",
+          },
+          autoClose: 3000,
+        });
+      }
     }
-  }, [query]);
-  console.log("allMovies",allMovies);
-   const handleSearchChange = async (event) => {
-      const query = event.target.value;
-      
-      dispatch(searchQuery(query))
-      if (query) {
-        const response = await api.get(`/search?q=${query}`);
-        console.log("response",response.data.data);
-    setData(response.data.data)
+  };
+
+  const handleSearchChange = async (event) => {
+    const query = event.target.value;
+    setQueries(query);
+    if (query) {
+      setShowSearchResults(true); 
+      const response = await api.get(`/namebasedsearch?q=${query}`);
+      setData(response.data.success);
+    } else {
+      setShowSearchResults(false);
+      setData('');
+    }
+  };
+
+  const handleInputFocus = () => {
+    if (queries) {
+      setShowSearchResults(true); 
+    }
+  };
+
+  const handleRemoveRestriction = async (title) => {
+    try {
+      const response = await api.post("/deleterestrictedmovies", { title });
+  
+      if (response.data.success) {
         
+        console.log("Updated restricted movies:", response.data.balanceMovies);
+        dispatch(removeRestricted(response.data.balanceMovies)); // Update Redux state
+      } else {
+        console.error("Failed to remove movie:", response.data.message);
       }
-    };
+    } catch (error) {
+      console.error("Error while removing restricted movie:", error);
+    }
+  };
+  
+
   return (
     <div className="w-full h-full bg-gray-200 flex flex-col items-center">
       <div className="w-3/5 h-5/6 space-y-20">
+        {/* Header */}
         <div className="flex py-5 justify-between">
           <h1 className="text-5xl">Viewing Restrictions</h1>
           <img className="w-14" src="" alt="hello" />
@@ -59,6 +104,7 @@ const allMovies=useSelector((state)=>state.movies.movies)
         <p className="text-3xl">Profile Maturity Rating for {}</p>
         <p className="text-2xl">Show titles of all maturity ratings for this profile.</p>
 
+        {/* Slider */}
         <div className="w-full">
           <ReactSlider
             className="horizontal-slider"
@@ -86,12 +132,11 @@ const allMovies=useSelector((state)=>state.movies.movies)
               />
             )}
           />
-          {/* Markers */}
           <div className="flex justify-between mt-4">
             {ratings.map((label, index) => (
               <span
                 key={index}
-                className={`text-xl font-medium mt-4  ${
+                className={`text-xl font-medium mt-4 ${
                   index === rating ? 'text-blue-600' : 'text-gray-600'
                 }`}
               >
@@ -101,35 +146,55 @@ const allMovies=useSelector((state)=>state.movies.movies)
           </div>
         </div>
 
-        <div>
-          <h1>Children's Profile</h1>
-          <input className="w-10 h-5" type="checkbox" />
-          <span>Display the Netflix Children experience with titles just for children</span>
-        </div>
-        <hr />
-
+        {/* Search Input */}
         <div className="flex flex-col">
           <h1>Title Restrictions for Aslah</h1>
           <span className="mb-3">Don't show specific titles for this profile regardless of Maturity Rating</span>
           <input
-            className="w-2/6 h-12"
+            className="w-3/6 h-12"
             type="text"
+            value={queries}
             placeholder="Enter movie name"
-            onChange={handleSearchChange} 
-
+            onChange={handleSearchChange}
+            onFocus={handleInputFocus}
           />
-           <div className="mt-3 border border-black">
-    {data && data.slice(0, 5).map((movie, index) => (
-      <span key={index} className="block text-gray-700">
-        {movie.title}
-      </span>
-    ))}
-  </div>
+          {showSearchResults && data && (
+            <div className="mt-3 border border-black w-96">
+              <table className="table-auto border-collapse border border-gray-500 w-full">
+                <tbody>
+                  {data.slice(0, 5).map((movie) => (
+                    <tr key={movie._id} className="text-gray-700">
+                      <td
+                        onClick={() => handleList(movie._id, movie.title)}
+                        className="border border-black px-4 py-2 cursor-pointer hover:bg-gray-100"
+                      >
+                        {movie.title}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
+        {/* Restricted Movies */}
+        <div className="flex flex-col w-3/6 space-y-3">
+          {restrictedMovies &&
+            restrictedMovies.map((title, index) => (
+             <div className='flex justify-between'> 
+              <span key={index} className="text-red-700 text-lg">
+             {title}
+           </span>
+           <span onClick={()=>handleRemoveRestriction(title)}><IoMdClose/></span>
+           </div>
+            ))}
+        </div>
+
+        {/* Buttons */}
         <div className="flex items-center justify-center space-x-4 mb-10">
-          <button className="text-2xl w-24 bg-blue-600 text-white border border-black">Save</button>
-          <button className="text-2xl w-24 bg-gray-600 text-white border border-black">Cancel</button>
+          <button className="text-2xl w-24 bg-blue-600 text-white border border-black">Save </button>
+          <button className="text-2xl w-24 bg-gray-600 text-white border border-black">Cancel </button>
         </div>
       </div>
     </div>
