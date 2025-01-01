@@ -26,4 +26,5 @@ router.get("/namebasedsearch",userMovei.nameBasedSearch)
 router.get("/allshows",tvshows.allTvShows)
 router.post("/restrictedMovies/:id",userMovei.restrictedMovies)
 router.post("/deleterestrictedmovies",userMovei.removeFromRestricted)
+router.post("/ratingsortmovies",userMovei.movieFilterByRating)
 module.exports=router  

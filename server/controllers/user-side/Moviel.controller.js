@@ -124,4 +124,55 @@ const removeFromRestricted = async (req, res) => {
 
 
 
-module.exports={movieDetails,movieSearch,nameBasedSearch,restrictedMovies,removeFromRestricted}
+
+const movieFilterByRating = async (req, res) => {
+  try {
+    const { Rating } = req.body;
+    console.log("Rating:", Rating);
+
+    if (!Rating) {
+      return res.status(400).json({ message: "Rating is required" });
+    }
+
+    // Map string rating to numeric value
+    const ratingValue = mapRatingToValue(Rating);
+
+    if (ratingValue === null) {
+      return res.status(400).json({ message: "Invalid rating format" });
+    }
+
+    console.log("Mapped Rating Value:", ratingValue);
+
+    // Query movies based on the numeric rating value
+    const movies = await Movie.find({
+      newmericRating: { $lte: ratingValue }
+    });
+
+    console.log("Movies fetched:", movies);
+
+    if (movies.length === 0) {
+      return res.status(404).json({ message: "No movies found with the specified rating" });
+    }
+
+    return res.status(200).json(movies);
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    return res.status(500).json({ message: "An error occurred while fetching movies" });
+  }
+};
+
+// Function to map string ratings to numeric values
+const mapRatingToValue = (rating) => {
+  const ratingMap = {
+    "U/A15+": "15",
+    "U/A16+": "16",
+    "U/A18+": "18",
+    "U/A13+":"13",
+    // Add more mappings here as needed
+  };
+
+  return ratingMap[rating] || null; // Returns the numeric value or null if not found
+};
+
+
+module.exports={movieDetails,movieSearch,nameBasedSearch,restrictedMovies,removeFromRestricted,movieFilterByRating}

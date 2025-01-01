@@ -12,6 +12,8 @@ import { IoMdClose } from "react-icons/io";
 
 const ViewRestrictions = () => {
   const [rating, setRating] = useState(3);
+  console.log("rating",rating);
+  
   const [data, setData] = useState('');
   const [list, setList] = useState([]);
   const [queries, setQueries] = useState('');
@@ -19,24 +21,24 @@ const ViewRestrictions = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const ratings = ['U', 'U/A 7+', 'U/A 13+', 'U/A 16+', 'A'];
+  const ratings = ['U/A 7+', 'U/A 13+', 'U/A 16+', 'A'];
   const query = useSelector((state) => state.movies.search);
   const restrictedMovies = useSelector((state) => state.movies.restricted);
 
-  const allMovies = useSelector((state) => state.movies.movies);
+ 
 
   const handleSliderChange = (value) => {
     setRating(value);
   };
-  console.log("restrictedMovies length", restrictedMovies); // Check if it's empty or populated
-  console.log("restrictedMovies", JSON.stringify(restrictedMovies));  // Logs the actual array
+  console.log("restrictedMovies length", restrictedMovies); 
+  console.log("restrictedMovies", JSON.stringify(restrictedMovies));  
   
 
   const handleList = async (id, title) => {
     try {
       const response = await api.post(`/restrictedMovies/${id}`);
       if (response.data) {
-        setQueries(title); // Set the selected movie title to the input
+        setQueries(title); 
         setShowSearchResults(false); 
         console.log("hello",response.data.title);
         
@@ -83,7 +85,7 @@ const ViewRestrictions = () => {
       if (response.data.success) {
         
         console.log("Updated restricted movies:", response.data.balanceMovies);
-        dispatch(removeRestricted(response.data.balanceMovies)); // Update Redux state
+        dispatch(removeRestricted(response.data.balanceMovies)); 
       } else {
         console.error("Failed to remove movie:", response.data.message);
       }
@@ -146,7 +148,7 @@ const ViewRestrictions = () => {
           </div>
         </div>
 
-        {/* Search Input */}
+
         <div className="flex flex-col">
           <h1>Title Restrictions for Aslah</h1>
           <span className="mb-3">Don't show specific titles for this profile regardless of Maturity Rating</span>

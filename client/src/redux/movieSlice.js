@@ -1,40 +1,4 @@
-// import {createSlice} from "@reduxjs/toolkit"
-
-
-// const movieSlice= createSlice({
-//     name:"movies",
-//     initialState:{
-//          movies:[],
-//          search:"",
-//          searchVisibility:false,
-//          restrictrd:[]
-//     },
-//     reducers:{
-//         setMovies:(state,action)=>{
-//             state.movies=action.payload
-//         },
-//         searchQuery:(state,action)=>{
-//             state.search=action.payload
-//         },
-//         searchVisible:(state,action)=>{
-//             state.searchVisibility=action.payload
-//         },
-//         setRestricted:(state,action)=>{
-//             console.log("state.restrictrd",state.restrictrd);
-//             console.log("action.payload",action.payload);
-          
-//             // state.restrictrd.push(action.payload)
-//             //  state.restrictrd=action.payload
-            
-//             state.restrictrd=[]
-//             console.log("state.restrictrd",state.restrictrd);
-//         } 
-//     }
-// })
-
-// export const {setMovies,searchQuery,searchVisible,setRestricted}=movieSlice.actions
-// export default movieSlice.reducer
-
+  
 
 
 import { createSlice } from "@reduxjs/toolkit";
@@ -69,7 +33,7 @@ const movieSlice = createSlice({
       }
     },
     removeRestricted: (state, action) => {
-        // Remove the movies in action.payload
+       
         const moviesToRemove = action.payload;
         console.log("state.restrictedccccccccc",state.restricted);
         

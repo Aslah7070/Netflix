@@ -9,7 +9,7 @@ const movieSchema = new mongoose.Schema({
   cast: { type: [String], required: true }, 
   genre: { type: [String], required: true },
   language: { type: String, required: true },
-  releaseYear: { type: Number, required: true },
+  releaseYear: { type: Number, required: true },  
   duration: { type: Number, required: true },
   videoUrl: { type: String}, 
   thumbnailUrl: { type: String }, 
