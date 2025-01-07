@@ -35,10 +35,12 @@ router.post("/hey",userAuthMiddleware,premiumAuthentication,tryCatch(auth.hello)
 //profile routes
 
 router.post("/createprofile",userAuthMiddleware,tryCatch(profile.createProfile))
-router.post("/currentprofile",userAuthMiddleware,tryCatch(profile.setCurrentProfile))
+router.post("/currentprofile",userAuthMiddleware,premiumAuthentication,tryCatch(profile.setCurrentProfile))
 router.get("/getcurrentprofile",userAuthMiddleware,tryCatch(profile.getCurrentProfile))   
 router.get('/getallprofiles', userAuthMiddleware,tryCatch(profile.getAllProfiles));
+router.post('/transferprofile', userAuthMiddleware,tryCatch(profile.tranferprofile));
 router.post('/confirmrestrictions', userAuthMiddleware,tryCatch(profile.confirmViewRestrictionsPage));
+router.post('/signup', userAuthMiddleware,tryCatch(auth.signup));
 router.get('/fidPprofilebyid/:profileId', tryCatch(profile.fidProfileById));
 router.post('/uploadprofileicons', uploadProfileImages, profileManagement.uploadProfiles);
 router.post('/updateavatar', uploadProfileImages, profileManagement.createAvatar);

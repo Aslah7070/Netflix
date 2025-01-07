@@ -18,7 +18,7 @@
                 return res.status(400).json({success:false,message:"wrong token",reason:error})
             }else{
                 req.user=user
-                console.log("user",user);
+                console.log("userssssssssssssssssssssssssssssssssaaaaaaaaaaaaaaaaaaaaa",user);
                 console.log("premium token is available");
                 
                 //  res.status(200).json({success:true,message:"yes"})

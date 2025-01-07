@@ -25,12 +25,15 @@ const profileSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    filterMovies:[],
     myList: {
       type: [String],
       default: [],
     },
+    blockedCollection:[]
   },
   { timestamps: true }
 );
 
 module.exports = mongoose.model("Profile", profileSchema);
+ 

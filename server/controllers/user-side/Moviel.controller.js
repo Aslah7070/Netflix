@@ -1,17 +1,19 @@
 const Movie=require("../../models/video.models");
 const { message } = require("../../validations/signupValidation");
 const Restricted=require("../../models/restricted.modes")
+const Profile=require("../../models/Profiles.model")
 
 const movieDetails=async(req,res)=>{
 try {
     const { movieId} = req.params;
 
-    console.log("movieID",movieId)
     const movie = await Movie.findById(movieId);
 
     if (!movie) {
       return res.status(404).json({ message: "Movie not found" });
     }
+
+
 
     res.status(200).json({success: true,movie});
   } catch (error) {
@@ -24,7 +26,7 @@ const movieSearch=async(req,res)=>{
   try {
     const { q } = req.query; 
     
-    console.log("req.query",req.query);
+
     
     if (!q) {
       return res.status(400).json({ success: false, message: 'Search query is required' });
@@ -49,7 +51,7 @@ const movieSearch=async(req,res)=>{
 
 const nameBasedSearch=async(req,res)=>{
   const {q}=req.query
-  console.log("q",q);
+
   
 
   if (!q) {
@@ -61,6 +63,7 @@ const nameBasedSearch=async(req,res)=>{
 
 const restrictedMovies=async(req,res)=>{
      const {id}=req.params
+     const {profileId}=req.body
      console.log("id",id);
         if(!id){
           return res.status(404).json({success:false,message:"id not found"})
@@ -70,50 +73,106 @@ const restrictedMovies=async(req,res)=>{
       return res.status(404).json({success:false, message:"movie not found"})
      }
     
+   const profile=await Profile.findById(profileId)
 
-     const excistingMovies=await Restricted.findOne({movie:movie.title}) 
-     if(excistingMovies){
-      return res.status(404).json({success:false,message:"movie is already excist"})
-     }
 
-     const newRestricted=new Restricted({
-        movie:movie.title
-     })
 
-  const savedMovie= await newRestricted.save()
+   profile.blockedCollection.push(movie)
+   await profile.save()
+   
+   
+   
+
+
+//      const excistingMovies=await Restricted.findOne({movie:movie.title}) 
+//      if(excistingMovies){
+//       return res.status(404).json({success:false,message:"movie is already excist"})
+//      }
+
+//      const newRestricted=new Restricted({
+//         movie:movie.title
+//      })
+
+//   const savedMovie= await newRestricted.save()
   
     
   
-console.log("movie",savedMovie);
+// console.log("movie",savedMovie);
 
-     res.status(200).json({success:true, title:savedMovie.movie})
+     res.status(200).json({success:true, message:"profile updated"})
   
      
      
 }
 
-const removeFromRestricted = async (req, res) => {
-  const { title } = req.body;
+// const removeFromRestricted = async (req, res) => {
+//   const { title } = req.body;
 
-  if (!title) {
-    return res.status(400).json({ success: false, message: "Movie title not provided" });
+//   if (!title) {
+//     return res.status(400).json({ success: false, message: "Movie title not provided" });
+//   }
+
+//   try {
+//     const deleteResult = await Restricted.deleteOne({ movie: title });
+
+//     if (deleteResult.deletedCount === 0) {
+//       return res.status(404).json({ success: false, message: "Movie not found" });
+//     }
+
+//     let balanceMovies = await Restricted.find(); 
+//     balanceMovies = balanceMovies.map((movie) => movie.movie); 
+//     console.log("balanceMovies",balanceMovies);
+    
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Deleted successfully",
+//       balanceMovies,
+//     }); 
+//   } catch (error) {
+//     console.error("Error removing restricted movie:", error);
+//     return res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// };
+
+
+
+const removeFromRestricted = async (req, res) => {
+  const { movieID, profileId } = req.body;
+  
+  
+console.log("sx");
+
+  if (!movieID || !profileId) {
+    return res.status(400).json({ success: false, message: "Movie title or profileId not provided" });
   }
 
   try {
-    const deleteResult = await Restricted.deleteOne({ movie: title });
-
-    if (deleteResult.deletedCount === 0) {
-      return res.status(404).json({ success: false, message: "Movie not found" });
+    const profile = await Profile.findById(profileId);
+    // console.log("profile",profile);
+    if (!profile) {
+      return res.status(404).json({ success: false, message: "Profile not found" });
     }
 
-    let balanceMovies = await Restricted.find(); // Fetch updated list
-    balanceMovies = balanceMovies.map((movie) => movie.movie); // Extract movie titles
-    console.log("balanceMovies",balanceMovies);
+
+  
+    const movieIndex = profile.blockedCollection.findIndex((movie) => movie._id.toString() === movieID.toString());
+    if (movieIndex !== -1) {
+      profile.blockedCollection.splice(movieIndex, 1);
+      await profile.save(); 
+    }
+
     
+
+    
+    let balanceMovies = await Restricted.find();
+    balanceMovies = balanceMovies.map((movie) => movie.movie);
+
+    // console.log("Remaining restricted movies:", balanceMovies);
 
     return res.status(200).json({
       success: true,
-      message: "Deleted successfully",
+      message: "Movie removed from restricted list and profile successfully",
       balanceMovies,
     });
   } catch (error) {
@@ -127,52 +186,64 @@ const removeFromRestricted = async (req, res) => {
 
 const movieFilterByRating = async (req, res) => {
   try {
-    const { Rating } = req.body;
-    console.log("Rating:", Rating);
+    const { Rating,profileId } = req.body;
+
 
     if (!Rating) {
       return res.status(400).json({ message: "Rating is required" });
     }
 
-    // Map string rating to numeric value
+    if(!profileId){
+      return res.status(200).json({success:false,message:"profile Id not found"})
+    }
+
+   
     const ratingValue = mapRatingToValue(Rating);
 
     if (ratingValue === null) {
       return res.status(400).json({ message: "Invalid rating format" });
     }
 
-    console.log("Mapped Rating Value:", ratingValue);
 
-    // Query movies based on the numeric rating value
+
+
     const movies = await Movie.find({
       newmericRating: { $lte: ratingValue }
     });
 
-    console.log("Movies fetched:", movies);
+ 
 
     if (movies.length === 0) {
       return res.status(404).json({ message: "No movies found with the specified rating" });
     }
 
+      const profile=await Profile.findById(profileId)
+ 
+      profile.filterMovies = movies;
+    await profile.save();
+
     return res.status(200).json(movies);
   } catch (error) {
-    console.error("Error fetching movies:", error);
+
     return res.status(500).json({ message: "An error occurred while fetching movies" });
   }
 };
 
-// Function to map string ratings to numeric values
+
 const mapRatingToValue = (rating) => {
   const ratingMap = {
     "U/A15+": "15",
     "U/A16+": "16",
     "U/A18+": "18",
     "U/A13+":"13",
-    // Add more mappings here as needed
+  
   };
 
-  return ratingMap[rating] || null; // Returns the numeric value or null if not found
+  return ratingMap[rating] || null; 
 };
+
+
+
 
 
 module.exports={movieDetails,movieSearch,nameBasedSearch,restrictedMovies,removeFromRestricted,movieFilterByRating}

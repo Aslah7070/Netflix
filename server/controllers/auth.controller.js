@@ -44,9 +44,9 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'aslahvava9048@gmail.com',
-        pass: 'ibbr jzat oyoh xetp', 
+        pass: 'ptwe zpyc vjum vqkz', 
     },
-    tls: {
+    tls: { 
         rejectUnauthorized: false
     }
 });  
@@ -69,41 +69,19 @@ const transporter = nodemailer.createTransport({
 };
 
 
-// const verifyPremium=async(req,res)=>{
-//   const {email,amount}=  req.body
-//     const user=await User.findOne({email:email}) 
-//     console.log("userrr",user);
-//     console.log(amount)
-    
-// const {sessionId}=req.params
-// console.log("params",sessionId);
 
-
-// console.log("userEmail",user);
-// if (!sessionId) {
-//     return res.status(404).json({ error: 'Session not found' });
-// }
-
-// console.log('Session Details:', sessionId);
-// user.role = 'premium';
-
-//         await user.save();
-
-
-
-// res.status(200).json({ success: true, sessionId ,user:user});
-
-       
-// }
-
+ 
 
 
 const verifyPremium = async (req, res) => {
     const { email, amount } = req.body;
     const { sessionId } = req.params;
+  console.log("emaillllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll",email);
   
     
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: email }); 
+    console.log("userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr ",user);
+    
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }

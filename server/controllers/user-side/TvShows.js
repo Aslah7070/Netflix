@@ -8,7 +8,7 @@ const allTvShows=async(req,res)=>{
     if(!shows){
         return res.status(404).json({success:false,message:"not found shows"})
     }
-console.log("shows",shows);
+
 
     res.status(200).json({success:true,message:"found",shows})
 }

@@ -156,16 +156,16 @@ const videoUploading = async (req, res) => {
 const fetchMovies=async(req,res)=>{
  
 
-  console.log("hello");
+
   
       const movies=await Movie.find()
-      console.log("dssdf");
+   
       
 if(!movies){
 return res.status(404).json({success:false,message:"no movies"})
 }
 res.status(200).json({success:true,message:"recievsd",data:movies})
-      console.log("moives",movies)
+     
 }
 
 const fetchMovieIdBased=async(req,res)=>{

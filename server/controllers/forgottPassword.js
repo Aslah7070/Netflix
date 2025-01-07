@@ -20,9 +20,12 @@ const token=jwt.sign({id:user._id,email:user.email},process.env.JWT_SECRET,{expi
 const transporter=nodemailer.createTransport({
     service:"gmail",
     auth:{ 
-        user:process.env.EMAIL_USER,
-        pass:process.env.EMAIL_PASS,
-    }
+        user:"aslahvava9048@gmail.com",
+        pass:"ptwe zpyc vjum vqkz",
+    },
+     secure: true, // Ensures secure connection
+    logger: true, // Logs detailed information
+    debug: true, // Enables debugging
 })
 
 const mailOptions={
@@ -82,4 +85,4 @@ res.status(200).json({success:true,message:"password changed"})
    }
 } 
 
-module.exports = { forgotpass,verifyForgotPassword }
+module.exports = { forgotpass,verifyForgotPassword } 
