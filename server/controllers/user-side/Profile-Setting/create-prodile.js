@@ -177,6 +177,64 @@ res.status(200).json({success:true,pro})
 
 }
 
+const changeProfileImge = async (req, res) => {
+  try {
+    const { profileId,image } = req.body;
+    const userId = req.user?.userId;
+
+    // Log inputs for debugging
+    console.log("profileId:", profileId);
+    console.log("userId:", userId);
+    console.log("image:", image);
+
+    // Validate userId
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized user" });
+    }
+
+    // Fetch the user profile
+    const user = await Profile.findOne({ user: userId });
+
+    console.log("Fetched user:", user);
+
+    // If user not found
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Fetch the profile by ID
+    const profile = await Profile.findById(profileId);
+
+    console.log("Fetched profile:", profile);
+
+    // If profile not found
+    if (!profile) {
+      return res.status(404).json({ success: false, message: "Profile not found" });
+    }
+
+    profile.image=image;
+   await profile.save()
+    // Respond with success
+    return res.status(200).json({
+      success: true,
+      message: "Profile image changed successfully",
+      profile,
+    });
+  } catch (error) {
+    console.error("Error changing profile image:", error);
+
+    // Handle errors appropriately
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while changing the profile image",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
   const confirmViewRestrictionsPage=async(req,res)=>{
     const userId = req.user.userId;
     const { password } = req.body;
@@ -305,4 +363,4 @@ res.status(200).json({success:true,pro})
 
   }
 
-module.exports={createProfile,setCurrentProfile,getCurrentProfile,getAllProfiles,fidProfileById,confirmViewRestrictionsPage,tranferprofile,validateRecivedPasswordAccount}
+module.exports={createProfile,setCurrentProfile,getCurrentProfile,getAllProfiles,fidProfileById,confirmViewRestrictionsPage,tranferprofile,validateRecivedPasswordAccount,changeProfileImge}

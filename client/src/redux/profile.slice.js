@@ -8,7 +8,8 @@ export  const profileSlice=createSlice({
         Profiles:[],
         currentProfile:"",
         avatars:[],
-        recivedAccount:""
+        recivedAccount:"",
+        profileurl:""
     },
     reducers:{
        allProfiles:(state,action)=>{
@@ -22,8 +23,11 @@ export  const profileSlice=createSlice({
        },
        profileTranferRecivedAccount:(state,action)=>{
         state.recivedAccount=action.payload
+       },
+       setProfileUrl:(state,action)=>{
+         state.profileurl=action.payload
        }
     }
 })
-export const {allProfiles,setCurrentProfile,setAvatars,profileTranferRecivedAccount}=profileSlice.actions
+export const {allProfiles,setCurrentProfile,setAvatars,profileTranferRecivedAccount,setProfileUrl}=profileSlice.actions
 export default profileSlice.reducer

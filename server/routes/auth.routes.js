@@ -39,6 +39,7 @@ router.post("/currentprofile",userAuthMiddleware,premiumAuthentication,tryCatch(
 router.get("/getcurrentprofile",userAuthMiddleware,tryCatch(profile.getCurrentProfile))   
 router.get('/getallprofiles', userAuthMiddleware,tryCatch(profile.getAllProfiles));
 router.post('/transferprofile', userAuthMiddleware,tryCatch(profile.tranferprofile));
+router.post('/changeprofileimage', userAuthMiddleware,premiumAuthentication,tryCatch(profile.changeProfileImge));
 router.post('/confirmrestrictions', userAuthMiddleware,tryCatch(profile.confirmViewRestrictionsPage));
 router.post('/signup', userAuthMiddleware,tryCatch(auth.signup));
 router.get('/fidPprofilebyid/:profileId', tryCatch(profile.fidProfileById));

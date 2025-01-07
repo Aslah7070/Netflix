@@ -41,6 +41,8 @@ res.status(200).json({success:true,profileicons})
 }
 
 
+
+
 const createAvatar = async (req, res) => {
   try {
     // Check if files are uploaded
