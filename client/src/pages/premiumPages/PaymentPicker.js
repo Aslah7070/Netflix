@@ -31,6 +31,8 @@ const dispatch=useDispatch()
 const price=useSelector((state)=>state.user.premiumPrice)
 
 const currentUser=useSelector((state)=>state.user.email)
+console.log("currentUseron picker",currentUser);
+
   const handlePaymentMethodSelect =async (method) => {
     
 

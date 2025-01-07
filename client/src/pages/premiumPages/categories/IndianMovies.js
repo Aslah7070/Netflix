@@ -14,8 +14,20 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 const HindiMovies = () => {
   const movies = useSelector((state) => state.movies.movies) || [];
-  const Drama = movies.filter((movie) => movie.genre.includes("Drama"));
-  console.log("Drama",Drama);
+  const currentProfile=useSelector((state)=>state.profile.currentProfile)
+console.log("currentProfilessssssssssssssssssssssssssssssssssssssssssssssssss",currentProfile.blockedCollection);
+
+  let Drama = movies.filter((movie) => movie.genre.includes("Drama"));
+  console.log("Dramassssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",Drama);
+
+  Drama = Drama.filter(
+    (movie) => !currentProfile.blockedCollection.some(
+      (blockedMovie) => blockedMovie._id.toString() === movie._id.toString()
+    )
+  );  
+
+
+  
   
   
     const [isOverlayVisible, setIsOverlayVisible] = useState(false);

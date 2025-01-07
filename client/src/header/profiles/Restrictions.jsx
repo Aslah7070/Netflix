@@ -29,7 +29,7 @@ const handleSubmit=async()=>{
     console.log("response",response);
     if(response.status===200&&response.data.user.email){
       // alert("success")
-      navigate("/viewrestrictions")
+      navigate(`/viewrestrictions/${selectedProfile._id}`)
       
     }
 
@@ -81,7 +81,10 @@ const handleSubmit=async()=>{
         <span className='text-red-700'>{error}</span>
        
       </div>
-      <button type="button" className='text-xl h-12  text-blue-600 hover:underline'>
+      
+      <button
+      onClick={()=>navigate("/sendemail")}  
+      type="button" className='text-xl h-12  text-blue-600 hover:underline'>
           Create or reset password
         </button>
       </div>
@@ -97,7 +100,7 @@ const handleSubmit=async()=>{
         <button 
           type="button" 
           className='text-xl bg-gray-400 border w-28 p-2 px-3 border-black'
-          onClick={() => console.log("Cancel clicked")} 
+          onClick={() => navigate(-1)} 
         >
           Cancel
         </button>

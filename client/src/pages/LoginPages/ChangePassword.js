@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import api from "../../axiosInstance/api";
 import { useNavigate, useParams } from "react-router-dom";
-
+const Cookies=require("js-cookie")
 const ChangePassword = () => {
    
 const {id,token}=useParams()
@@ -20,6 +20,8 @@ const navigate=useNavigate()
 console.log("id",id);
 console.log("token",token);
 console.log("dsfds",data.email);
+
+const primeToken=Cookies.get("premiumToken")
 
 
 
@@ -46,7 +48,13 @@ console.log("dsfds",data.email);
         }else{
             setValidSsix("")
         }
-        navigate("/")
+        if(primeToken){
+
+        }else{
+
+          navigate("/")
+        }
+
         
        } catch (error) {
         console.log("error",error);

@@ -29,7 +29,7 @@ const ForgotSendMail = () => {
         } catch (error) {
             console.log(error);
             if (error.response) {
-                // Check error response status and message
+   
                 if (error.response.status === 404 && error.response.data.message === "not found the user") {
                     setError("No account found for this email address.");
                 } else {

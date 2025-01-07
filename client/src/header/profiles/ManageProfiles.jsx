@@ -39,7 +39,7 @@ console.log("profilesppppppp",profiles);
     };
   
     getCurrentProfile();
-  }, []); // Dependency array
+  }, []); 
   
 
 
@@ -77,7 +77,9 @@ const handlAddProfile=()=>{
 
       <div className="flex items-center space-x-2 mt-10">
   <FaArrowLeftLong className="text-2xl" />
-  <button className="text-gray-800 font-medium hover:underline">
+  <button
+  onClick={()=>navigate("/")}
+  className="text-gray-800 font-medium hover:underline">
     Back to Netflix
   </button>
 </div>
@@ -142,7 +144,7 @@ const handlAddProfile=()=>{
               </div>
             </button>
             <hr />
-            <button className="w-full p-4 bg-white rounded-lg text-left">
+            <button onClick={()=>navigate("TransfefrProfile")} className="w-full p-4 bg-white rounded-lg text-left">
                <div className='flex items-center space-x-4'>
                <div>
                     <span className='text-3xl'><TbUserCircle/></span>
@@ -164,7 +166,10 @@ const handlAddProfile=()=>{
           <div className="space-y-4 mt-4 w-5/6 border border-black rounded-lg">
             {profiles&&profiles.map((profile, index) => (
               <div
-
+              onClick={(e) => {
+                e.stopPropagation(); 
+                navigate(`/profilesettings/${profile._id}`);
+              }}
                 key={index}
                 className="flex items-center justify-between  bg-gray-100 p-4 rounded-lg"
               >

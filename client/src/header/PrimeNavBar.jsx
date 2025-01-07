@@ -153,7 +153,7 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
  
 
      const response=await api.post("/currentprofile",{profileId:profileId})
-     console.log("current profile",response.data.user.currentProfile);
+     console.log("current profilevvvvvvvvvvvvvvvvvvvvvvv",response.data.user.currentProfile);
      dispatch(setCurrentProfile(response.data.user.currentProfile))
      
   }

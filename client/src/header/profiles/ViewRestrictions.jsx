@@ -4,13 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactSlider from 'react-slider';
 import api from '../../axiosInstance/api';
-import { removeRestricted, searchQuery, setMovies, setRestricted } from '../../redux/movieSlice';
-import { useNavigate } from 'react-router-dom';
+import { filterdMovies, removeRestricted, searchQuery, setMovies, setRestricted } from '../../redux/movieSlice';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { IoMdClose } from "react-icons/io";
+import { setCurrentProfile } from '../../redux/profile.slice';
 
-const ViewRestrictions = () => {
+const   ViewRestrictions = () => {
   const [rating, setRating] = useState(3);
   console.log("rating",rating);
   
@@ -18,14 +19,70 @@ const ViewRestrictions = () => {
   const [list, setList] = useState([]);
   const [queries, setQueries] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
-
+  const {profileid}=useParams()
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const ratings = ['U/A 7+', 'U/A 13+', 'U/A 16+', 'A'];
+  const ratings = ['U/A7+', 'U/A13+', 'U/A16+', 'U/A18+'];
   const query = useSelector((state) => state.movies.search);
   const restrictedMovies = useSelector((state) => state.movies.restricted);
+ const allProfile=useSelector((state)=>state.profile.Profiles)
+    console.log("allProfile",allProfile);
+    const [selectedProfile,setSelectedProfile]=useState("")
+console.log("selectedProfile",selectedProfile);
 
+
+   useEffect(()=>{
+       
+          findProfile()
+   },[profileid])
  
+
+   useEffect(() => {
+    
+  
+    getCurrentProfile();
+  }, []); 
+
+  const getCurrentProfile = async () => {
+    try {
+      const response = await api.get("/getcurrentprofile");
+      console.log("response form", response.data);
+
+      // Ensure response structure matches what you are expecting
+      if (response.data.success && response.data.currentProfile) {
+        dispatch(setCurrentProfile(response.data.currentProfile));
+      } else {
+        console.log("Unexpected response structure:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching current profile:", error.response || error.message || error);
+    }
+  };
+
+   const findProfile=async()=>{
+    const response=await api.get(`/fidPprofilebyid/${profileid}`)
+    console.log("respons",response.data.pro);
+    setSelectedProfile(response.data.pro)
+  }
+const handleSaving=async()=>{
+  console.log("hekkig");
+  console.log("ratings[rating]",ratings[rating]);
+  
+  const response=await api.post("/ratingsortmovies",{Rating:ratings[rating],profileId:selectedProfile._id})
+
+  console.log("responseviesssss",response.data);
+
+if(response.data){
+  dispatch(filterdMovies(response.data))
+
+  // navigate("/")
+}
+  
+}
+
+console.log("selectedProfile",selectedProfile);
+
+  
 
   const handleSliderChange = (value) => {
     setRating(value);
@@ -36,14 +93,16 @@ const ViewRestrictions = () => {
 
   const handleList = async (id, title) => {
     try {
-      const response = await api.post(`/restrictedMovies/${id}`);
+      const response = await api.post(`/restrictedMovies/${id}`,{profileId:selectedProfile._id});
       if (response.data) {
         setQueries(title); 
         setShowSearchResults(false); 
         console.log("hello",response.data.title);
         
         dispatch(setRestricted(response.data.title));
-       
+
+       findProfile()
+       getCurrentProfile();
       }
     } catch (error) {
       if (error.response?.data?.message === "movie is already excist") {
@@ -78,14 +137,19 @@ const ViewRestrictions = () => {
     }
   };
 
-  const handleRemoveRestriction = async (title) => {
+  const handleRemoveRestriction = async (movieID) => {
     try {
-      const response = await api.post("/deleterestrictedmovies", { title });
+      console.log("hsdh");
+      
+      const response = await api.post("/deleterestrictedmovies", { movieID:movieID,profileId:selectedProfile });
+  console.log("deleterestrictedmovies",response);
   
       if (response.data.success) {
         
         console.log("Updated restricted movies:", response.data.balanceMovies);
         dispatch(removeRestricted(response.data.balanceMovies)); 
+        findProfile()
+        getCurrentProfile();
       } else {
         console.error("Failed to remove movie:", response.data.message);
       }
@@ -101,7 +165,7 @@ const ViewRestrictions = () => {
         {/* Header */}
         <div className="flex py-5 justify-between">
           <h1 className="text-5xl">Viewing Restrictions</h1>
-          <img className="w-14" src="" alt="hello" />
+          <img className="w-14" src={selectedProfile.image} alt="hello" />
         </div>
         <p className="text-3xl">Profile Maturity Rating for {}</p>
         <p className="text-2xl">Show titles of all maturity ratings for this profile.</p>
@@ -180,24 +244,29 @@ const ViewRestrictions = () => {
           )}
         </div>
 
-        {/* Restricted Movies */}
         <div className="flex flex-col w-3/6 space-y-3">
-          {restrictedMovies &&
-            restrictedMovies.map((title, index) => (
+          {selectedProfile.blockedCollection &&
+            selectedProfile.blockedCollection.map((title, index) => (
              <div className='flex justify-between'> 
               <span key={index} className="text-red-700 text-lg">
-             {title}
+             {title.title}
            </span>
-           <span onClick={()=>handleRemoveRestriction(title)}><IoMdClose/></span>
+           <span onClick={()=>handleRemoveRestriction(title._id)}><IoMdClose/></span>
            </div>
             ))}
+
+<div className="flex items-center justify-center space-x-4 ">
+          <button
+          onClick={handleSaving}
+          className="text-2xl w-24 bg-blue-600 text-white border border-black">Save </button>
+          <button
+          onClick={()=>navigate("/")}
+          className="text-2xl w-24 bg-gray-600 text-white border border-black">Cancel </button>
+        </div>  
         </div>
 
-        {/* Buttons */}
-        <div className="flex items-center justify-center space-x-4 mb-10">
-          <button className="text-2xl w-24 bg-blue-600 text-white border border-black">Save </button>
-          <button className="text-2xl w-24 bg-gray-600 text-white border border-black">Cancel </button>
-        </div>
+ 
+        
       </div>
     </div>
   );

@@ -14,11 +14,12 @@ const WelcomePage = () => {
     const sessionId = queryParams.get('session_id');
   const email = useSelector((state) => state.user.email);
   const amount = useSelector((state) => state.user.premiumPrice);
+  console.log("emailssssssssssslsls",email);
+  
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Handle the action of verifying the user's premium status
   const verifyPremium = async () => {
     try {
       if(sessionId){

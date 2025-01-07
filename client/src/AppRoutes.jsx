@@ -35,6 +35,14 @@ import SetProfile from './header/profiles/SetProfile';
 import ParentalControll from './header/profiles/ParentalControll';
 import Restrictions from './header/profiles/Restrictions';
 import ViewRestrictions from './header/profiles/ViewRestrictions';
+import TransferProfile from './header/profiles/TransferProfile';
+import TransferContext from './header/profiles/TransferContext';
+import SelectTransferAccount from './header/profiles/SelectTransferAccount';
+import SelectReservedAccount from './header/profiles/SelectResevedAccount';
+import ConfirmTransfer from './header/profiles/ConfirmTransfer';
+import ProfileSettings from './header/profiles/ProfileSettings';
+import EditProfile from './header/profiles/EditProfile';
+import PickProfileImage from './header/profiles/PickProfileImage';
 
 function AppRoutes({ role, active }) {
     return (
@@ -65,11 +73,27 @@ function AppRoutes({ role, active }) {
         
         <Route path='addprofile' element={<SetProfile/>}/>
         <Route path='parentalprofile' element={<ParentalControll/>}/>
+        <Route path='TransfefrProfile' element={<TransferProfile/>}/>
         </Route>
+
+        <Route path='/transfercontext/:profileId' element={<TransferContext/>}></Route>
         <Route path='/restrictions/:profileId' element={<Restrictions/>}></Route>
-        <Route path='/viewrestrictions' element={<ViewRestrictions/>}></Route>
-        
-        
+        <Route path='/viewrestrictions/:profileid' element={<ViewRestrictions/>}></Route>
+        <Route path='/selectransferaccount/:profileid' element={<SelectTransferAccount/>}></Route>
+        <Route path='/selectreservedaccount/:profileid' element={<SelectReservedAccount/>}></Route>
+        <Route path='/confirmtransfer/:profileid' element={<ConfirmTransfer/>}></Route>
+        <Route path='/plancomponent' element={<PlanComponent/>}/>  
+        <Route path='/premiumslice' element={<PremiumComponent/>}/>
+        <Route path='/UpgredOnUs' element={<UpgredOnUs/>}/>
+     <Route path='/paymentpicker' element={<PaymentPicker/>}/>
+     <Route path='/paymetStrip' element={<Checkoutpayment/>}/>
+     <Route path='/success' element={<Success/>}/>
+     <Route path='/Trendingnow' element={<TrendingNow/>}/>
+     <Route path='/sendemail' element={<ForgotSendMail/>}/>
+     <Route path='/reset_password/:id/:token' element={<ChangePassword/>}/>
+     <Route path='/profilesettings/:profileId' element={<ProfileSettings/>}/>
+     <Route path='/editprofile/:profileId' element={<EditProfile/>}/>
+     <Route path='/pickprofileimage/:profileId' element={<PickProfileImage/>}/>
       </Routes>
       
        ):(

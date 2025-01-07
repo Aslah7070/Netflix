@@ -10,6 +10,7 @@ const movieSlice = createSlice({
     search: "",
     searchVisibility: false,
     restricted: [],
+    filterdMovies:[]
   },
   reducers: {
     setMovies: (state, action) => {
@@ -41,9 +42,16 @@ const movieSlice = createSlice({
           (movie) => moviesToRemove.includes(movie)
         );
       },
+      filterdMovies:(state,action)=>{
+        console.log("state",state);
+        
+        state.filterdMovies=action.payload  
+        console.log("state.filterdMovies",state.filterdMovies);
+        
+      }
       
   },
 });
 
-export const { setMovies, searchQuery, searchVisible, setRestricted, removeRestricted } = movieSlice.actions;
+export const { setMovies, searchQuery, searchVisible, setRestricted, removeRestricted,filterdMovies } = movieSlice.actions;
 export default movieSlice.reducer;

@@ -88,7 +88,8 @@ console.log("helloeoe",avatars[currentAvatarIndex]);
   };
 
   const handleCancel = () => {
-    setProfileName("");
+    setProfileName("")
+    navigate(-1)
   };
 
   return (
