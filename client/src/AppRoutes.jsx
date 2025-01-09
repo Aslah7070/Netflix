@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPages/LoginPage';
@@ -43,8 +43,18 @@ import ConfirmTransfer from './header/profiles/ConfirmTransfer';
 import ProfileSettings from './header/profiles/ProfileSettings';
 import EditProfile from './header/profiles/EditProfile';
 import PickProfileImage from './header/profiles/PickProfileImage';
+import DeleteProfile from './header/profiles/DeleteProfile';
+import Profilelock from './header/profiles/Profilelock';
+import ProfilePinRequire from './header/profiles/ProfilePinRequire';
+import Browse from './pages/Browse';
+import Account from './header/profiles/Account';
 
 function AppRoutes({ role, active }) {
+
+
+const location=useLocation()
+
+
     return (
         <>
     
@@ -75,7 +85,7 @@ function AppRoutes({ role, active }) {
         <Route path='parentalprofile' element={<ParentalControll/>}/>
         <Route path='TransfefrProfile' element={<TransferProfile/>}/>
         </Route>
-
+        <Route path='/browse' element={<Browse/>}/>
         <Route path='/transfercontext/:profileId' element={<TransferContext/>}></Route>
         <Route path='/restrictions/:profileId' element={<Restrictions/>}></Route>
         <Route path='/viewrestrictions/:profileid' element={<ViewRestrictions/>}></Route>
@@ -91,9 +101,15 @@ function AppRoutes({ role, active }) {
      <Route path='/Trendingnow' element={<TrendingNow/>}/>
      <Route path='/sendemail' element={<ForgotSendMail/>}/>
      <Route path='/reset_password/:id/:token' element={<ChangePassword/>}/>
-     <Route path='/profilesettings/:profileId' element={<ProfileSettings/>}/>
+     <Route path='/profilesettings/:profileId' element={<ProfileSettings/>}>
+        <Route path='deleteprofile/:profileId' element={<DeleteProfile/>} />
+     </Route>
      <Route path='/editprofile/:profileId' element={<EditProfile/>}/>
      <Route path='/pickprofileimage/:profileId' element={<PickProfileImage/>}/>
+     <Route path='/profileLock/:profileId' element={<Profilelock/>}/>
+     <Route path='/profilepinrequire/:profileId' element={<ProfilePinRequire/>}/>
+     <Route path='/account' element={<Account/>}/>
+
       </Routes>
       
        ):(
@@ -123,7 +139,7 @@ function AppRoutes({ role, active }) {
        )
         
        }
-       <Footer/>
+         {location.pathname !== '/browse' && <Footer />}
         </>
       );
 }

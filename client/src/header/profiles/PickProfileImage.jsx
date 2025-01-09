@@ -3,9 +3,9 @@
 
 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import api from "../../axiosInstance/api";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Slider from "react-slick";
 import { useDispatch } from "react-redux";
 import { setProfileUrl } from "../../redux/profile.slice";
@@ -15,6 +15,12 @@ const PickProfileImage = () => {
   const { profileId } = useParams();
   const [selectedProfile, setSelectedProfile] = useState("");
   const navigate=useNavigate()
+  const location = useLocation()
+  
+  const previousLocation = useRef(location.pathname); 
+  console.log("previousLocation",previousLocation);
+  
+  
   
    const dispatch=useDispatch()
   const findProfile = async () => {
@@ -29,6 +35,7 @@ const PickProfileImage = () => {
 
   useEffect(() => {
     findProfile();
+    dispatch(setProfileUrl(""))
   }, [profileId]);
 
   // Fetch profile icons

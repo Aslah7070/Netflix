@@ -6,6 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import api from '../../axiosInstance/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProfileUrl } from '../../redux/profile.slice';
+import DeleteProfile from './DeleteProfile';
 
 const EditProfile = () => {
     const location=useLocation()
@@ -13,10 +14,10 @@ const EditProfile = () => {
     
   const navigate = useNavigate();
   const dispatch = useDispatch();
-const a=false
-  const { profileId } = useParams();
-  const [selectedProfile, setSelectedProfile] = useState("");
 
+  const { profileId } = useParams();  
+  const [selectedProfile, setSelectedProfile] = useState("");
+  const [deleteState,setDeleteState]=useState(false)
   const findProfile = async () => {
     const response = await api.get(`/fidPprofilebyid/${profileId}`);
     console.log("responseddddddddddddddddd", response.data.pro);
@@ -25,12 +26,9 @@ const a=false
 
   useEffect(() => {
     findProfile();
-    if (location.pathname !== `/editprofile/${profileId}`) {
-      console.log("hello ",location.pathname );
-      
-  dispatch(setProfileUrl(""))
-    }
-  }, [location, profileId]);
+  
+  }, [ profileId, dispatch]);
+
 
   const image = useSelector((state) => state.profile.profileurl);
 
@@ -38,11 +36,24 @@ const a=false
   const changeProfileimage=async()=>{
     const response=await api.post("/changeprofileimage",{profileId:profileId,image:image})
     console.log("change image",response);
+    navigate(`/profilesettings/${profileId}`)
+  }
+
+  const handleDelete=()=>{
+    setDeleteState(true)
     
+    deleteState && <DeleteProfile deleteState={deleteState} setDeleteState={setDeleteState} />
+
   }
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
+    <div className='absolute w-full  ms-auto  flex justify-center items-center '>
+      {   deleteState && <DeleteProfile deleteState={deleteState} setDeleteState={setDeleteState} />}
+       
+         
+         </div>
       <div className="bg-white h-screen w-full max-w-3xl p-6 rounded-lg shadow-md">
+        
         <h1 className="text-2xl font-bold mb-6">Edit Profile</h1>
 
         <div
@@ -92,13 +103,17 @@ const a=false
         <div className="flex flex-col space-y-4">
           <button
           onClick={changeProfileimage}
-          className="w-full px-6 py-6 bg-black text-white rounded-lg shadow hover:bg-blue-600 transition">
+          className="w-full px-6 py-6 text-2xl bg-black text-white rounded-lg shadow hover:bg-blue-600 transition">
             Save
           </button>
-          <button className="w-full px-6 py-6 bg-gray-300 text-gray-800 rounded-lg shadow hover:bg-gray-400 transition">
+          <button
+          onClick={()=>navigate(`/profilesettings/${profileId}`)}
+          className="w-full px-6 py-6 text-2xl bg-gray-300 text-black rounded-lg shadow hover:bg-gray-400 transition">
             Cancel
           </button>
-          <button className="w-full px-6 py-6 bg-red-600 text-white rounded-lg shadow hover:bg-red-600 transition">
+          <button 
+          onClick={handleDelete}
+          className="px-10 mt-5 py-2 w-full h-16 text-2xl border border-black  text-red-800 font-semibold rounded-lg hover:bg-red-700 transition">
             Delete
           </button>
           <span className="text-sm text-gray-600">

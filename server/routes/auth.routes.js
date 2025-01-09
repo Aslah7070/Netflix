@@ -40,7 +40,11 @@ router.get("/getcurrentprofile",userAuthMiddleware,tryCatch(profile.getCurrentPr
 router.get('/getallprofiles', userAuthMiddleware,tryCatch(profile.getAllProfiles));
 router.post('/transferprofile', userAuthMiddleware,tryCatch(profile.tranferprofile));
 router.post('/changeprofileimage', userAuthMiddleware,premiumAuthentication,tryCatch(profile.changeProfileImge));
+router.delete('/deleteprofile/:profileId', userAuthMiddleware,premiumAuthentication,tryCatch(profile.deleteProfileById));
+router.post('/profileblock/:profileId', userAuthMiddleware,premiumAuthentication,tryCatch(profile.profileBlock))
+router.post('/unLockprofile/:profileId', userAuthMiddleware,premiumAuthentication,tryCatch(profile.unLockProfile))
 router.post('/confirmrestrictions', userAuthMiddleware,tryCatch(profile.confirmViewRestrictionsPage));
+router.get('/findthaccount', userAuthMiddleware,tryCatch(profile.findthAccount));
 router.post('/signup', userAuthMiddleware,tryCatch(auth.signup));
 router.get('/fidPprofilebyid/:profileId', tryCatch(profile.fidProfileById));
 router.post('/uploadprofileicons', uploadProfileImages, profileManagement.uploadProfiles);

@@ -18,13 +18,15 @@ const createProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Create a new profile
+   const prfiles=await Profile.find({user:userId})
+   console.log("prfilesssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",prfiles);
+   
 const numberOfProfile=await Profile.countDocuments()
 console.log("numberOfProfile",numberOfProfile);
-if(numberOfProfile>=5){
+if(prfiles.length>=5){
  return  res.status(404).json({success:false,message:`only you can create  ${numberOfProfile} profiles` })
 }
-
+ 
 
     const newProfile = new Profile({
       user: userId,
@@ -181,40 +183,27 @@ const changeProfileImge = async (req, res) => {
   try {
     const { profileId,image } = req.body;
     const userId = req.user?.userId;
-
-    // Log inputs for debugging
     console.log("profileId:", profileId);
     console.log("userId:", userId);
     console.log("image:", image);
-
-    // Validate userId
     if (!userId) {
       return res.status(401).json({ success: false, message: "Unauthorized user" });
     }
-
-    // Fetch the user profile
     const user = await Profile.findOne({ user: userId });
 
     console.log("Fetched user:", user);
-
-    // If user not found
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
-
-    // Fetch the profile by ID
     const profile = await Profile.findById(profileId);
 
     console.log("Fetched profile:", profile);
-
-    // If profile not found
     if (!profile) {
       return res.status(404).json({ success: false, message: "Profile not found" });
     }
-
     profile.image=image;
    await profile.save()
-    // Respond with success
+ 
     return res.status(200).json({
       success: true,
       message: "Profile image changed successfully",
@@ -223,7 +212,6 @@ const changeProfileImge = async (req, res) => {
   } catch (error) {
     console.error("Error changing profile image:", error);
 
-    // Handle errors appropriately
     return res.status(500).json({
       success: false,
       message: "An error occurred while changing the profile image",
@@ -231,6 +219,58 @@ const changeProfileImge = async (req, res) => {
     });
   }
 };
+
+const findthAccount=async(req,res)=>{
+  const userId= req.user.userId
+
+  if(!userId){
+    return res.status(404).json({success:false,message:"user not found"})
+  }
+  const account= await User.findById(userId)
+  if(!account){
+    return res.status(200).json({success:"true",message:"no account with this id"})
+  }
+  res.status(200).json({success:true,message:"founded",account})
+}
+
+
+const deleteProfileById = async (req, res) => {
+  try {
+    const { profileId } = req.params; 
+    const userId = req.user.userId; 
+
+    console.log("userId", userId);
+    console.log("req.user", req.user);
+
+  
+    const profiles = await Profile.find({ user: userId });
+    console.log("profiles", profiles);
+
+   
+    if (!profiles || profiles.length === 0) {
+      return res.status(404).json({ success: false, message: "User has no profiles" });
+    }
+
+   
+    const profileToDelete = profiles.find((profile) => profile._id.toString() === profileId);
+    console.log("profileToDelete", profileToDelete);
+
+   
+    if (!profileToDelete) {
+      return res.status(404).json({ success: false, message: "Profile not found" });
+    }
+
+    
+    await Profile.findByIdAndDelete(profileId);
+    console.log(`Profile with ID ${profileId} deleted successfully`);
+
+    res.status(200).json({ success: true, message: "Profile deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting profile:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
 
 
 
@@ -363,4 +403,108 @@ const changeProfileImge = async (req, res) => {
 
   }
 
-module.exports={createProfile,setCurrentProfile,getCurrentProfile,getAllProfiles,fidProfileById,confirmViewRestrictionsPage,tranferprofile,validateRecivedPasswordAccount,changeProfileImge}
+
+  const profileBlock = async (req, res) => {
+    try {
+      const userId = req.user?.userId;
+      const { profileId } = req.params;
+      const { pinNumber } = req.body;
+  
+     
+      if (!userId) {
+        return res.status(400).json({ success: false, message: "User ID is required" });
+      }
+  
+      if (!profileId) {
+        return res.status(400).json({ success: false, message: "Profile ID is required" });
+      }
+  
+    
+      if (!pinNumber || !/^\d{4}$/.test(pinNumber)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "A valid 4-digit PIN is required" });
+      }
+  
+   
+      const profiles = await Profile.find({ user: userId });
+  
+      if (!profiles || profiles.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "No profiles found for this user" });
+      }
+  
+      const profile = profiles.find((profile) => profile._id.toString() === profileId);
+  
+      if (!profile) {
+        return res.status(404).json({ success: false, message: "Profile not found" });
+      }
+  
+     
+      profile.pinNumber = pinNumber;
+  
+     
+      await profile.save();
+  
+      res.status(200).json({
+        success: true,
+        message: "Profile locked successfully",
+        profile,
+      });
+    } catch (error) {
+      console.error("Error locking profile:", error);
+      res.status(500).json({
+        success: false,
+        message: "An error occurred while locking the profile",
+      });
+    }
+  };
+
+
+  const unLockProfile=async(req,res)=>{
+    const userId = req.user?.userId;
+    const { profileId } = req.params;
+    const { pinNumber } = req.body;
+
+   
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "User ID is required" });
+    }
+
+    if (!profileId) {
+      return res.status(400).json({ success: false, message: "Profile ID is required" });
+    }
+
+   
+    if (!pinNumber || !/^\d{4}$/.test(pinNumber)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "A valid 4-digit PIN is required" });
+    }
+
+
+    const profiles = await Profile.find({ user: userId });
+
+    if (!profiles || profiles.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No profiles found for this user" });
+    }
+
+ 
+    const profile = profiles.find((profile) => profile._id.toString() === profileId);
+
+    if (!profile) {
+      return res.status(404).json({ success: false, message: "Profile not found" });
+    }
+    
+    if(profile.pinNumber!==pinNumber){
+      return res.status(400).json({success:false,message:"password is inCorrect"})
+    }
+       res.status(200).json({success:true,message:"password is correct"})
+
+  }
+  
+
+module.exports={ findthAccount, unLockProfile,profileBlock,createProfile,setCurrentProfile,getCurrentProfile,getAllProfiles,fidProfileById,confirmViewRestrictionsPage,tranferprofile,validateRecivedPasswordAccount,changeProfileImge,deleteProfileById}

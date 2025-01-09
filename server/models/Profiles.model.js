@@ -30,6 +30,10 @@ const profileSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    pinNumber:{
+      type:String,
+      default:""
+    },
     blockedCollection:[]
   },
   { timestamps: true }

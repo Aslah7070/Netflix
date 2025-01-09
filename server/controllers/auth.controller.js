@@ -1,5 +1,6 @@
 
 const User = require("../models/user.models")
+const Avatar=require("../models/avatarcollection")
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt=require("jsonwebtoken");
@@ -246,7 +247,13 @@ const signup = async (req, res) => {
 
 
         const PROFILE_PICS = ["/avatar1.png", "/avatar2.png", "/avatar3.png"];
-        const image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
+        const avatars=await Avatar.findOne()
+        console.log("Avatar",avatars);
+        const avatarImages=avatars.avatar.map((val)=>val.image)
+        console.log("avatarCollections",avatarImages)
+       
+
+        const image = avatarImages[Math.floor(Math.random() * avatarImages.length)];
 
 
         const hashedPassword = await bcrypt.hash(password, 10);
