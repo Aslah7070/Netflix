@@ -234,6 +234,9 @@ const findthAccount=async(req,res)=>{
 }
 
 
+
+
+
 const deleteProfileById = async (req, res) => {
   try {
     const { profileId } = req.params; 

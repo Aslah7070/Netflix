@@ -1,9 +1,6 @@
 
 
-
-
-// const Movie = require("../../models/video.models");
-// const upload = require('../../middlewares/videoUploading'); 
+ 
 const mongoose = require("mongoose");
 
 const Movie = require("../../models/video.models");
@@ -154,13 +151,9 @@ const videoUploading = async (req, res) => {
 
 
 const fetchMovies=async(req,res)=>{
- 
 
-
-  
       const movies=await Movie.find()
-   
-      
+    
 if(!movies){
 return res.status(404).json({success:false,message:"no movies"})
 }
@@ -188,6 +181,22 @@ const fetchMovieIdBased=async(req,res)=>{
   }
 
 }
+
+const findTheSingleMovie=async(req,res)=>{
+  const { id } = req.params;
+  const movie = await Movie.findById(id);
+if(!id){
+  return res.status(404).json({success:false,message:"id is not found"})
+}
+  if (!movie) {
+    return res.status(404).json({ message: "Movie not found" });
+  }
+
+  res.status(200).json({success:true,message:"movie founded",movie})
+
+}
+
+
 
 
 
@@ -421,4 +430,4 @@ const uploadEpisodes = async (req, res) => {
 
 
 
-module.exports = { videoUploading,fetchMovies,fetchMovieIdBased,streamVideo,findthVideo,uploadTvShow ,uploadEpisodes};
+module.exports = { videoUploading,fetchMovies,fetchMovieIdBased,streamVideo,findthVideo,uploadTvShow ,uploadEpisodes,findTheSingleMovie};

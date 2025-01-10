@@ -6,6 +6,7 @@
   const connectDB = require('./database/db'); 
   const auth=require("./routes/auth.routes")
   const movie=require("./routes/movies.routes")
+  const admin=require("./routes/admin.routes")
 
   const errorHandler=require("./middlewares/customClassMiddleware")
   
@@ -24,6 +25,7 @@
   app.use(express.json());
   app.use("/",auth)
   app.use("/",movie)
+  app.use("/",admin)
 
 
   app.use(errorHandler)

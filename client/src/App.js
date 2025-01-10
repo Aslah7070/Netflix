@@ -12,6 +12,9 @@ function App() {
   const location = useLocation();
   const role = useSelector((state) => state.user.role);
   const active = useSelector((state) => state.user.isLoggedIn);
+  console.log("active",active);
+  console.log("role",role);
+  
 
   const excludedPaths = [
     "/",

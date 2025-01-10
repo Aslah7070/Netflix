@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import profile2 from "../../assets/Profile2.jpg"
 import { allProfiles, setCurrentProfile } from '../../redux/profile.slice';
 import api from '../../axiosInstance/api';
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 const Account = () => {
     const navigate=useNavigate()
@@ -16,7 +17,9 @@ const Account = () => {
 
 
 
-   const profiles=useSelector((state)=>state.profile.profiles)
+   const profiles=useSelector((state)=>state.profile.Profiles)
+   console.log("profiles on account",profiles);
+   
     return (
         <div className="grid grid-cols-12 min-h-screen bg-gray-500   relative  ">
         
@@ -94,6 +97,11 @@ const Account = () => {
                   Next payment: 5 January 2025
                   </span>
                 </div>
+                <div className=' w-96 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                   </div>
                 </button>
                 <hr />
@@ -106,6 +114,11 @@ const Account = () => {
                   <span className="font-semibold text-xl">Manage Membership</span>
                 
                   </div>
+                  <div className=' w-96 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                    </div>
                 </button>
               </div>
@@ -131,18 +144,28 @@ const Account = () => {
                   Next payment: 5 January 2025
                   </span>
                 </div>
+                <div className=' w-96 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                   </div>
                 </button>
                 <hr />
                 <button onClick={()=>navigate("TransfefrProfile")} className="w-full p-4 bg-white rounded-lg text-left">
                    <div className='flex items-center space-x-4'>
-                   <div>
+                   <div className='w-1/12'>
                         <span className='text-3xl'><TbUserCircle/></span>
                     </div>
-                  <div>
+                  <div className='w-1/5'>
                   <span className="font-semibold text-xl">change plan</span>
                 
                   </div>
+                  <div className=' w-2/3  flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                   
                    </div>
  
@@ -150,13 +173,19 @@ const Account = () => {
                 <hr />
                 <button onClick={()=>navigate("TransfefrProfile")} className="w-full p-4 bg-white rounded-lg text-left">
                    <div className='flex items-center space-x-4'>
-                   <div>
+                   <div className='w-1/12'>
                         <span className='text-3xl'><TbUserCircle/></span>
                     </div>
                   <div>
                   <span className="font-semibold text-xl">Manage access and plan</span>
                 
                   </div>
+
+                  <div className=' w-2/3 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                   
                    </div>
  
@@ -165,13 +194,19 @@ const Account = () => {
                 <hr />
                 <button onClick={()=>navigate("TransfefrProfile")} className="w-full p-4 bg-white rounded-lg text-left">
                    <div className='flex items-center space-x-4'>
-                   <div>
+                   <div className='w-1/12'>
                         <span className='text-3xl'><TbUserCircle/></span>
                     </div>
                   <div>
                   <span className="font-semibold text-xl">Update Password</span>
                 
                   </div>
+
+                  <div className=' w-2/3 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                   
                    </div>
  
@@ -180,13 +215,19 @@ const Account = () => {
                 <hr />
                 <button onClick={()=>navigate("TransfefrProfile")} className="w-full p-4 bg-white rounded-lg text-left">
                    <div className='flex items-center space-x-4'>
-                   <div>
+                   <div className='w-1/12'>
                         <span className='text-3xl'><TbUserCircle/></span>
                     </div>
                   <div>
                   <span className="font-semibold text-xl">Tranfer Profile</span>
                 
                   </div>
+
+                  <div className=' w-2/3 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                   
                    </div>
  
@@ -195,13 +236,19 @@ const Account = () => {
                 <hr />
                 <button onClick={()=>navigate("TransfefrProfile")} className="w-full p-4 bg-white rounded-lg text-left">
                    <div className='flex items-center space-x-4'>
-                   <div>
+                   <div className='w-1/12'>
                         <span className='text-3xl'><TbUserCircle/></span>
                     </div>
                   <div>
                   <span className="font-semibold text-xl">Adjest Parantal controls</span>
                 
                   </div>
+
+                  <div className=' w-2/3 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                   
                    </div>
  
@@ -210,7 +257,7 @@ const Account = () => {
                 <hr />
                 <button onClick={()=>navigate("TransfefrProfile")} className="w-full p-4 bg-white rounded-lg text-left">
                    <div className='flex items-center space-x-4'>
-                   <div>
+                   <div className='w-1/12'>
                         <span className='text-3xl'><TbUserCircle/></span>
                     </div>
                   <div className='flex flex-col'>
@@ -218,6 +265,12 @@ const Account = () => {
                   <span className="font-semibold text-sm">Language,subtitle,autoplay,notifications,privacy and more</span>
                 
                   </div>
+
+                  <div className=' w-2/3 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                   
                    </div>
  
@@ -233,7 +286,7 @@ const Account = () => {
               
                 <button onClick={()=>navigate("parentalprofile")} className="w-full p-4   text-left ">
                   <div className='flex items-center space-x-4'>
-                  <div >
+                  <div className='w-1/12' >
                    <span className='text-3xl'><PiWarningOctagon/> </span>
                    </div>
                 <div  >
@@ -242,27 +295,51 @@ const Account = () => {
                   Next payment: 5 January 2025
                   </span>
                 </div>
+
+                <div className=' w-96 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                   </div>
                 </button>
                 <hr />
                 <button onClick={()=>navigate("TransfefrProfile")} className="w-full p-4 bg-white rounded-lg text-left">
                    <div className='flex items-center space-x-4'>
-                   <div>
+                   <div className='w-1/12'>
                         <span className='text-3xl'><TbUserCircle/></span>
                     </div>
                   <div>
                   <span className="font-semibold text-xl">Manage Membership</span>
                 
                   </div>
+
+                  <div className=' w-96 flex justify-end'>
+               
+                        <MdKeyboardArrowRight className='text-3xl'/>
+                    
+                </div>
                    </div>
                 </button>
               </div>
             </section>
-             <div className=' w-5/6 mt-4 border-2 border-gray-300 rounded-2xl p-3'>
+             <div className=' w-5/6 mt-4 border-2 flex justify-between border-gray-300 rounded-2xl p-3'>
                 <p className='text-xl'>Manage Profils</p>
-                {
-                    // profiles&&profiles.map((profile))
-                }
+                 <div className="flex justify-end">
+  {profiles &&
+    profiles.map((profile, index) => (
+      <div
+        key={profile._id}
+        className={`relative ${index !== 0 ? '-ml-6' : ''}`} 
+      >
+        <img
+          className="w-12 rounded-full border-2 border-white"
+          src={profile.image}
+          alt=""
+        />
+      </div>
+    ))}
+                  </div>
              </div>
       
             </section>

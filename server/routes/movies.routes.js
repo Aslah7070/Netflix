@@ -13,6 +13,7 @@ const upload=require("../middlewares/videoUploading")
 router.get("/fetchmovies",moveies.fetchMovies)
 router.post("/videoUploading",upload,moveies.videoUploading);
 router.get("/moviefetchedbyid/:id",moveies.fetchMovieIdBased);
+router.get("/findthesinglemovie/:id",moveies.findTheSingleMovie);
 router.get("/stream/:id",moveies.streamVideo)
 router.post("/addtoList",list.addToProfileMyList)
 router.post("/findvideo/:movieId",premiumAuthentication,moveies.findthVideo)
