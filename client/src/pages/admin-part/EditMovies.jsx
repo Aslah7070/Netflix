@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../axiosInstance/api';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const EditMovies = () => {
 
@@ -61,10 +62,10 @@ console.log("movieId",movieId);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!videoFile && !imageFile) {
-      alert('Please upload at least one file (video or image).');
-      return;
-    }
+    // if (!videoFile && !imageFile) {
+    //   alert('Please upload at least one file (video or image).');
+    //   return;
+    // }
 
     try {
       const data = new FormData();
@@ -79,9 +80,37 @@ console.log("movieId",movieId);
       if (imageFile) data.append('imageFile', imageFile);
 
       // Put request to update the movie data
-      const response = await api.put(`/movies/${movieId}`, data);
+      const response = await api.put(`/updatemovies/${movieId}`, data);
 
-      alert('Movie updated successfully!');
+console.log('Response:', response);
+if(response.data.message==="No changes detected!"){
+       toast.warning(response.data.message)
+       return
+}
+
+console.log("response.data.status",response.data);
+
+
+
+if (response.data.message === "Movie updated successfully!") {
+  const updatedFields = response.data.updatedFields;
+
+  if (updatedFields) {
+    // Extract only the field names
+    const updatedFieldNames = Object.keys(updatedFields).join(", ");
+
+    // Show toast with custom JSX content
+    toast.success(
+      <span>
+        <strong>{updatedFieldNames}</strong> have been updated successfully.
+      </span>
+    );
+  }
+}
+
+  
+  
+     
       console.log('Response:', response.data);
     } catch (error) {
       console.error('Error updating movie:', error);

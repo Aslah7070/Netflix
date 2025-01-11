@@ -197,6 +197,107 @@ if(!id){
 }
 
 
+const updateMovies = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Movie ID is required!" });
+    }
+
+    const existingMovie = await Movie.findById(id);
+    if (!existingMovie) {
+      return res.status(404).json({ message: "Movie not found!" });
+    }
+
+    const videoUrl = req.files?.videoFile?.[0]?.path || existingMovie.videoUrl;
+    const thumbnailUrl = req.files?.imageFile?.[0]?.path || existingMovie.thumbnailUrl;
+
+    const {
+      title,
+      description,
+      director,
+      writer,
+      cast,
+      genre,
+      language,
+      releaseYear,
+      duration,
+      maturityRating,
+      rating,
+    } = req.body;
+
+    const castArray = cast ? cast.split(",") : existingMovie.cast;
+    const genreArray = genre ? genre.split(",") : existingMovie.genre;
+
+    const updates = {
+      title: title || existingMovie.title,
+      description: description || existingMovie.description,
+      director: director || existingMovie.director,
+      writer: writer || existingMovie.writer,
+      cast: castArray,
+      genre: genreArray,
+      language: language || existingMovie.language,
+      releaseYear: releaseYear ? parseInt(releaseYear) : existingMovie.releaseYear,
+      duration: duration ? parseInt(duration) : existingMovie.duration,
+      maturityRating: maturityRating || existingMovie.maturityRating,
+      rating: rating || existingMovie.rating,
+      videoUrl,
+      thumbnailUrl,
+    };
+
+    // Calculate the updated fields
+    const updatedFields = {};
+    Object.keys(updates).forEach((key) => {
+      if (JSON.stringify(existingMovie[key]) !== JSON.stringify(updates[key])) {
+        updatedFields[key] = updates[key];
+      }
+    });
+
+    if (Object.keys(updatedFields).length === 0) {
+      return res.status(200).json({ message: "No changes detected!" });
+    }
+
+    // Update only the changed fields
+    Object.assign(existingMovie, updatedFields);
+
+    const updatedMovie = await existingMovie.save();
+
+    res.status(200).json({
+      message: "Movie updated successfully!",
+      updatedFields, // Return only the updated fields
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Error updating movie", error: error.message });
+  }
+};
+
+const deleteMovies = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract movie ID from request parameters
+
+    if (!id) {
+      return res.status(400).json({ message: "Movie ID is required!" });
+    }
+
+    // Find and delete the movie by ID
+    const deletedMovie = await Movie.findByIdAndDelete(id);
+
+    if (!deletedMovie) {
+      return res.status(404).json({ message: "Movie not found!" });
+    }
+
+    // Return a success response
+    res.status(200).json({
+      message: "Movie deleted successfully!",
+      deletedMovie, // Optional: return deleted movie details if needed
+    });
+  } catch (error) {
+    console.error("Error deleting movie:", error);
+    res.status(500).json({ message: "Error deleting movie", error: error.message });
+  }
+};
 
 
 
@@ -430,4 +531,4 @@ const uploadEpisodes = async (req, res) => {
 
 
 
-module.exports = { videoUploading,fetchMovies,fetchMovieIdBased,streamVideo,findthVideo,uploadTvShow ,uploadEpisodes,findTheSingleMovie};
+module.exports = {updateMovies,deleteMovies, videoUploading,fetchMovies,fetchMovieIdBased,streamVideo,findthVideo,uploadTvShow ,uploadEpisodes,findTheSingleMovie};
