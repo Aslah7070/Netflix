@@ -57,7 +57,7 @@ console.log("backgroundVideo0",backgroundVideo);
     const fetchMovies = async () => {
       try {
         const response = await api.get("fetchmovies");
-         console.log("response.data.data",response.data.data);
+         console.log("response.data.data movies",response.data);
 
         const  moviess = response.data.data.filter(
           (movie) => !currentProfile.blockedCollection.some(

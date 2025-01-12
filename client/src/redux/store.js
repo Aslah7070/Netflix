@@ -80,6 +80,7 @@ import movieReducer from './movieSlice';
 import profileReducer from "./profile.slice"
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import adminReducer from "./adminSlice"
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 
 // Separate persistConfigs for each reducer
@@ -96,11 +97,16 @@ const profilePersistConfig = {
   key: 'profile',
   storage,
 };
+const adminPersistConfig = {
+  key: 'admin',
+  storage,
+};
 
 // Persisted reducers
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
 const persistedMovieReducer = persistReducer(moviePersistConfig, movieReducer);
 const persistedProfileReducer = persistReducer(profilePersistConfig, profileReducer);
+const persistedAdminReducer = persistReducer(adminPersistConfig, adminReducer);
 
 // Configure the store
 export const store = configureStore({
@@ -108,6 +114,7 @@ export const store = configureStore({
     user: persistedUserReducer,
     movies: persistedMovieReducer,
     profile:persistedProfileReducer,
+    admin:persistedAdminReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

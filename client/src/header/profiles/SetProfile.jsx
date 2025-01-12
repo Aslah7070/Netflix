@@ -9,6 +9,8 @@ import { allProfiles, setCurrentProfile } from "../../redux/profile.slice";
 
 const SetProfile = () => {
   const avatars = useSelector((state) => state.profile.avatars); 
+  console.log("avatars",avatars);
+  
   const [currentAvatarIndex, setCurrentAvatarIndex] = useState(0);
   const [profileName, setProfileName] = useState("");
   const [loading, setLoading] = useState(false); 
@@ -19,8 +21,14 @@ const navigate=useNavigate()
 
   useEffect(() => {
     const savedIndex = localStorage.getItem("avatarIndex");
-    if (savedIndex !== null) {
-      setCurrentAvatarIndex(Number(savedIndex));
+    console.log("savedIndex (from localStorage):", savedIndex);
+  
+    // Validate if savedIndex is a number, otherwise default to 0
+    const index = parseInt(savedIndex, 10);
+    if (!isNaN(index)) {
+      setCurrentAvatarIndex(index);
+    } else {
+      setCurrentAvatarIndex(0); // Default to 0 if invalid
     }
   }, []);
 
@@ -52,7 +60,7 @@ console.log("helloeoe",avatars[currentAvatarIndex]);
 
     const profileData = {
       name: profileName,
-      image: avatars[currentAvatarIndex].image,
+      image: avatars[currentAvatarIndex]?.image,
       myList: [], 
     };
 
@@ -75,8 +83,10 @@ console.log("helloeoe",avatars[currentAvatarIndex]);
       setSuccess(true);
             setProfileName(""); 
 
-      // Increment the avatar index and save it to localStorage
+     
       const newIndex = (currentAvatarIndex + 1) % avatars.length;
+      console.log("newIndex",newIndex);
+      
       setCurrentAvatarIndex(newIndex);
       localStorage.setItem("avatarIndex", newIndex);
     } catch (err) {
@@ -105,7 +115,7 @@ console.log("helloeoe",avatars[currentAvatarIndex]);
         </div>
         <div className="flex items-center mb-4">
           <img
-            src={avatars[currentAvatarIndex].image || ""}
+            src={avatars[currentAvatarIndex]?.image || ""}
             alt="Profile Avatar"
             className="w-16 h-16  bg-gray-200 object-cover mr-4"
           />

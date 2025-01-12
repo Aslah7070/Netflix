@@ -1,11 +1,17 @@
+
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaPlusCircle } from "react-icons/fa";
 import api from '../axiosInstance/api';
 import { allProfiles, setCurrentProfile } from '../redux/profile.slice';
 import { useNavigate } from 'react-router-dom';
+import { MdOutlineModeEdit } from "react-icons/md";
 
-const Browse = () => {
+const ManageAllProfiles = () => {
 
 
     
@@ -255,7 +261,7 @@ const Browse = () => {
     )}
   </div>
 
-  <div className="flex flex-wrap justify-center items-center gap-8">
+  {/* <div className="flex flex-wrap justify-center items-center gap-8">
     {profiles.length>0 ? (
       profiles.map((profile) => (
         <div
@@ -292,16 +298,68 @@ const Browse = () => {
       </div>
       <span className="text-lg text-gray-600 font-medium">Add Profile</span>
     </div>
-  </div>
+  </div> */}
 
-  <button
-  onClick={()=>navigate("/manageAllprofiles")}
+
+<div className="flex flex-wrap justify-center items-center gap-8">
+  {profiles.length > 0 ? (
+    profiles.map((profile) => (
+      <div
+
+      onClick={()=>navigate(`/profilesettings/${profile._id}`)}
+        key={profile._id}
+        className="relative flex flex-col items-center w-60 h-60 bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+      >
+        {/* Profile Image */}
+        <img
+          className="w-full h-full object-cover rounded-lg mb-4"
+          src={profile.image}
+          alt={profile.name}
+        />
+
+        {/* Profile Name */}
+        <span className="text-lg text-gray-600 font-medium">{profile.name}</span>
+
+        <MdOutlineModeEdit
+  className="absolute top-24 right-24 text-black hover:text-blue-500 cursor-pointer"
+  size={55} // Increase the size value
+//   onClick={() => console.log(`Edit profile: ${profile.name}`)}
+/>
+
+      </div>
+    ))
+  ) : (
+    <div
+      onClick={() => handleSetProfile(accountEmailName, accountImage)}
+      className="flex flex-col items-center w-60 h-60 bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+    >
+      <img
+        className="w-full h-full object-cover mb-4"
+        src={accountImage}
+        alt={accountEmailName}
+      />
+      <span className="text-lg text-gray-600 font-medium">{accountEmailName}</span>
+    </div>
+  )}
+
+  <div onClick={handleAddProfile} className="flex flex-col justify-center items-center">
+    <div className="flex flex-col w-60 h-60 justify-center mt-10 mb-3 items-center outline-none shadow-md hover:shadow-lg transition-shadow">
+      <div className="w-60 h-60 bg-gray-500 rounded-full">
+        <FaPlusCircle className="w-full h-full text-gray-800" />
+      </div>
+    </div>
+    <span className="text-lg text-gray-600 font-medium">Add Profile</span>
+  </div>
+</div>
+
+  <button 
+  onClick={()=>navigate("/browse")}
   className="border border-black mt-16 px-16 text-3xl py-3 text-white">
-    Manage Profiles
+   Done
   </button>
 </div>
 
   );
 };
 
-export default Browse;
+export default ManageAllProfiles;

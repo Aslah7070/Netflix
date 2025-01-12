@@ -11,7 +11,7 @@ const upload=require("../middlewares/videoUploading")
 
 
 router.get("/fetchmovies",moveies.fetchMovies)
-router.post("/videoUploading",upload,moveies.videoUploading);
+router.post("/videouploading",upload,moveies.videoUploading);
 router.put("/updatemovies/:id",upload,moveies.updateMovies);
 router.post("/deletemovie/:id",moveies.deleteMovies);
 router.get("/moviefetchedbyid/:id",moveies.fetchMovieIdBased);
@@ -22,9 +22,9 @@ router.post("/findvideo/:movieId",premiumAuthentication,moveies.findthVideo)
 router.post("/isvalidpremium",premiumAuthentication)
 router.get("/moviedetails/:movieId",userMovei.movieDetails)
 router.post("/tvshowuploading",moveies.uploadTvShow)
-router.post("/tvshowseasonuploading/:id",upload,moveies.uploadEpisodes)
+// router.post("/tvshowseasonuploading/:id",upload,moveies.uploadEpisodes)
 router.get("/search",userMovei.movieSearch)
-router.get("/search",userMovei.movieSearch)
+router.get("/search",userMovei.movieSearch) 
 router.get("/namebasedsearch",userMovei.nameBasedSearch)
 router.get("/allshows",tvshows.allTvShows)
 router.post("/restrictedMovies/:id",userMovei.restrictedMovies)

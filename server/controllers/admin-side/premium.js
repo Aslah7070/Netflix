@@ -2,6 +2,7 @@
 
  
 const mongoose = require("mongoose");
+const Payment = require("../../models/Payment.model");
 
 const Movie = require("../../models/video.models");
 const { uploadToCloudinary } = require("../../middlewares/videoUploading");
@@ -83,6 +84,30 @@ const { findOne } = require("../../models/user.models");
 //   }
 // };
 
+
+
+const getAllPayments = async (req, res) => {
+  try {
+  
+    const payments = await Payment.find().populate('userId', 'email role currentPlan'); 
+
+   
+    if (!payments || payments.length === 0) {
+      return res.status(404).json({ error: 'No payments found' });
+    }
+    const totalAmount = payments.reduce((acc, payment) => acc + payment.amount, 0);
+
+
+    res.status(200).json({
+      success: true,
+      payments,
+      totalAmount
+    });
+  } catch (error) {
+    console.error('Error fetching payments:', error);
+    res.status(500).json({ error: 'Failed to fetch payments' });
+  }
+};  
 
 
 
@@ -246,7 +271,7 @@ const updateMovies = async (req, res) => {
       thumbnailUrl,
     };
 
-    // Calculate the updated fields
+   
     const updatedFields = {};
     Object.keys(updates).forEach((key) => {
       if (JSON.stringify(existingMovie[key]) !== JSON.stringify(updates[key])) {
@@ -258,14 +283,14 @@ const updateMovies = async (req, res) => {
       return res.status(200).json({ message: "No changes detected!" });
     }
 
-    // Update only the changed fields
+ 
     Object.assign(existingMovie, updatedFields);
 
     const updatedMovie = await existingMovie.save();
 
     res.status(200).json({
       message: "Movie updated successfully!",
-      updatedFields, // Return only the updated fields
+      updatedFields, 
     });
   } catch (error) {
     console.error("Error:", error);
@@ -275,23 +300,23 @@ const updateMovies = async (req, res) => {
 
 const deleteMovies = async (req, res) => {
   try {
-    const { id } = req.params; // Extract movie ID from request parameters
+    const { id } = req.params; 
 
     if (!id) {
       return res.status(400).json({ message: "Movie ID is required!" });
     }
 
-    // Find and delete the movie by ID
+
     const deletedMovie = await Movie.findByIdAndDelete(id);
 
     if (!deletedMovie) {
       return res.status(404).json({ message: "Movie not found!" });
     }
 
-    // Return a success response
+   
     res.status(200).json({
       message: "Movie deleted successfully!",
-      deletedMovie, // Optional: return deleted movie details if needed
+      deletedMovie, 
     });
   } catch (error) {
     console.error("Error deleting movie:", error);
@@ -335,7 +360,7 @@ const streamVideo = async (req, res) => {
 
     console.log(`Streaming bytes: ${start} - ${end}`);
 
-    // Set HTTP Headers
+    
     res.writeHead(206, {
       "Content-Range": `bytes ${start}-${end}/${videoSize}`,
       "Accept-Ranges": "bytes",
@@ -343,7 +368,6 @@ const streamVideo = async (req, res) => {
       "Content-Type": "video/mp4",
     });
 
-    // Fetch the video chunk from external URL
     const videoStream = await axios({
       method: "get",
       url: videoUrl,
@@ -431,7 +455,7 @@ const uploadTvShow = async (req, res) => {
       title,
       rating,
       maturityRating,
-      seasons: seasons || [], // Default to an empty array if not provided
+      seasons: seasons || [], 
       numberOfSeasons,
       releaseYear,
       language,
@@ -471,7 +495,7 @@ const uploadEpisodes = async (req, res) => {
     }
     console.log("seasonNumber",seasonNumber);
     
-    // Find the TV show
+ 
     const tvshow = await TVShow.findById(id);
     if (!tvshow) {
       return res.status(404).json({ success: false, message: "TV Show not found" });
@@ -479,7 +503,7 @@ const uploadEpisodes = async (req, res) => {
     const videoUrl = req.files.videoFile[0].path;  
     const thumbnailUrl = req.files.imageFile[0].path;  
 
-    // Construct new episode object
+
     console.log("videoUrl",videoUrl);
     const newEpisode = {
       episodeNumber: parseInt(episodeNumber, 10),
@@ -492,23 +516,23 @@ const uploadEpisodes = async (req, res) => {
       thumbnailUrl,
     };
 
-    // Check if the season exists
+   
     const seasonIndex = tvshow.seasons.findIndex(
       (season) => season.seasonNumber === parseInt(seasonNumber, 10)
     );
 
     if (seasonIndex === -1) {
-      // Add new season
+      
       tvshow.seasons.push({
         seasonNumber: parseInt(seasonNumber, 10),
         episodes: [newEpisode],
       });
     } else {
-      // Update existing season
+   
       tvshow.seasons[seasonIndex].episodes.push(newEpisode);
     }
 
-    // Save the TV show
+
     await tvshow.save();
 
     res.status(200).json({
@@ -531,4 +555,4 @@ const uploadEpisodes = async (req, res) => {
 
 
 
-module.exports = {updateMovies,deleteMovies, videoUploading,fetchMovies,fetchMovieIdBased,streamVideo,findthVideo,uploadTvShow ,uploadEpisodes,findTheSingleMovie};
+module.exports = {updateMovies,deleteMovies,getAllPayments, videoUploading,fetchMovies,fetchMovieIdBased,streamVideo,findthVideo,uploadTvShow ,uploadEpisodes,findTheSingleMovie};

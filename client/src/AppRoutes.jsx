@@ -53,6 +53,10 @@ import AdminHome from './pages/admin-part/AdminHome';
 import AdminUserList from './pages/admin-part/AdminUserList';
 import MovieListingTable from './pages/admin-part/MoviesListingTables';
 import EditMovies from './pages/admin-part/EditMovies';
+import DashBoard from './pages/admin-part/DashBoard';
+import PaymentsDetails from './pages/admin-part/PaymentsDetails';
+import UsersDetails from './pages/admin-part/UsersDetails';
+import ManageAllProfiles from './pages/ManageAllProfiles';
 
 function AppRoutes({ role, active }) {
 
@@ -91,6 +95,7 @@ const location=useLocation()
         <Route path='TransfefrProfile' element={<TransferProfile/>}/>
         </Route>
         <Route path='/browse' element={<Browse/>}/>
+        <Route path='/manageAllprofiles' element={<ManageAllProfiles/>}/>
         <Route path='/transfercontext/:profileId' element={<TransferContext/>}></Route>
         <Route path='/restrictions/:profileId' element={<Restrictions/>}></Route>
         <Route path='/viewrestrictions/:profileid' element={<ViewRestrictions/>}></Route>
@@ -103,6 +108,7 @@ const location=useLocation()
      <Route path='/paymentpicker' element={<PaymentPicker/>}/>
      <Route path='/paymetStrip' element={<Checkoutpayment/>}/>
      <Route path='/success' element={<Success/>}/>
+  
      <Route path='/Trendingnow' element={<TrendingNow/>}/>
      <Route path='/sendemail' element={<ForgotSendMail/>}/>
      <Route path='/reset_password/:id/:token' element={<ChangePassword/>}/>
@@ -121,12 +127,17 @@ const location=useLocation()
        ):(role==="admin"&&active)?(
      
          <Routes>
+          
             <Route path='/adminhome' element={<AdminHome/>}>
+            <Route index element={<DashBoard/>}/>
             <Route path='adminuserlist' element={<AdminUserList/>}/>
             <Route path='movielisting' element={<MovieListingTable/>}/>
             <Route path='uploadmovies' element={ <MovieUploadForm/>}/>
+            <Route path='paymentsdetails' element={ <PaymentsDetails/>}/>
             </Route>
             <Route path='/editmovie/:movieId' element={<EditMovies/>}/>
+            <Route path='/userdetails/:userId' element={<UsersDetails/>}/>
+
            
          </Routes>
      

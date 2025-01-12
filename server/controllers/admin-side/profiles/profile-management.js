@@ -3,6 +3,7 @@
 
 const ProfileIcon=require("../../../models/profileicons.mode")
 const Avatar =require("../../../models/avatarcollection")
+const Profile=require("../../../models/Profiles.model")
 
 const uploadProfiles=async(req,res)=>{
     try {
@@ -89,4 +90,30 @@ const getAvatar=async(req,res)=>{
 
 }
 
-module.exports={uploadProfiles,getprofiles,createAvatar,getAvatar}
+
+
+const getProfileByUserId = async (req, res) => {
+  try {
+ 
+    const { userId } = req.params;
+
+    
+    const profile = await Profile.find({ user: userId });
+
+  
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+   
+    res.status(200).json({
+      success: true,
+      profile,
+    });
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+};
+
+module.exports={uploadProfiles,getprofiles,createAvatar,getAvatar,getProfileByUserId}

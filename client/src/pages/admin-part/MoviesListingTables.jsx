@@ -1,31 +1,56 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import api from '../../axiosInstance/api';
 import {Modal,Button} from "react-bootstrap"
+import { setMovies } from '../../redux/movieSlice';
 
 const MovieListingTable = () => {
+    
+    const movies = useSelector((state) => state.movies.movies);
+    console.log("movies",movies)
+    const navigate=useNavigate()
+const dispatch=useDispatch()
+const currentProfile=useSelector((state)=>state.profile.currentProfile)
+    useEffect(()=>{
+        fetchMovies()
+    },[])
 
+    const fetchMovies = async () => {
+        try {
+          const response = await api.get("fetchmovies");
+           console.log("response.data.data",response.data.data);
+  
+          const  moviess = response.data.data.filter(
+            (movie) => !currentProfile.blockedCollection.some(
+              (blockedMovie) => blockedMovie._id.toString() === movie._id.toString()
+            )
+          );  
+          console.log("moviess",moviess);
+          
+  
+           
+  
+          dispatch(setMovies(moviess));
+        } catch (error) {
+          console.error("Error fetching movies:", error.message);
+        }
+      };
     
 
     const [isVisible,setIsVisible]=useState()
     const [movieId,setMovieId]=useState(null)
 
     console.log("isVisible",isVisible);
-    
- const movies = useSelector((state) => state.movies.movies);
-const navigate=useNavigate()
+
 
 const deleteMovie=async()=>{
- try {
+
     const response=await api.post(`/deletemovie/${movieId}`)
     console.log("response",response);
    
         setMovieId(null)
- } catch (error) {
-    console.log("error",error);
-    
- }
+
     
     
 }
@@ -64,17 +89,6 @@ const handleDelete=()=>{
    }
 
 
-      {/* {isVisible && (
-           <Modal show={isVisible} onHide={handleModalClose} centered>
-             <Modal.Body className="text-center bg-dark text-white p-4">
-               <h4 className="fw-bold">Your payment is pending.</h4>
-               <p className="mt-3">In the meantime, browse TV shows and movies.</p>
-               <Button variant="light" onClick={handleModalClose} className="mt-3">
-                 OK
-               </Button>
-             </Modal.Body>
-           </Modal>
-         )} */}
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded-lg">

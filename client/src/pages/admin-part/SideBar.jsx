@@ -11,15 +11,27 @@ import { ImUsers } from "react-icons/im";
 import { SiNginxproxymanager } from "react-icons/si";
 import { IoMdAddCircle } from "react-icons/io";
 import netflixlog from "../../assets/netflix-logo.png";
+import { useDispatch } from "react-redux";
+import api from "../../axiosInstance/api";
+import { setLoginStatus } from "../../redux/slice";
+import { RiMoneyRupeeCircleFill } from "react-icons/ri";
 
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false); 
 const navigate=useNavigate()
-
+const dispatch=useDispatch()
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+
+    const handleLogOut = async () => {
+    const response = await api.post("/adminlogout");
+    console.log("response", response);
+    dispatch(setLoginStatus(false))
+    navigate("/");
+  }
 
   return (
     <div>
@@ -42,7 +54,7 @@ const navigate=useNavigate()
           <img
             src={netflixlog}
             alt="Profile"
-            className=" h-16  border-4 border-gray-700 shadow-md"
+            className=" h-16  shadow-md"
           />
           <h2 className="text-xl font-semibold text-blue-500 mt-4">Aslah.C</h2>
           <p className="text-sm text-gray-400">Administrator</p>
@@ -51,7 +63,7 @@ const navigate=useNavigate()
         {/* Navigation Menu */}
         <nav className="w-full px-4 space-y-3 flex flex-col items-center">
           <div 
-          onClick={()=>navigate("/")}
+          onClick={()=>navigate("dashboard")}
           className="block w-full text-center no-underline">
             <div className="flex  items-center justify-center border border-white  py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition">
               <HiMiniSquares2X2 size={25} />
@@ -77,7 +89,7 @@ const navigate=useNavigate()
             </div>
           </div>
 
-          <div to="/adminorders" className="block w-full text-center no-underline">
+          <div  onClick={()=>navigate("paymentsdetails")} className="block w-full text-center no-underline">
             <div className="flex  items-center justify-center border border-white  py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition">
             <MdOutlineSubscriptions size={25}/>
               <span className="mt-1 text-xl">Subscription</span>
@@ -91,9 +103,18 @@ const navigate=useNavigate()
             </div>
           </div>
           <div className="block w-full text-center no-underline">
-            <div className="flex  items-center justify-center border-white  py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition">
+            <div className="flex  items-center justify-center border border-white  py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition">
             <MdContentCut size={25}/>
               <span className="mt-1 text-xl">Content Management</span>
+            </div>
+          </div>
+
+          <div
+         
+          className="block w-full text-center no-underline">
+            <div className="flex   items-center justify-center border border-white  py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition">
+            <RiMoneyRupeeCircleFill size={25}/>
+              <span className="mt-1 text-xl ">payments</span>
             </div>
           </div>
 
@@ -110,7 +131,7 @@ const navigate=useNavigate()
 
           {/* Logout Button */}
           <div
-     
+            onClick={handleLogOut}
             className="flex  items-center justify-center   border border-white py-3 w-52 text-red-700 hover:bg-red-900 mt-5  hover:text-white  rounded-lg transition cursor-pointer"
           >
             <FaSignOutAlt size={25} />

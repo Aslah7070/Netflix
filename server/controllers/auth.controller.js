@@ -1,5 +1,6 @@
 
 const User = require("../models/user.models")
+const Payment = require("../models/Payment.model")
 const Avatar=require("../models/avatarcollection")
 const bcrypt = require('bcrypt');
 require('dotenv').config();
@@ -11,6 +12,8 @@ const { v4: uuidv4 } = require('uuid');
 const signUpSchema = require("../validations/signupValidation");
 const { generateTokenAndCookies } = require("../utils/generateTokens");
 const Subscription = require('../models/subscription.models'); 
+
+
 
 const CustomError=require("../utils/customErrorHandling")
 
@@ -28,7 +31,7 @@ const hello=(req,res)=>{
 const generateOtp = async (req, res,next) => {
         const { email } = req.body;
         if (!email) {
-            // return res.status(400).json({ success: false, message: "Email is required" });
+        
             return next(new CustomError("Email is required",400))
         }
         const user = await User.findOne({ email });
@@ -71,65 +74,199 @@ const transporter = nodemailer.createTransport({
 
 
 
+
+const verifyPremium = async (req, res) => {
+  const { email, amount, paymentMethod, transactionId } = req.body;
+  const { sessionId } = req.params;
+
+  console.log("Email:", email);
+
+  const user = await User.findOne({ email: email });
+  console.log("User:", user);
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  if (!sessionId) {
+    return res.status(404).json({ error: 'Session not found' });
+  }
+
+  console.log('Session Details:', sessionId);
+
+  
+  const demoPlans = [
+    {
+      title: "Mobile",
+      resolution: "480p",
+      price: 149,
+      quality: "Fair",
+      devices: "Mobile phone, tablet",
+      watchDevices: "1",
+      downloadDevices: "1",
+    },
+    {
+      title: "Basic",
+      resolution: "720p",
+      price: 299,
+      quality: "Good",
+      devices: "Mobile phone, tablet, laptop",
+      watchDevices: "1",
+      downloadDevices: "2",
+      mostPopular: true,
+    },
+    {
+      title: "Standard",
+      resolution: "1080p",
+      price: 499,
+      quality: "Better",
+      devices: "All devices",
+      watchDevices: "2",
+      downloadDevices: "2",
+    },
+    {
+      title: "Premium",
+      resolution: "4K (Ultra HD) + HDR",
+      price: 649,
+      quality: "Best",
+      devices: "TV, computer, mobile phone, tablet",
+      watchDevices: "4",
+      downloadDevices: "6",
+      audio: "Spatial audio (immersive sound)",
+    },
+  ];
+
+  console.log("amount", typeof amount);
+
+
+  const matchedPlan = demoPlans.find(plan => plan.price === Number(amount));
+
+  console.log("matchedPlan", matchedPlan);
+
+  if (!matchedPlan) {
+    return res.status(400).json({ error: 'Invalid payment amount for any plan' });
+  }
+
+  
+  user.role = 'premium';
+  user.premiumStartDate = new Date();
+  user.amount = amount;
+  user.currentPlan = matchedPlan.title; 
+  await user.save();
+
+  const payment = new Payment({
+    userId: user._id,
+    amount,
+    paymentMethod, 
+    status: 'Completed', 
+    transactionId:sessionId
+  });
+
+  try {
+   
+    await payment.save();
+  } catch (error) {
+    console.error('Failed to save payment', error);
+    return res.status(500).json({ error: 'Payment record could not be saved' });
+  }
+
+  
+  const payload = {
+    userId: user._id,
+    email: user.email,
+    role: user.role,
+    amount: user.amount,
+    currentPlan: user.currentPlan,
+  };
+
+  const secretKey = process.env.JWT_SECRET;
+
+  const premiumToken = jwt.sign(payload, secretKey, { expiresIn: '30d' });
+
+  // Send the token as a cookie
+  res.cookie('premiumToken', premiumToken, {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+  });
+
+  // Send success response with user details
+  res.status(200).json({
+    success: true,
+    sessionId,
+    user: {
+      email: user.email,
+      role: user.role,
+      currentPlan: user.currentPlan,
+    },
+    premiumToken,
+  });
+};
+
+module.exports = verifyPremium;
+
+
  
 
 
-const verifyPremium = async (req, res) => {
-    const { email, amount } = req.body;
-    const { sessionId } = req.params;
-  console.log("emaillllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll",email);
+// const verifyPremium = async (req, res) => {
+//     const { email, amount } = req.body;
+//     const { sessionId } = req.params;
+//   console.log("emaillllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll",email);
   
     
-    const user = await User.findOne({ email: email }); 
-    console.log("userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr ",user);
+//     const user = await User.findOne({ email: email }); 
+//     console.log("userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr ",user);
     
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-  
-    
-    if (!sessionId) {
-      return res.status(404).json({ error: 'Session not found' });
-    }
-  
-    console.log('Session Details:', sessionId);
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
   
     
-    user.role = 'premium';
-    user.premiumStartDate = new Date(); 
-    await user.save();
+//     if (!sessionId) {
+//       return res.status(404).json({ error: 'Session not found' });
+//     }
   
-    const payload = {
-      userId: user._id,
-      email: user.email,
-      role: user.role,
-      amount: amount,
+//     console.log('Session Details:', sessionId);
+  
+    
+//     user.role = 'premium';
+//     user.premiumStartDate = new Date(); 
+//     user.amount+=amount
+//     await user.save();
+  
+//     const payload = {
+//       userId: user._id,
+//       email: user.email,
+//       role: user.role,
+//       amount: amount,
       
-    };
+//     };
   
-    const secretKey = process.env.JWT_SECRET 
+//     const secretKey = process.env.JWT_SECRET 
   
-    const premiumToken = jwt.sign(payload, secretKey, { expiresIn: '30d' }); 
+//     const premiumToken = jwt.sign(payload, secretKey, { expiresIn: '30d' }); 
 
-    res.cookie('premiumToken', premiumToken, {
-        httpOnly: false, 
-        secure: process.env.NODE_ENV === 'production', 
-        sameSite: 'Strict', 
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
+//     res.cookie('premiumToken', premiumToken, {
+//         httpOnly: false, 
+//         secure: process.env.NODE_ENV === 'production', 
+//         sameSite: 'Strict', 
+//         maxAge: 30 * 24 * 60 * 60 * 1000,
+//       });
       
   
     
-    res.status(200).json({
-      success: true,
-      sessionId,
-      user: {
-        email: user.email,
-        role: user.role,
-      },
-      premiumToken, 
-    });
-  };
+//     res.status(200).json({
+//       success: true,
+//       sessionId,
+//       user: {
+//         email: user.email,
+//         role: user.role,
+//       },
+//       premiumToken, 
+//     });
+//   };
 
 const createPaymentIntent = async (req, res) => {
         const { amount,userEmail } = req.body;

@@ -74,7 +74,7 @@ const MovieUploadForm = () => {
         language: '',
         releaseYear: '',
         duration: '',
-        maturityRating: '',
+        maturityRating: '', 
         rating: '',
       });
       setVideoFile(null);

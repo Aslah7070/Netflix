@@ -10,6 +10,7 @@ const userSlice = createSlice({
     role: '',
     username: '',
     image: '', 
+    users:[]
   },
   reducers: {
     setEmail: (state, action) => {
@@ -47,6 +48,9 @@ const userSlice = createSlice({
       state.username = '';
       state.image = '';
     },
+    setAllUsers:(state,action)=>{
+state.users=action.payload
+    }
   },
 });
 
@@ -57,6 +61,7 @@ export const {
   setClientSecret,
   setUserData,
   logout,
+  setAllUsers
 } = userSlice.actions;
 
 export default userSlice.reducer;
