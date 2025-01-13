@@ -3,6 +3,7 @@ const adminSlice = createSlice({
     name: "admin",
     initialState: {
    totlaAmount:null,
+   dailyAmounts:null,
    allPayments:[]
     },
     reducers: {
@@ -11,11 +12,14 @@ const adminSlice = createSlice({
       },
       setAllPayments:(state,action)=>{
         state.allPayments=action.payload
+      },
+      setDilyPayments:(state,action)=>{
+        state.dailyAmounts=action.payload
       }
         
     },
   });
   
-  export const { setAmount,setAllPayments } = adminSlice.actions;
+  export const { setAmount,setAllPayments,setDilyPayments } = adminSlice.actions;
   export default adminSlice.reducer;
   

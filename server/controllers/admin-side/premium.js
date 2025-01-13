@@ -111,6 +111,78 @@ const getAllPayments = async (req, res) => {
 
 
 
+const getDailyPayments = async (req, res) => {
+  try {
+   
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+
+    const payments = await Payment.find({
+      date: { 
+        $gte: startOfDay, 
+        $lte: endOfDay 
+      }
+    }).populate('userId', 'email role currentPlan');
+
+    if (payments.length === 0) {
+      return res.status(404).json({ error: 'No payments found for today.' });
+    }
+
+    
+    const totalAmount = payments.reduce((total, payment) => total + payment.amount, 0);
+
+    
+    res.status(200).json({
+      success: true,
+      payments,
+      totalAmount,
+    });
+  } catch (error) {
+    console.error('Error fetching daily payments:', error);
+    res.status(500).json({ error: 'Failed to fetch daily payments.' });
+  }
+};
+
+
+const getMonthlyPayments = async (req, res) => {
+  try {
+    const today = new Date();
+    
+ 
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+
+    const payments = await Payment.find({
+      date: { 
+        $gte: startOfMonth,
+        $lte: endOfMonth  
+      }
+    }).populate('userId', 'email role currentPlan');
+
+    if (payments.length === 0) {
+      return res.status(404).json({ error: 'No payments found for this month.' });
+    }
+
+   
+    const totalAmount = payments.reduce((total, payment) => total + payment.amount, 0);
+
+    res.status(200).json({
+      success: true,
+      payments,
+      totalAmount,
+    });
+  } catch (error) {
+    console.error('Error fetching monthly payments:', error);
+    res.status(500).json({ error: 'Failed to fetch monthly payments.' });
+  }
+};
+
+
+
+
+
 const videoUploading = async (req, res) => {
   try {
     console.log("Request Body:", req.body);
@@ -176,6 +248,7 @@ const videoUploading = async (req, res) => {
 
 
 const fetchMovies=async(req,res)=>{
+  
 
       const movies=await Movie.find()
     
@@ -388,7 +461,7 @@ const findthVideo = async (req, res) => {
   try {
     const { movieId } = req.params;
 console.log("movieId",movieId)
-    // Validate movieId
+
     if (!movieId) { 
       return res.status(400).json({
         success: false,
@@ -403,7 +476,6 @@ console.log("movieId",movieId)
       });
     }
 
-    // Fetch movie details
     const movieDetails = await Movie.findOne({ _id: movieId });
     if (!movieDetails) {
       return res.status(404).json({
@@ -412,7 +484,7 @@ console.log("movieId",movieId)
       });
     }
 
-    // Send response with video URL
+    
     const video = movieDetails.videoUrl;
     return res.status(200).json({
       success: true,
@@ -436,7 +508,7 @@ const uploadTvShow = async (req, res) => {
     title,
     rating,
     maturityRating,
-    seasons, // optional
+    seasons, 
     numberOfSeasons,
     releaseYear,
     language,
@@ -555,4 +627,4 @@ const uploadEpisodes = async (req, res) => {
 
 
 
-module.exports = {updateMovies,deleteMovies,getAllPayments, videoUploading,fetchMovies,fetchMovieIdBased,streamVideo,findthVideo,uploadTvShow ,uploadEpisodes,findTheSingleMovie};
+module.exports = {updateMovies,deleteMovies,getMonthlyPayments, getDailyPayments, getAllPayments, videoUploading,fetchMovies,fetchMovieIdBased,streamVideo,findthVideo,uploadTvShow ,uploadEpisodes,findTheSingleMovie};

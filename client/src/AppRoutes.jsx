@@ -128,7 +128,7 @@ const location=useLocation()
      
          <Routes>
           
-            <Route path='/adminhome' element={<AdminHome/>}>
+            <Route path='/' element={<AdminHome/>}>
             <Route index element={<DashBoard/>}/>
             <Route path='adminuserlist' element={<AdminUserList/>}/>
             <Route path='movielisting' element={<MovieListingTable/>}/>

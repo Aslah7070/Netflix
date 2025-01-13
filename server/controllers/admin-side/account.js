@@ -16,20 +16,6 @@ const findAllAccounts=async(req,res)=>{
 
 
 
-// const findAccount=async(req,res)=>{
-//    const userId= req.params
-//    if(!userId){
-//     return res.status(404).json({success:false,message:"userId not found"})
-//    }
-//    const account=await User.findById(userId)
-//    if(!account){
-//     return res.status(404).json({success:false,message:"user not found"})
-//    }
-
-//    res.status(200).json({success:true,message:"account founded",account})
-// }
-
-
 const findAccount = async (req, res) => {
     const { userId } = req.params;  
     
@@ -54,16 +40,16 @@ const findAccount = async (req, res) => {
   module.exports = { findAccount };
   
 const banAccount = async (req, res) => {
-    const { userId } = req.params; // Get user ID from route parameters
+    const { userId } = req.params; 
    
     try {
-      const user = await User.findById(userId); // Find the user by ID
+      const user = await User.findById(userId);
   
       if (!user) {
         return res.status(404).json({ success: false, message: "User not found" });
       }
   
-      // Update the 'banned' property to true
+     
       user.banned = true;
       await user.save();
   
@@ -83,10 +69,10 @@ const banAccount = async (req, res) => {
   };
 
   const unbanAccount = async (req, res) => {
-    const { userId } = req.params; // Get user ID from route parameters
+    const { userId } = req.params; 
   
     try {
-      const user = await User.findById(userId); // Find the user by ID
+      const user = await User.findById(userId);
   
       if (!user) {
         return res.status(404).json({ success: false, message: "User not found" });

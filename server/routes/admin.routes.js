@@ -16,6 +16,8 @@ route
 .get("/findaccount/:userId",adminAuthMiddleware,adminAccounts.findAccount)
 .get("/accounts",adminAuthMiddleware,adminAccounts.findAllAccounts)
 .get("/getallpayments",adminAuthMiddleware,premiums.getAllPayments)
+.get("/getdailypayments",adminAuthMiddleware,premiums.getDailyPayments)
+.get("/getmonthlypayments",adminAuthMiddleware,premiums.getMonthlyPayments)
 .get("/getprofilebyuserId/:userId",adminAuthMiddleware,profile.getProfileByUserId)
 
 

@@ -30,7 +30,7 @@ setFormData((pre)=>({
           const user = response.data.uset
           dispatch(setUserData(user))
           dispatch(setLoginStatus(true));
-          navigate("/adminhome")
+          navigate("/")
 
         } catch (error) {
     
