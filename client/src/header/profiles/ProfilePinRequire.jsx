@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import api from '../../axiosInstance/api';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ProfilePinRequire = () => {
   const [pin, setPin] = useState(['', '', '', '']);
   const [error, setError] = useState('');
   const [selectedProfile, setSelectedProfile] = useState("");
 const {profileId}= useParams()
-
+const navigate=useNavigate()
 console.log("pin",pin);
 
 
@@ -74,6 +74,9 @@ const findProfile = async () => {
             const response=await api.post(`/profileblock/${profileId}`,{pinNumber:pinNumber})
 
             console.log("responseOnpin",response);
+            if(response.status===200){
+              navigate(`/profilesettings/${profileId}`)
+            }
            } catch (error) {
         console.log("error",error);
         
@@ -93,14 +96,14 @@ console.log("isPinRequired",isPinRequired);
     setIsPinRequired(!isPinRequired); 
   };
   return (
-    <div className="w-full h-screen bg-gray-200 flex flex-col items-center justify-center">
+    <div className="w-full h-full bg-gray-200 flex flex-col items-center justify-center">
       <form
         className="w-3/5 h-5/6 space-y-20 bg-white p-8 shadow-md rounded-md"
         onSubmit={handleSubmit}
       >
-        <div className="flex justify-between items-center py-5">
-          <h1 className="text-4xl font-bold">Profile Lock</h1>
-          <img className="w-14 h-14 object-cover" src={selectedProfile?.image} alt="Profile" />
+        <div className="  sm:flex sm:justify-between sm:items-center py-5">
+         <div > <h1 className="text-4xl  font-bold">Profile Lock</h1></div>
+       <div>   <img className="w-14 h-14 object-cover" src={selectedProfile?.image} alt="Profile" /></div>
         </div>
 
         <p className="text-2xl">
@@ -150,7 +153,7 @@ console.log("isPinRequired",isPinRequired);
           <button
             type="button"
             className="text-xl bg-gray-400 hover:bg-gray-500 text-black px-6 py-3 rounded-md"
-            onClick={() => console.log('Cancel')}
+            onClick={() =>  navigate(`/profilesettings/${profileId}`)}
           >
             Cancel
           </button>

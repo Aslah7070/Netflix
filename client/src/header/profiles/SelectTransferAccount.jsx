@@ -33,15 +33,16 @@ const SelectTransferAccount = () => {
   }
 
   return (
-    <div className="max-w-lg py-40 mx-auto mt-10 p-6 bg-white h-screen rounded-lg shadow-md">
-    <div className="flex items-center justify-center">
-    <img
+    <div className="max-w-lg py-40 mx-auto mt-10 p-6 bg-white h-full rounded-lg shadow-md">
+    <div className=" md:flex items-center justify-evenly">
+    <div>
+      <img
         src={selectedProfile?.image }
         alt="Profile"
-        className="w-32 h-32 mx-auto  object-cover mb-6"
-      />
+        className="w-32 h-32 mx-auto  object-cover  mb-6"
+      /></div>
 
-      <h1>{selectedProfile.name}</h1>
+     <div className="  flex justify-center "> <h1 className=""> {selectedProfile?.name}</h1></div>
     </div>
       <h1 className="text-4xl font-bold text-center mb-6">Transfer Account</h1>
 
@@ -81,7 +82,9 @@ const SelectTransferAccount = () => {
 
       {/* Buttons */}
       <div className="flex justify-between mt-8">
-        <button className="px-6 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+        <button
+        onClick={()=>navigate(`/profilesettings/${profileid}`)}
+        className="px-6 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
           Cancel
         </button>
         <button 

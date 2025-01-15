@@ -2,10 +2,13 @@ import React from 'react';
 import homeBackground from "../../assets/Devices.png";
 import { useNavigate } from 'react-router-dom';
 
+
 const Registration = () => {
 
 const navigate=useNavigate()
+
   return (
+    
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="flex flex-col items-center  w-96 p-6 rounded-lg">
         <div className="w-72 ">

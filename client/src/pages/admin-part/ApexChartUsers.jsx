@@ -6,7 +6,7 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-class ApexChart extends React.Component {
+class ApexChartUsers extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,7 +45,7 @@ class ApexChart extends React.Component {
                     },
                 },
                 title: {
-                    text: 'Profit Chart',
+                    text: 'Users Chart',
                     align: 'center',
                     style: {
                         fontSize: '16px',
@@ -60,7 +60,7 @@ class ApexChart extends React.Component {
                         breakpoint: 1700,
                         options: {
                             chart: {
-                                width: 390,
+                                width: 370,
                             },
                             legend: {
 
@@ -131,4 +131,4 @@ class ApexChart extends React.Component {
     }
 }
 
-export default ApexChart;
+export default ApexChartUsers;

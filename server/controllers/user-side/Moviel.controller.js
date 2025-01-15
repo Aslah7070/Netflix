@@ -83,57 +83,11 @@ const restrictedMovies=async(req,res)=>{
    
    
 
-
-//      const excistingMovies=await Restricted.findOne({movie:movie.title}) 
-//      if(excistingMovies){
-//       return res.status(404).json({success:false,message:"movie is already excist"})
-//      }
-
-//      const newRestricted=new Restricted({
-//         movie:movie.title
-//      })
-
-//   const savedMovie= await newRestricted.save()
-  
-    
-  
-// console.log("movie",savedMovie);
-
      res.status(200).json({success:true, message:"profile updated"})
   
      
      
 }
-
-// const removeFromRestricted = async (req, res) => {
-//   const { title } = req.body;
-
-//   if (!title) {
-//     return res.status(400).json({ success: false, message: "Movie title not provided" });
-//   }
-
-//   try {
-//     const deleteResult = await Restricted.deleteOne({ movie: title });
-
-//     if (deleteResult.deletedCount === 0) {
-//       return res.status(404).json({ success: false, message: "Movie not found" });
-//     }
-
-//     let balanceMovies = await Restricted.find(); 
-//     balanceMovies = balanceMovies.map((movie) => movie.movie); 
-//     console.log("balanceMovies",balanceMovies);
-    
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Deleted successfully",
-//       balanceMovies,
-//     }); 
-//   } catch (error) {
-//     console.error("Error removing restricted movie:", error);
-//     return res.status(500).json({ success: false, message: "Internal server error" });
-//   }
-// };
 
 
 
@@ -168,7 +122,7 @@ console.log("sx");
     let balanceMovies = await Restricted.find();
     balanceMovies = balanceMovies.map((movie) => movie.movie);
 
-    // console.log("Remaining restricted movies:", balanceMovies);
+  
 
     return res.status(200).json({
       success: true,
@@ -187,6 +141,7 @@ console.log("sx");
 const movieFilterByRating = async (req, res) => {
   try {
     const { Rating,profileId } = req.body;
+console.log("Rating",Rating);
 
 
     if (!Rating) {
@@ -199,17 +154,17 @@ const movieFilterByRating = async (req, res) => {
 
    
     const ratingValue = mapRatingToValue(Rating);
+    console.log("ratingValue",ratingValue);
+    
 
     if (ratingValue === null) {
       return res.status(400).json({ message: "Invalid rating format" });
     }
 
-
-
-
     const movies = await Movie.find({
-      newmericRating: { $lte: ratingValue }
+      newmericRating: { $gte: ratingValue }
     });
+    console.log("moviesRe",movies)
 
  
 
@@ -220,7 +175,7 @@ const movieFilterByRating = async (req, res) => {
       const profile=await Profile.findById(profileId)
  
       profile.filterMovies = movies;
-    await profile.save();
+    await profile.save(); 
 
     return res.status(200).json(movies);
   } catch (error) {
@@ -232,8 +187,8 @@ const movieFilterByRating = async (req, res) => {
 
 const mapRatingToValue = (rating) => {
   const ratingMap = {
+    "U/A17+": "17",
     "U/A15+": "15",
-    "U/A16+": "16",
     "U/A18+": "18",
     "U/A13+":"13",
   

@@ -116,11 +116,7 @@ const HomePage = () => {
     navigate(`/registration`);
   };
 
-  const handletmdb=async()=>{
-   const responce=await axios.get("https://api.themoviedb.org/3/watch/providers/movie?api_key=5ae26a19a68042a00dd9534dc8b4ab03")
-   console.log("res",responce);
-   
-  }
+
 
   const navigate = useNavigate()
   const [movies, setMovies] = useState([
@@ -175,34 +171,40 @@ const HomePage = () => {
         </div>
 
 
-        <header className="flex justify-evenly items-center    z-20 bg-black bg-opacity-20 relative">
-          <img className="w-40" src={netflixLogo} alt="Netflix Logo" />
-          <div className="w-3/6  bg-green-500 "></div>
-          <div className="flex items-center space-x-4">
-            <select
-              className="bg-gray-950 h-8 w-28 text-white px-1 py-1 rounded-xl border border-gray-500 cursor-pointer"
-            >
-              <option value="en">English</option>
-              <option value="hi">हिंदी</option>
-            </select>
-            {user ? (
-              <button
-                onClick={handleLogout}
-                className="bg-white h-8 w-24 text-black px-3 py-1 rounded-xl hover:bg-red-700 transition-all"
-              >
-                Sign Out
-              </button>
-            ) : (
-              <button
-                onClick={() => navigate("/login")}
-                className="bg-red-700 h-8 w-20 text-white px-3 py-1 rounded-xl hover:bg-red-800 transition-all"
-              >
-                Sign In
-              </button>
-            )}
-          </div>
+        <header className="flex flex-wrap justify-between items-center px-4 py-2 bg-black bg-opacity-20 z-20 relative">
+  {/* Logo Section */}
+  <div className="w-full md:w-auto flex justify-center ">
+    <img className="w-32 md:w-40" src={netflixLogo} alt="Netflix Logo" />
+  </div>
 
-        </header>
+ 
+
+  {/* Action Section */}
+  <div className="flex items-center  space-x-4 w-full md:w-auto justify-center mt-2 md:mt-0">
+    <select
+      className="bg-gray-950 h-8 w-28 text-white px-1 py-1 rounded-xl border border-gray-500 cursor-pointer"
+    >
+      <option value="en">English</option>
+      <option value="hi">हिंदी</option>
+    </select>
+    {user ? (
+      <button
+        onClick={handleLogout}
+        className="bg-white h-8 w-24 text-black px-3 py-1 rounded-xl hover:bg-red-700 transition-all"
+      >
+        Sign Out
+      </button>
+    ) : (
+      <button
+        onClick={() => navigate("/login")}
+        className="bg-red-700 h-8 w-24 text-white px-3 py-1 rounded-xl hover:bg-red-800 transition-all"
+      >
+        Sign In
+      </button>
+    )}
+  </div>
+</header>
+
 
         <div className="relative flex flex-col items-center justify-center text-center py-48 px-4 z-10">
   <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white xl:text-center">
@@ -342,7 +344,7 @@ const HomePage = () => {
     ))}
 </div>
 
-<button onClick={handletmdb}>tmdb</button>
+
 
     </div>
 

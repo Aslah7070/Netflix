@@ -1,4 +1,5 @@
-const User=require("../../models/user.models")
+const User=require("../../models/user.models");
+const { message } = require("../../validations/signupValidation");
 
 
 const findAllAccounts=async(req,res)=>{
@@ -68,6 +69,24 @@ const banAccount = async (req, res) => {
     }
   };
 
+  const findPrimeUser=async(req,res)=>{
+    const userId=req.user.userId
+    const users=await User.find(userId)
+    if(!users){
+      res.status(404).json({success:false,message:" users not found"})
+    }
+    const prime=users.filter((user)=>user.role==="premium")
+    if(prime.length===0){
+      return res.status(200).json({success:true ,message:"no prime users available"})
+    } 
+    const nonPrime=users.filter((user)=>user.role==="user")
+    if(nonPrime.length===0){
+      return res.status(200).json({success:true ,message:"nonPrime users not  available"})
+    } 
+    res.status(200).json({success:true,message:"users founded",prime,nonPrime})
+    
+  }
+
   const unbanAccount = async (req, res) => {
     const { userId } = req.params; 
   
@@ -78,7 +97,7 @@ const banAccount = async (req, res) => {
         return res.status(404).json({ success: false, message: "User not found" });
       }
   
-      // Update the 'banned' property to false (unban the user)
+   
       user.banned = false;
       await user.save();
   
@@ -115,5 +134,5 @@ const banAccount = async (req, res) => {
     }
   };
   
-  module.exports = { findAllAccounts,unbanAccount, banAccount,findAccount, addBannedFieldToExistingUsers };
+  module.exports = { findAllAccounts,unbanAccount,findPrimeUser, banAccount,findAccount, addBannedFieldToExistingUsers };
   

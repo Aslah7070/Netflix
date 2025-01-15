@@ -14,6 +14,7 @@ route
 .post("/banaccount/:userId",adminAuthMiddleware,adminAccounts.banAccount)
 .post("/unbanaccount/:userId",adminAuthMiddleware,adminAccounts.unbanAccount)
 .get("/findaccount/:userId",adminAuthMiddleware,adminAccounts.findAccount)
+.get("/findprimeuser",adminAuthMiddleware,adminAccounts.findPrimeUser)
 .get("/accounts",adminAuthMiddleware,adminAccounts.findAllAccounts)
 .get("/getallpayments",adminAuthMiddleware,premiums.getAllPayments)
 .get("/getdailypayments",adminAuthMiddleware,premiums.getDailyPayments)

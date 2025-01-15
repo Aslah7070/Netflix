@@ -38,6 +38,7 @@ const allProfile=useSelector((state)=>state.profile.Profiles)
   const [menuVisible, setMenuVisible] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  
 
   const primeToken = Cookies.get("premiumToken");
   const backgroundVideo = movies?.[8]?.videoUrl || null;

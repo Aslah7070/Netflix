@@ -27,6 +27,7 @@ function App() {
     "/details/:movieId",
     ":movieId",
     "/movieplayer/:movieId",
+  
   ];
 
   const shouldDisplayNavBar = excludedPaths.every((path) => {

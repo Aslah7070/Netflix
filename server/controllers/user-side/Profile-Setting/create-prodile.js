@@ -133,15 +133,14 @@ const getAllProfiles=async(req,res)=>{
 
 const getCurrentProfile = async (req, res) => {
   try {
-    const userId = req.user.userId; // Extract user ID from authenticated request
+    const userId = req.user.userId; 
 
-    // Fetch the user and populate the currentProfile field
+
     const user = await User.findById(userId).populate("currentProfile");
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // Check if currentProfile exists
     if (!user.currentProfile) {
       return res
         .status(404)
@@ -150,7 +149,7 @@ const getCurrentProfile = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      currentProfile: user.currentProfile, // Return the populated currentProfile
+      currentProfile: user.currentProfile,
     });
   } catch (error) {
     console.error(error);

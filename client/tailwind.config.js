@@ -11,6 +11,7 @@ module.exports = {
       screens: {
         md845: '845px',
         xm: '480px',
+        customlg: '1147px',
       },
     },
   },

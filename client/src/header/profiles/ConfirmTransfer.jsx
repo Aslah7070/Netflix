@@ -18,6 +18,7 @@ const ConfirmTransfer = () => {
   const [selectedProfile, setSelectedProfile] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [email, setEmail] = useState(account.email); 
+  const [error, setError] = useState("")
 
 
   useEffect(() => {
@@ -37,25 +38,7 @@ const ConfirmTransfer = () => {
   const handleValidation = async (e) => {
     e.preventDefault(); 
 
-    // try {
-    //   const response = await api.post('/signup',{ 
-    //     password: newPassword, 
-    //     email: email 
-    //   })
-    //   console.log("response.data.isValid", response.data);
-      
-    //   if (response.data.isValid) {
-
-
-    //   dispatch(setUserData(account))
-    //     navigate("/plancomponent");
-    //   } else {
-    //     alert("Invalid password");
-    //   }
-    // } catch (error) {
-    //   console.error("Error validating password:", error);
-    //   alert("An error occurred during validation");
-    // }
+    
 
     try {
         const response = await api.post('/signup', {
@@ -79,8 +62,14 @@ const ConfirmTransfer = () => {
           console.error("Sign-Up Failed:", response.data.message);
         }
       } catch (error) {
-        
         console.error("Error during sign-up:", error);
+        if (error.response && error.response.data) {
+          // Handle specific error messages from the server
+          setError(error.response.data.error); // Set the error message from the response
+        } else {
+          // Handle any other error that occurs
+          setError("An error occurred. Please try again later.");
+        }
       }
   };
 
@@ -89,6 +78,8 @@ const ConfirmTransfer = () => {
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h3 className="text-gray-500 text-sm font-medium">STEP 1 OF 3</h3>
         <h1 className="text-2xl font-semibold mt-2">
+        {error && <div className="text-red-600 text-sm mt-2">{error}</div>}
+
           Looks like this is a new email. <br />
           Let’s set up a new account.
         </h1>

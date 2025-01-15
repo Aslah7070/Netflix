@@ -52,16 +52,8 @@ const Profilelock = () => {
           setData(e.target.value)
          }
   return (
-    // <div>
-    //     <h1>Profile Lock</h1>
-    //     <p>Enter your account password to edit Profile Lock for anu's profile.</p>
-    //    <div>
-    //    <input type="text" />
-    //    <span>create new Password</span>
-    //    </div>
-      
-    // </div>
-    <div className='w-full h-screen bg-gray-200 flex flex-col items-center '>
+   
+    <div className='w-full h-full bg-gray-200 flex flex-col items-center '>
     <form 
       className='w-3/5 h-5/6 space-y-20'
       onSubmit={(e) => {
@@ -78,25 +70,28 @@ const Profilelock = () => {
      
       <p>Enter your account password to edit Profile Lock for anu's profile.</p>
   
-      <div className='flex'>
-      <div className='flex flex-col '>
-        <input 
-          className={`h-12 w-96 mr-10 border-3 ${error ? "border-red-700" : "border-gray-300"}`}
-          type="password" 
-          placeholder="Enter your password" 
-          required 
-          onChange={handleChange}
-        />
-        <span className='text-red-700'>{error}</span>
-       
-      </div>
-      
-      <button
-      onClick={()=>navigate("/sendemail")}  
-      type="button" className='text-xl h-12  text-blue-600 hover:underline'>
-          Create or reset password
-        </button>
-      </div>
+      <div className=' md:flex justify-start w-full'>
+
+  <div className='flex flex-col bg-red-500 w-3/5'>
+    <input 
+      className={`h-12 w-full min-w-[200px] border-3 ${error ? "border-red-700" : "border-gray-300"}`}
+      type="password" 
+      placeholder="Enter your password" 
+      required 
+      onChange={handleChange}
+    />
+    <span className='text-red-700'>{error}</span>
+  </div>
+
+  <button
+    onClick={() => navigate("/sendemail")}  
+    type="button" 
+    className='lg:text-xl h-12 md:text-sm sm:text-xs text-blue-600 hover:underline'
+  >
+    Create or reset password
+  </button>
+</div>
+
   
       <div className='flex items-center justify-center'>
         <button 

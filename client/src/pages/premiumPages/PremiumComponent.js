@@ -58,13 +58,18 @@ const PremiumComponent = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="max-w-7xl mx-auto p-6 w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6">
         {demoPlans.map((plan, index) => (
           <div
+          style={{
+            overflow: 'scroll',
+            scrollbarWidth: 'none', 
+            WebkitOverflowScrolling: 'touch' 
+          }}
             key={index}
             onClick={() => handleSelected(plan.price)}
-            className={`max-w-sm rounded-lg shadow-lg border p-6 bg-white relative cursor-pointer transform transition duration-200 ${
+            className={`max-w-sm h-5/6 overflow-auto rounded-lg shadow-lg border p-6 bg-white relative cursor-pointer transform transition duration-200 ${
               selectedPrice === plan.price
                 ? "border-blue-500 scale-105 shadow-xl"
                 : "border-gray-200"

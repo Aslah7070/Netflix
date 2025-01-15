@@ -151,7 +151,9 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
 
   const handleCurrentProfile=async(profileId)=>{
  
-
+    // if(selectedProfile.pinNumber){
+    //   setIsModalOpen(true)
+    // }
      const response=await api.post("/currentprofile",{profileId:profileId})
      console.log("current profilevvvvvvvvvvvvvvvvvvvvvvv",response.data.user.currentProfile);
      dispatch(setCurrentProfile(response.data.user.currentProfile))

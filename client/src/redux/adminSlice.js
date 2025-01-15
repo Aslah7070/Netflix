@@ -4,7 +4,11 @@ const adminSlice = createSlice({
     initialState: {
    totlaAmount:null,
    dailyAmounts:null,
-   allPayments:[]
+   monthlyAmount:null,
+   primeUsers:[],
+   nonPrimeUsers:[],
+   allPayments:[],
+   movies:[]
     },
     reducers: {
       setAmount:(state,action)=>{
@@ -15,11 +19,24 @@ const adminSlice = createSlice({
       },
       setDilyPayments:(state,action)=>{
         state.dailyAmounts=action.payload
-      }
+      },
+      setMonthlyPayments:(state,action)=>{
+        state.monthlyAmount=action.payload
+      },
+      setPrimeUses:(state,action)=>{
+        state.primeUsers=action.payload
+      },
+      setNonPrime:(state,action)=>{
+        state.nonPrimeUsers=action.payload
+      },
+      setAdminMovies:(state,action)=>{
+        state.movies=action.payload
+      },
+
         
     },
   });
   
-  export const { setAmount,setAllPayments,setDilyPayments } = adminSlice.actions;
+  export const { setAmount,setAllPayments,setDilyPayments,setMonthlyPayments,setPrimeUses,setNonPrime,setAdminMovies } = adminSlice.actions;
   export default adminSlice.reducer;
   

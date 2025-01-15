@@ -5,15 +5,20 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import api from "../../axiosInstance/api";
-import { setAllPayments, setAmount, setDilyPayments } from "../../redux/adminSlice";
+import { setAllPayments, setAmount, setDilyPayments, setMonthlyPayments, setNonPrime, setPrimeUses } from "../../redux/adminSlice";
 import ApexChart from "./ApexChart"; 
+import ApexChartUsers from "./ApexChartUsers";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const accounts = useSelector((state) => state.user.users);
-  const movies = useSelector((state) => state.movies.movies);
+ 
+ const movies = useSelector((state) => state.admin.movies);
   const totalAmount = useSelector((state) => state.admin.totlaAmount);
   const dailypayment=useSelector((state)=>state.admin.dailyAmounts)
+  const primAaccounts = useSelector((state) => state.admin.primeUsers);
+  const nonPrimAaccounts = useSelector((state) => state.admin.nonPrimeUsers);
+  const monthlypayment=useSelector((state)=>state.admin.monthlyAmount)
   
   const allPayments = useSelector((state) => state.admin.allPayments);
 
@@ -22,6 +27,7 @@ const Dashboard = () => {
   console.log("totalAmount", totalAmount);
   console.log("allPayments", allPayments);
   console.log("dailypayment", dailypayment);
+  console.log("monthlypayment", monthlypayment);
 
   const finAllPayment = async () => {
     const response = await api.get("/getallpayments");
@@ -47,9 +53,49 @@ const Dashboard = () => {
     
    }
 
+   const findMonthlyPayment=async()=>{
+
+try {
+  const response=await api.get("/getmonthlypayments")
+  console.log("response on month",response)
+  if(response.status===200){
+    console.log("response.data.totalAmount",response.data.totalAmount);
+    
+    dispatch(setMonthlyPayments(response.data.totalAmount))
+  }
+} catch (error) {
+  console.log("error",error);
+  
+}
+
+   }  
+
+   const findPriem=async()=>{
+try {
+  const response=await api.get("/findprimeuser")
+  console.log("response on find prime",response);
+  if(response.status===200&&response.data.prime){
+    dispatch(setPrimeUses(response.data.prime))
+  }
+  if(response.status===200&&response.data.nonPrime){
+    dispatch(setNonPrime(response.data.nonPrime))
+    
+  }
+  
+} catch (error) {
+  console.log("error",error);
+  
+}
+    
+   }
+
   useEffect(() => {
+    findPriem()
     finAllPayment();
+    findMonthlyPayment()
     findtheDailyPayments()
+   
+   
   }, []);
 
   
@@ -57,9 +103,19 @@ const Dashboard = () => {
 
   // Chart Data Preparation
   const chartData = {
-    series: [accounts?.length || 0, movies?.length || 0, totalAmount || 0 ,dailypayment||0],
-    labels: ["Total Users", "Total Movies", "Revenue","Daily Revenue"],
+    series: [ totalAmount || 0 ,dailypayment||0,monthlypayment||0],
+    labels: [ "Total Profit","Daily Profit","Monthly Profit"],
   };
+
+  const chartUsersData={
+    series: [accounts?.length||0,primAaccounts.length||0,nonPrimAaccounts.length||0 ],
+    labels: ["Total Users", "Prime Users", "Users",],
+  }
+
+  const chartMoviesData={
+    series: [accounts?.length||0,primAaccounts.length||0,nonPrimAaccounts.length||0 ],
+    labels: ["Total Users", "Prime Users", "Users",],
+  }
 
   return (
     <div>
@@ -83,62 +139,31 @@ const Dashboard = () => {
             <h2 className="text-lg font-bold">Daily Revenue</h2>
             <p className="text-2xl font-bold text-yellow-600">{dailypayment}</p>
           </div>
+
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h2 className="text-lg font-bold">Monthly Profits</h2>
+            <p className="text-2xl font-bold text-yellow-600">{monthlypayment}</p>
+          </div>
         </div>
 
-        {/* Chart Section */}
-        <div className="bg-white p-4 rounded-lg shadow mb-6">
-          <h2 className="text-lg font-bold mb-4">Statistics</h2>
-          <ApexChart chartData={chartData} />
-        </div>
+       
 
-        {/* Table Section */}
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-bold mb-4">Recent Orders</h2>
-          <table className="w-full border-collapse border border-gray-300">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Order ID
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Customer
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Amount
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border border-gray-300 px-4 py-2">#12345</td>
-                <td className="border border-gray-300 px-4 py-2">John Doe</td>
-                <td className="border border-gray-300 px-4 py-2">$500</td>
-                <td className="border border-gray-300 px-4 py-2 text-green-600">
-                  Completed
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-gray-300 px-4 py-2">#12346</td>
-                <td className="border border-gray-300 px-4 py-2">Jane Smith</td>
-                <td className="border border-gray-300 px-4 py-2">$700</td>
-                <td className="border border-gray-300 px-4 py-2 text-yellow-600">
-                  Pending
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-gray-300 px-4 py-2">#12347</td>
-                <td className="border border-gray-300 px-4 py-2">Sam Wilson</td>
-                <td className="border border-gray-300 px-4 py-2">$300</td>
-                <td className="border border-gray-300 px-4 py-2 text-red-600">
-                  Cancelled
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    
+
+<div className="bg-white flex flex-col items-center w-full rounded-lg shadow mb-6">
+  <h2 className="text-lg font-bold mb-4">Statistics</h2>
+  <div className="flex flex-col customlg:flex-row justify-between customlg:items-center w-3/4 ">
+    <div className="w-full customlg:w-1/2 p-2">
+      <ApexChart chartData={chartData} />
+    </div>
+    <div className="w-full customlg:w-1/2 p-2">
+      <ApexChartUsers chartData={chartUsersData} />
+    </div>
+  </div>
+</div>
+
+
+      
       </main>
     </div>
   );

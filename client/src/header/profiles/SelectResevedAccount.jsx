@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../../axiosInstance/api";
 import { useDispatch, useSelector } from "react-redux";
 import { profileTranferRecivedAccount } from "../../redux/profile.slice";
-
+import { toast, ToastContainer } from 'react-toastify';
 const SelectReservedAccount = () => {
   const [selectedProfile, setSelectedProfile] = useState("");
   const [transferOption, setTransferOption] = useState("");
@@ -38,12 +38,12 @@ const navigate=useNavigate()
         profileId: selectedProfile._id,
       });
       console.log("Transfer successful:", response.data);
-      alert("Profile transferred successfully!");
+      toast.success("Profile transferred successfully!");
       navigate("/")
     } catch (error) {
       console.error("Error transferring profile:", error.response?.data || error.message);
       
-      alert(error.response?.data?.message || "Error transferring profile.");
+      toast.error(error.response?.data?.message || "Error transferring profile.");
       if(error.response?.data?.message==="target user not a prime costomer"){
         setRecivedEmail(error.response?.data?.targetUser.email)
         dispatch(profileTranferRecivedAccount(error.response?.data?.targetUser))

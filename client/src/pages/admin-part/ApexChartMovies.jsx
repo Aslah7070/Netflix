@@ -6,7 +6,7 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-class ApexChart extends React.Component {
+class ApexCharMovies extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,22 +45,22 @@ class ApexChart extends React.Component {
                     },
                 },
                 title: {
-                    text: 'Profit Chart',
+                    text: 'Users Chart',
                     align: 'center',
                     style: {
                         fontSize: '16px',
                         fontWeight: 'bold', 
                         color: '#333',
                     },
-                    offsetY: 140,
+                    offsetY: 93,
                     className: 'custom-chart-title',
                 },
                 responsive: [
                     {
-                        breakpoint: 1700,
+                        breakpoint: 1500,
                         options: {
                             chart: {
-                                width: 390,
+                                width: 300,
                             },
                             legend: {
 
@@ -80,22 +80,6 @@ class ApexChart extends React.Component {
                             },
                         },
                     },
-                    {
-                        breakpoint: 480, 
-                        options: {
-                          title: {
-                            offsetY: 10,
-                          },
-                        },
-                      },
-                      {
-                        breakpoint: 1147, 
-                        options: {
-                          title: {
-                            offsetY: 140,
-                          },
-                        },
-                      },
                 ],
             },
         };
@@ -131,4 +115,4 @@ class ApexChart extends React.Component {
     }
 }
 
-export default ApexChart;
+export default ApexCharMovies;

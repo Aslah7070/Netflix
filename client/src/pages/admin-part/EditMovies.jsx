@@ -32,7 +32,7 @@ console.log("movieId",movieId);
   const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
-    // Fetch movie details from the backend based on movieId
+    
     const fetchMovieData = async () => {
       try {
         const response = await api.get(`/findthesinglemovie/${movieId}`);

@@ -57,6 +57,7 @@ import DashBoard from './pages/admin-part/DashBoard';
 import PaymentsDetails from './pages/admin-part/PaymentsDetails';
 import UsersDetails from './pages/admin-part/UsersDetails';
 import ManageAllProfiles from './pages/ManageAllProfiles';
+import NavBar from './header/NavBar';
 
 function AppRoutes({ role, active }) {
 
@@ -67,7 +68,7 @@ const location=useLocation()
     return (
         <>
     
-      
+
     
        {((role==="premium")&&active)?(
        
@@ -143,7 +144,7 @@ const location=useLocation()
      
 
        ):(
-
+        
 
          <Routes>
          <Route path='/' element={<HomePage/>}/>

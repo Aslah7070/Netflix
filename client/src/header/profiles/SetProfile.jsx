@@ -23,7 +23,7 @@ const navigate=useNavigate()
     const savedIndex = localStorage.getItem("avatarIndex");
     console.log("savedIndex (from localStorage):", savedIndex);
   
-    // Validate if savedIndex is a number, otherwise default to 0
+    
     const index = parseInt(savedIndex, 10);
     if (!isNaN(index)) {
       setCurrentAvatarIndex(index);

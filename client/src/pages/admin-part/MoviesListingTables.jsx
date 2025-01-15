@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../axiosInstance/api';
 import {Modal,Button} from "react-bootstrap"
 import { setMovies } from '../../redux/movieSlice';
+import { setAdminMovies } from '../../redux/adminSlice';
 
 const MovieListingTable = () => {
     
-    const movies = useSelector((state) => state.movies.movies);
-    console.log("movies",movies)
+   
+    const movies = useSelector((state) => state.admin.movies);
+    console.log("moviesA",movies)
     const navigate=useNavigate()
 const dispatch=useDispatch()
 const currentProfile=useSelector((state)=>state.profile.currentProfile)
@@ -21,17 +23,14 @@ const currentProfile=useSelector((state)=>state.profile.currentProfile)
           const response = await api.get("fetchmovies");
            console.log("response.data.data",response.data.data);
   
-          const  moviess = response.data.data.filter(
-            (movie) => !currentProfile.blockedCollection.some(
-              (blockedMovie) => blockedMovie._id.toString() === movie._id.toString()
-            )
-          );  
+          const  moviess = response.data.data  
           console.log("moviess",moviess);
           
   
            
   
-          dispatch(setMovies(moviess));
+          
+          dispatch(setAdminMovies(moviess))
         } catch (error) {
           console.error("Error fetching movies:", error.message);
         }

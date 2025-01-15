@@ -207,24 +207,39 @@ const MovieDetails = () => {
 
   const currentProfile = useSelector((state) => state.profile.currentProfile);
 
-  useEffect(() => {
-    const fetchMovieDetails = async () => {
-      try {
-        const isMovieAllowed = currentProfile.filterMovies.some(
-          (movie) => movie._id === movieId
-        );
-
-        if (isMovieAllowed) {
-          const response = await api.get(`/moviedetails/${movieId}`);
-          setMovie(response.data.movie);
-        } else {
-          setShowModal(true);
+  const fetchMovieDetails = async () => {
+    try {
+      console.log("Target Movie ID:", movieId);
+      console.log("filterMovies:", currentProfile.filterMovies);
+      
+      const isMovieAllowed = currentProfile.filterMovies.some((movie) => {
+        if (!movie || !movie._id) {
+          console.log("Invalid movie object:", movie);
+          return false;
         }
-      } catch (error) {
-        console.error("Error fetching movie details:", error);
-      }
-    };
+        console.log("Checking Movie ID:", movie._id.toString());
+        return movie._id.toString() === movieId;
+      });
+      
+      console.log("Is Movie Allowed:", isMovieAllowed);
+      
+      console.log("current profile ",currentProfile)
+      console.log("isMovieAllowed ",isMovieAllowed)
 
+
+      if (isMovieAllowed) {
+        const response = await api.get(`/moviedetails/${movieId}`);
+        setMovie(response.data.movie);
+      } else {
+        setShowModal(true);
+      }
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+    }
+  };
+
+
+  useEffect(() => {
     fetchMovieDetails();
   }, [movieId, currentProfile]);
 

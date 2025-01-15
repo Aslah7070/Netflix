@@ -6,4 +6,4 @@ const myListSchema=mongoose.Schema({
     movies:[]
 })
 
-module.exports=mongoose.model("Mylist",myListSchema)
+module.exports=mongoose.model("Mylist",myListSchema) 
