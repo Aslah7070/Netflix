@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 const AdminLogin = () => {
 
     const[formData,setFormData]=useState({email:"",password:""})
+    const [error,setError]=useState("")
     const navigate=useNavigate()
     const dispatch= useDispatch()
     const handleChange=(e)=>{
@@ -33,7 +34,27 @@ setFormData((pre)=>({
           navigate("/")
 
         } catch (error) {
-    
+          if (error.response) {
+            switch (error.response.status) {
+              case 404:
+                setError(error.response.data.message);
+                break;
+              case 400:
+                setError("Bad request. Please check your input.");
+                break;
+              case 403:
+                setError("You don't have permission to access this resource.");
+                break;
+              case 500:
+                setError("Server error. Please try again later.");
+                break;
+              default:
+                setError("An unexpected error occurred. Please try again.");
+            }
+          } else {
+            // Handle network or other errors
+            setError("Network error. Please check your internet connection.");
+          }
           console.error("Error during admin login:", error);
         }
       };
@@ -51,7 +72,9 @@ setFormData((pre)=>({
           <h1 className="text-red-600 text-4xl font-bold tracking-wide">Netflix Admin</h1>
         </div>
 
-     
+        {error && <div className="text-red-500 mt-4">{error}</div>}
+
+    
         <form 
         onSubmit={handleSubmit}
         className="space-y-6">
@@ -96,11 +119,6 @@ setFormData((pre)=>({
           </button>
         </form>
 
-        <div className="mt-4 text-center">
-          <a href="#" className="text-sm text-gray-400 hover:text-gray-200">
-            Forgot your password?
-          </a>
-        </div>
       </div>
     </div>
   );

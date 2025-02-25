@@ -8,15 +8,19 @@ import "slick-carousel/slick/slick-theme.css";
 import { useSelector } from "react-redux";
 import { FaPlay, FaPlus, FaThumbsUp, FaChevronDown } from "react-icons/fa";
 import { Outlet, useNavigate } from "react-router-dom";
+import api from "../../../axiosInstance/api";
+import { toast } from "react-toastify";
 
 const HindiMovies = () => {
   const movies = useSelector((state) => state.movies.movies) || [];
   const Tamil = movies.filter((movie) => movie.language === "Tamil");
   
-  
+        const currentProfile = useSelector((state) => state.profile.currentProfile);
     const [isOverlayVisible, setIsOverlayVisible] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
      const [hoveredMovie, setHoveredMovie] = useState(null);
+
+     
 const navigate=useNavigate()
   const settings = {
     dots: false,
@@ -45,6 +49,26 @@ const navigate=useNavigate()
       },
     ],
   };
+  
+
+  const handleAddList=async(movieId)=>{
+    try {
+      console.log("movieId",movieId);
+      console.log("clickedddddddddddddddddddddddddddddd");
+      console.log("currentProfilesssssssssssssss",currentProfile._id);
+      
+      const response=await api.post("/addmovietoList",{movieId:movieId,profileId:currentProfile._id})
+      console.log("handleAddList",response);
+      if(response.status===200){
+        toast.success("added to list")
+      }
+    } catch (error) {
+      console.log("error",error);
+      
+    }
+  }
+
+  
 
   const handleMovieDetails = (movie) => {
     console.log("handle movie");
@@ -101,9 +125,15 @@ const navigate=useNavigate()
                                   <button className="bg-white text-black p-2 rounded-full">
                                     <FaPlay />
                                   </button>
-                                  <button className="bg-gray-600 text-white p-2 rounded-full">
-                                    <FaPlus />
-                                  </button>
+                                  <button
+                onClick={(e) => {
+                  e.stopPropagation(); 
+                  handleAddList(movie._id);
+                }}
+                className="bg-gray-600 text-white p-2 rounded-full"
+              >
+                <FaPlus />
+              </button>
                                   <button className="bg-gray-600 text-white p-2 rounded-full">
                                     <FaThumbsUp />
                                   </button>

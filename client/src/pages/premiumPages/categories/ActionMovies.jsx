@@ -8,17 +8,31 @@ import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaPlay, FaPlus, FaThumbsUp, FaChevronDown } from "react-icons/fa";
 import { Outlet, useNavigate } from "react-router-dom";
+import api from "../../../axiosInstance/api";
+import { toast } from "react-toastify"; 
+import { getList } from "../../../header/MyList";
+import { TiTick } from "react-icons/ti";
+import { setCart } from "../../../redux/profile.slice";
 
 const HindiMovies = () => {
   const movies = useSelector((state) => state.movies.movies) || [];
   const Action = movies.filter((movie) => movie.genre.includes("Action"));
+  const cart=useSelector((state)=>state.profile.myList)
+const dispatch=useDispatch()
+  console.log("cart",cart);
+  
   
     const [isOverlayVisible, setIsOverlayVisible] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
      const [hoveredMovie, setHoveredMovie] = useState(null);
+       const currentProfile = useSelector((state) => state.profile.currentProfile);
+
+
+      
+       
 const navigate=useNavigate()
   const settings = {
     dots: false,
@@ -68,6 +82,39 @@ const navigate=useNavigate()
     
     navigate("/")
   }
+
+
+  const handleAddList=async(movieId)=>{
+try {
+  console.log("movieId",movieId);
+  console.log("clickedddddddddddddddddddddddddddddd");
+  console.log("currentProfilesssssssssssssss",currentProfile._id);
+  
+  const response=await api.post("/addmovietoList",{movieId:movieId,profileId:currentProfile._id})
+  console.log("handleAddList",response);
+  const movie= await getList(currentProfile._id)
+  dispatch(setCart(movie))
+  if(response.status===200&&response.data.message==="Movie removed success fully"){
+    toast.success(response.data.message)
+  }else{
+    if(response.status===200&&response.data.message==="Movie added to the list"){
+      toast.success(response.data.message)
+    }
+  }
+} catch (error) {
+  
+  console.log("error",error);
+  console.log("errorrrrrrrrrrrr",error.status);
+  
+}  
+  }
+
+
+ const  display=async()=>{
+  const response= await getList(currentProfile._id)
+  console.log("response",response);
+  
+ }
   return (
     <div className="relative mx-auto mt-10 w-full px-6 z--10">
       <h2 className="text-start text-2xl font-semibold text-white mb-4">
@@ -76,56 +123,77 @@ const navigate=useNavigate()
 
   
       <Slider {...settings}>
-        {Action.map((movie) => (
-          <div key={movie._id} className="p-2">
-            <div className="rounded-lg h-32 overflow-hidden relative cursor-pointer transition-transform transform ease-in-out"
-            onClick={()=>playVideo(movie._id)}
-            onMouseEnter={() => setHoveredMovie(movie._id)}
-            onMouseLeave={() => setHoveredMovie(null)}
-            >
-              
-              <img
-                src={movie.thumbnailUrl}
-                alt={movie.title || "Movie Thumbnail"}
-                className="w-full h-40 object-cover rounded-lg"
-                loading="lazy"
-              />
+  {Action.map((movie) => (
+    <div key={movie._id} className="p-2">
+      <div
+        className="rounded-lg h-32 overflow-hidden relative cursor-pointer transition-transform transform ease-in-out"
+        onClick={(e) => {
+          e.stopPropagation(); 
+          playVideo(movie._id);
+        }}
+        onMouseEnter={() => setHoveredMovie(movie._id)}
+        onMouseLeave={() => setHoveredMovie(null)}
+      >
+        <img
+          src={movie.thumbnailUrl}
+          alt={movie.title || "Movie Thumbnail"}
+          className="w-full h-40 object-cover rounded-lg"
+          loading="lazy"
+        />
 
-                {hoveredMovie === movie._id && (
-                              <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4 transition-opacity duration-300">
-                                <h3 className="text-white text-lg font-semibold">
-                                  {movie.title || "Untitled"}
-                                </h3>
-                                <p className="text-gray-400 text-sm">
-                                  {movie.duration || "N/A"} • {movie.genre.join(", ")}
-                                </p>
-                                <div className="flex gap-2 mt-2">
-                                  <button className="bg-white text-black p-2 rounded-full">
-                                    <FaPlay />
-                                  </button>
-                                  <button className="bg-gray-600 text-white p-2 rounded-full">
-                                    <FaPlus />
-                                  </button>
-                                  <button className="bg-gray-600 text-white p-2 rounded-full">
-                                    <FaThumbsUp />
-                                  </button>
-                                  <button
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      setIsOverlayVisible(true);
-                                      handleMovieDetails(movie);
-                                    }}
-                                    className="bg-gray-600 text-white p-2 rounded-full"
-                                  >
-                                    <FaChevronDown />
-                                  </button>
-                                </div>
-                              </div>
-                            )}
+        {hoveredMovie === movie._id && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4 transition-opacity duration-300">
+            <h3 className="text-white text-lg font-semibold">
+              {movie.title || "Untitled"}
+            </h3>
+            <p className="text-gray-400 text-sm">
+              {movie.duration || "N/A"} • {movie.genre.join(", ")}
+            </p>
+            <div className="flex gap-2 mt-2">
+              <button className="bg-white text-black p-2 rounded-full">
+                <FaPlay />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); 
+                  handleAddList(movie._id);
+                }}
+                className="bg-gray-600 text-white p-2 rounded-full"
+              >
+                {cart.some(item => item._id === movie._id) && currentProfile ?(
+                    <TiTick/>
+                ):(
+                    
+                      <FaPlus />
+                )}
+                
+              </button>
+              <button
+             onClick={(e)=>{
+              e.stopPropagation(); 
+              display()
+             }} 
+              className="bg-gray-600 text-white p-2 rounded-full">
+                <FaThumbsUp />
+              </button>
+              <button
+                onClick={(event) => {
+                  event.stopPropagation(); // Prevents the parent div's onClick from being triggered
+                  setIsOverlayVisible(true);
+                  handleMovieDetails(movie);
+                }}
+                className="bg-gray-600 text-white p-2 rounded-full"
+              >
+                <FaChevronDown />
+              </button>
             </div>
           </div>
-        ))}
-      </Slider>
+        )}
+      </div>
+    </div>
+  ))}
+</Slider>
+
 
       {isOverlayVisible && selectedMovie && (
   <div

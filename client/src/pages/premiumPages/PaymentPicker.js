@@ -1,14 +1,3 @@
-// import React from 'react'
-
-// const PaymentPicker = () => {
-//   return (
-//     <div>
-//       <h1>hrlloendfadsladsfnadksjfx macj</h1>
-//     </div>
-//   )
-// }
-
-// export default PaymentPicker
 
 
 
@@ -34,9 +23,7 @@ const currentUser=useSelector((state)=>state.user.email)
 console.log("currentUseron picker",currentUser);
 
   const handlePaymentMethodSelect =async (method) => {
-    
 
-   
     try {
       const response= await api.post("/create-payment-intent",{amount:price,userEmail:currentUser})
      const user= response.data.primeUser
@@ -48,8 +35,7 @@ console.log("currentUseron picker",currentUser);
       console.log("err",error);
       
     }
-    
-  
+
    setSelectedPaymentMethod(method);
    navigate("/paymetStrip")
     
@@ -73,7 +59,7 @@ console.log("currentUseron picker",currentUser);
       </div>
       
       <div className="space-y-6 ">
-        {/* Credit/Debit Card Section */}
+  
         <div
           className={`p-4 rounded-lg border-2 flex  ${selectedPaymentMethod === 'creditCard' ? 'border-purple-500' : 'border-gray-300'} hover:border-purple-500 cursor-pointer`}
           onClick={() => handlePaymentMethodSelect('creditCard')}

@@ -58,6 +58,7 @@ import PaymentsDetails from './pages/admin-part/PaymentsDetails';
 import UsersDetails from './pages/admin-part/UsersDetails';
 import ManageAllProfiles from './pages/ManageAllProfiles';
 import NavBar from './header/NavBar';
+import MyList from './header/MyList';
 
 function AppRoutes({ role, active }) {
 
@@ -121,6 +122,7 @@ const location=useLocation()
      <Route path='/profileLock/:profileId' element={<Profilelock/>}/>
      <Route path='/profilepinrequire/:profileId' element={<ProfilePinRequire/>}/>
      <Route path='/account' element={<Account/>}/>
+     <Route path='/mylist' element={<MyList/>}/>
    
 
       </Routes>

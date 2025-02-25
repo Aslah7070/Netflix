@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../axiosInstance/api';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const EditMovies = () => {
 
 const {movieId}=useParams()
 console.log("movieId",movieId);
-
+const navigate=useNavigate()
 
 
 
@@ -62,24 +62,19 @@ console.log("movieId",movieId);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!videoFile && !imageFile) {
-    //   alert('Please upload at least one file (video or image).');
-    //   return;
-    // }
 
     try {
       const data = new FormData();
 
-      // Append form fields
       Object.keys(formData).forEach((key) => {
         data.append(key, formData[key]);
       });
 
-      // Append files if present
+      
       if (videoFile) data.append('videoFile', videoFile);
       if (imageFile) data.append('imageFile', imageFile);
 
-      // Put request to update the movie data
+   
       const response = await api.put(`/updatemovies/${movieId}`, data);
 
 console.log('Response:', response);
@@ -99,12 +94,14 @@ if (response.data.message === "Movie updated successfully!") {
     // Extract only the field names
     const updatedFieldNames = Object.keys(updatedFields).join(", ");
 
-    // Show toast with custom JSX content
+ 
     toast.success(
       <span>
         <strong>{updatedFieldNames}</strong> have been updated successfully.
       </span>
     );
+
+    navigate("/movielisting")
   }
 }
 

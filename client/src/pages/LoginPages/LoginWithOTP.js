@@ -56,8 +56,13 @@ const handleBackToPassword=()=>{
 
 
 const handleResendOtp=async()=>{
+try {
   const response=await api.post("/generate-otp",{email:emailFromRedux})
   console.log(response)
+} catch (error) {
+  console.log("error",error);
+  
+}
 }
   return (
     <div

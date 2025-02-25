@@ -2,17 +2,27 @@ import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaPlay, FaPlus, FaThumbsUp, FaChevronDown } from "react-icons/fa";
 import { Outlet, useNavigate } from "react-router-dom";
-
+import api from "../../../axiosInstance/api";
+import { toast } from "react-toastify"; 
+import { getList } from "../../../header/MyList";
+import { TiTick } from "react-icons/ti";
+import { setCart } from "../../../redux/profile.slice";
 const HindiMovies = () => {
   const movies = useSelector((state) => state.movies.movies) || [];
   const Hindi = movies.filter((movie) => movie.language === "Hindi");
-  
+         const currentProfile = useSelector((state) => state.profile.currentProfile);
     const [isOverlayVisible, setIsOverlayVisible] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
      const [hoveredMovie, setHoveredMovie] = useState(null);
+
+
+     const cart=useSelector((state)=>state.profile.myList)
+     const dispatch=useDispatch()
+       console.log("cart",cart);
+     
 const navigate=useNavigate()
   const settings = {
     dots: false,
@@ -62,6 +72,31 @@ const navigate=useNavigate()
     
     navigate("/")
   }
+
+  const handleAddList=async(movieId)=>{
+    try {
+      console.log("movieId",movieId);
+      console.log("clickedddddddddddddddddddddddddddddd");
+      console.log("currentProfilesssssssssssssss",currentProfile._id);
+      
+      const response=await api.post("/addmovietoList",{movieId:movieId,profileId:currentProfile._id})
+      console.log("handleAddList",response);
+      const movie= await getList(currentProfile._id)
+  dispatch(setCart(movie))
+  if(response.status===200&&response.data.message==="Movie removed success fully"){
+    toast.success(response.data.message)
+  }else{
+    if(response.status===200&&response.data.message==="Movie added to the list"){
+      toast.success(response.data.message)
+    }
+  }
+    } catch (error) {
+      console.log("error",error);
+      
+    }
+  }
+
+  
   return (
     <div className="relative mx-auto mt-10 w-full px-6 z--10">
       <h2 className="text-start text-2xl font-semibold text-white mb-4">
@@ -73,7 +108,10 @@ const navigate=useNavigate()
         {Hindi.map((movie) => (
           <div key={movie._id} className="p-2">
             <div className="rounded-lg h-32 overflow-hidden relative cursor-pointer transition-transform transform ease-in-out"
-            onClick={()=>playVideo(movie._id)}
+            onClick={(e)=>{
+              e.stopPropagation()
+              playVideo(movie._id)
+            }}
             onMouseEnter={() => setHoveredMovie(movie._id)}
             onMouseLeave={() => setHoveredMovie(null)}
             >
@@ -97,9 +135,21 @@ const navigate=useNavigate()
                                   <button className="bg-white text-black p-2 rounded-full">
                                     <FaPlay />
                                   </button>
-                                  <button className="bg-gray-600 text-white p-2 rounded-full">
-                                    <FaPlus />
-                                  </button>
+                                  <button
+                onClick={(e) => {
+                  e.stopPropagation(); 
+                  handleAddList(movie._id);
+                }}
+                className="bg-gray-600 text-white p-2 rounded-full"
+              >
+                {cart.some(item => item._id === movie._id) && currentProfile ?(
+                    <TiTick/>
+                ):(
+                    
+                      <FaPlus />
+                )}
+                
+              </button>
                                   <button className="bg-gray-600 text-white p-2 rounded-full">
                                     <FaThumbsUp />
                                   </button>

@@ -151,13 +151,18 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
 
   const handleCurrentProfile=async(profileId)=>{
  
-    // if(selectedProfile.pinNumber){
-    //   setIsModalOpen(true)
-    // }
+
      const response=await api.post("/currentprofile",{profileId:profileId})
      console.log("current profilevvvvvvvvvvvvvvvvvvvvvvv",response.data.user.currentProfile);
      dispatch(setCurrentProfile(response.data.user.currentProfile))
      
+  }
+
+  const handleList=async()=>{
+
+    navigate("/mylist")
+
+    
   }
 
   return (
@@ -195,11 +200,11 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
                 : "hidden"
             }`}
           >
-            <p className="lg:text-lg md845:text-xs">Home</p>
+            <p onClick={()=>navigate("/")} className="lg:text-lg md845:text-xs">Home</p>
             <p className="lg:text-lg md845:text-xs">TV Shows</p>
             <p className="lg:text-lg md845:text-xs">Movies</p>
             <p className="lg:text-lg md845:text-xs">New & Popular</p>
-            <p className="lg:text-lg md845:text-xs">My List</p>
+            <p  onClick={handleList} className="lg:text-lg md845:text-xs">My List</p>
             <p className="lg:text-lg md845:text-xs">Browse by Language</p>
           </nav>
         </div>

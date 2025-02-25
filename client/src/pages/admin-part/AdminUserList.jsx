@@ -8,7 +8,10 @@ const AdminUserList = () => {
   const [users, setUsers] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const accounts = useSelector((state) => state.user.users);
+  let accounts = useSelector((state) => state.user.users);
+
+ accounts= accounts.filter((account)=>account.role!=="admin")
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -29,7 +32,11 @@ const AdminUserList = () => {
 
   return (
     <div className="admin-user-list p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-bold text-center my-4">User List</h2>
+     <div className='flex justify-between'>
+      <h1 className=" text-sm  md:text-xl font-bold text-gray-800 mb-6">Users Listing</h1>
+      <span className="text-sm  md:text-xl font-bold">Total Users: {accounts.length}</span>
+
+      </div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded-lg">
@@ -37,7 +44,7 @@ const AdminUserList = () => {
             <tr className="bg-gray-800 text-white">
               <th className="px-4 py-2 text-left">User ID</th>
               <th className="px-4 py-2 text-left">Email</th>
-              <th className="px-4 py-2 text-left">Username</th>
+              {/* <th className="px-4 py-2 text-left">Username</th> */}
               <th className="px-4 py-2 text-left">Profile Image</th>
               <th className="px-4 py-2 text-left">Role</th>
               <th className="px-4 py-2 text-left">Creation Date</th>
@@ -59,7 +66,7 @@ const AdminUserList = () => {
                 >
                   <td className="px-4 py-2">{user._id}</td>
                   <td className="px-4 py-2">{user.email}</td>
-                  <td className="px-4 py-2">{user.username || "N/A"}</td>
+                  {/* <td className="px-4 py-2">{user.username || "N/A"}</td> */}
                   <td className="px-4 py-2">
                     <img
                       src={user.image}

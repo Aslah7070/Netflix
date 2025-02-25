@@ -1,7 +1,6 @@
 
 
 
-
 import React, { useEffect, useState, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoginStatus } from "../../redux/slice";
@@ -16,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import PrimeNavBar from "../../header/PrimeNavBar";
 
-// Lazy load movie categories
 const IndianMovies = React.lazy(() => import("./categories/IndianMovies"));
 const FunMovies = React.lazy(() => import("./categories/FunMovies"));
 const ActionMovies = React.lazy(() => import("./categories/ActionMovies"));
@@ -28,56 +26,45 @@ const HomePagePremium = () => {
   const navigate = useNavigate();
   const email = useSelector((state) => state.user.email);
   const movies = useSelector((state) => state.movies.movies);
-  console.log("email dsaflksmdfaldskfmadskladskjgfuaydsgfuadsygfudy",email);
-  
+  const currentProfile = useSelector((state) => state.profile.currentProfile);
 
-   const currentProfile=useSelector((state)=>state.profile.currentProfile)
-  console.log("currentProfiles",currentProfile.blockedCollection);
- 
-const allProfile=useSelector((state)=>state.profile.Profiles)
   const [menuVisible, setMenuVisible] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  
+  const [backgroundMovie, setBackgroundMovie] = useState(null);
 
   const primeToken = Cookies.get("premiumToken");
-  const backgroundVideo = movies?.[8]?.videoUrl || null;
-  const movieName = movies?.[8]?.title || "Guest";
-  const rating = movies?.[8]?.rating || "N/A";
-console.log("backgroundVideo0",backgroundVideo);
-
-  const display = () => {
-    setShowModal(!primeToken);
-  };
 
   useEffect(() => {
-    display();
+    setShowModal(!primeToken);
   }, [primeToken]);
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         const response = await api.get("fetchmovies");
-         console.log("response.data.data movies",response.data);
-
-        const  moviess = response.data.data.filter(
-          (movie) => !currentProfile.blockedCollection.some(
-            (blockedMovie) => blockedMovie._id.toString() === movie._id.toString()
-          )
-        );  
-        console.log("moviess",moviess);
-        
-
-         
-
+        const moviess = response.data.data.filter(
+          (movie) =>
+            !currentProfile.blockedCollection.some(
+              (blockedMovie) =>
+                blockedMovie._id.toString() === movie._id.toString()
+            )
+        );
         dispatch(setMovies(moviess));
+
+        // Randomly select a background movie
+        if (moviess.length > 0) {
+          const randomMovie =
+            moviess[Math.floor(Math.random() * moviess.length)];
+          setBackgroundMovie(randomMovie);
+        }
       } catch (error) {
         console.error("Error fetching movies:", error.message);
       }
     };
 
     fetchMovies();
-  }, [dispatch,currentProfile,allProfile]);
+  }, [dispatch, currentProfile]);
 
   const toggleMute = () => setIsMuted((prev) => !prev);
 
@@ -96,9 +83,11 @@ console.log("backgroundVideo0",backgroundVideo);
     navigate("/");
   };
 
+
+
+
   return (
     <div className="relative w-full bg-gray-950 h-full overflow-hidden pb-16">
-      {/* Modal for pending payment */}
       {showModal && (
         <Modal show={showModal} onHide={handleModalClose} centered>
           <Modal.Body className="text-center bg-dark text-white p-4">
@@ -112,10 +101,10 @@ console.log("backgroundVideo0",backgroundVideo);
       )}
 
       {/* Background Video */}
-      {backgroundVideo && (
+      {backgroundMovie?.videoUrl && (
         <video
           className="absolute top-0 left-0 w-full h-screen object-cover"
-          src={backgroundVideo}
+          src={backgroundMovie.videoUrl}
           autoPlay
           loop
           muted={isMuted}
@@ -123,13 +112,13 @@ console.log("backgroundVideo0",backgroundVideo);
       )}
       <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50"></div>
 
-    
       <PrimeNavBar />
 
-  
-      <div className="relative flex flex-col lg:flex-row justify-between items-center z-10 text-white px-5 lg:px-10 py-5 mt-20 lg:mt-96">
-        <div className="flex flex-col space-y-4 text-center lg:text-left">
-          <h1 className="text-2xl lg:text-4xl font-bold">{movieName}</h1>
+      <div className="relative flex flex-col lg:flex-row justify-between items-center   z-10   text-white px-5 lg:px-10 py-5 mt-20 lg:mt-96">
+        <div className="flex flex-col space-y-4  text-center lg:text-left">
+          <h1 className="text-2xl lg:text-4xl font-bold">
+            {backgroundMovie?.title || "Guest"}
+          </h1>
           <div className="flex flex-wrap justify-center lg:justify-start space-x-3 space-y-2 lg:space-y-0">
             <button className="flex items-center px-4 py-2 text-sm bg-white text-black rounded-md hover:bg-red-700 sm:px-6 sm:py-3 sm:text-base">
               <FaPlay className="mr-1 sm:mr-2" />
@@ -150,7 +139,7 @@ console.log("backgroundVideo0",backgroundVideo);
 
         <div className="mt-5 lg:mt-0 text-center lg:text-right">
           <span className="block text-lg lg:text-xl border border-1 px-5 py-2 mb-5 lg:mb-10 inline-block">
-            {rating}
+            {backgroundMovie?.rating || "N/A"}
           </span>
           {isMuted ? (
             <VscMute
@@ -166,8 +155,7 @@ console.log("backgroundVideo0",backgroundVideo);
         </div>
       </div>
 
-      {/* Movie Categories */}
-      <div className="relative z-10 bg-opacity-90 text-white space-y-8 pt-8 mt-36">
+      <div className="relative z-10 bg-opacity-90 text-white space-y-8 ">
         <Suspense fallback={<div>Loading...</div>}>
           <IndianMovies />
           <FunMovies />
@@ -181,4 +169,3 @@ console.log("backgroundVideo0",backgroundVideo);
 };
 
 export default HomePagePremium;
-

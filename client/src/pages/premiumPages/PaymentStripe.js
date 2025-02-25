@@ -9,6 +9,7 @@ const stripePromise = loadStripe('pk_test_51QKzP2DLv6HKVjIVhV1NRimyNycyutic87ft6
 export default function Checkoutpayment() {
 
 const clientSecret=useSelector((state)=>state.user.clientSecretKey)
+
     
 
 
