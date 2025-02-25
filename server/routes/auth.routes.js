@@ -10,16 +10,16 @@ const {premiumAuthentication}=require("../middlewares/premiumAuthentication")
 const profile=require("../controllers/user-side/Profile-Setting/create-prodile")
 const uploadProfileImages=require("../middlewares/profileIcon.middleware")
 const profileManagement=require("../controllers/admin-side/profiles/profile-management")
+const myList=require("../controllers/user-side/myList.controller")
 
 
 router.post("/signup",tryCatch(auth.signup))
-router.post("/login",tryCatch(auth.login))
-router.post("/logout",tryCatch(auth.logOut))
+router.post("/login",tryCatch(auth.login))    
+router.post("/logout",tryCatch(auth.logOut))    
 router.post("/checkignemail",tryCatch(auth.checkingEmail))
 router.post('/create-payment-intent',tryCatch(auth.createPaymentIntent));
 router.post('/verifypremium/:sessionId',tryCatch(auth.verifyPremium));
 
-//otp based login
 router.post("/generate-otp", tryCatch(auth.generateOtp)); 
 router.post("/login-otp", tryCatch(auth.loginWithOtp)); 
 
@@ -32,7 +32,7 @@ router.post("/verifyforgotpassword/:id/:token",tryCatch(forgott.verifyForgotPass
 router.post("/hey",userAuthMiddleware,premiumAuthentication,tryCatch(auth.hello))
 
 
-//profile routes
+
 
 router.post("/createprofile",userAuthMiddleware,tryCatch(profile.createProfile))
 router.post("/currentprofile",userAuthMiddleware,premiumAuthentication,tryCatch(profile.setCurrentProfile))
@@ -51,6 +51,12 @@ router.post('/uploadprofileicons', uploadProfileImages, profileManagement.upload
 router.post('/updateavatar', uploadProfileImages, profileManagement.createAvatar);
 router.get('/getavatar', uploadProfileImages, profileManagement.getAvatar);
 router.get('/getprofileicons', tryCatch(profileManagement.getprofiles));
+
+//mylist----------
+
+router.post("/addmovietoList",userAuthMiddleware,premiumAuthentication,myList.addMovieToList)
+router.get("/getmoviesfromList/:profileId",userAuthMiddleware,premiumAuthentication,myList.getMoviesFromList)
+router.post("/removemoviefromList",userAuthMiddleware,premiumAuthentication,myList.removeMovieFromList)
 
 
 

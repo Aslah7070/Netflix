@@ -16,12 +16,12 @@ const adminLogin=async(req,res,next)=>{
     }
     const admin = await User.findOne({ email: email })
     if (!admin) {
-        res.status(404).json({ success: false, message:` no registration with ${email} . please sign-up` })
+       return  res.status(404).json({ success: false, message:` no registration with ${email} . please sign-up` })
     }
-    if(admin.role!=="admin"){
+    if(admin?.role!=="admin"){
         return res.status(400).json({success:true,message:"admin aunautherised"})
     }
-    const isPasswordCorrect = await bcrypt.compare(password, admin.password)
+    const isPasswordCorrect = await bcrypt.compare(password, admin?.password)
     console.log("dfa",isPasswordCorrect);
 
     if (!isPasswordCorrect) {

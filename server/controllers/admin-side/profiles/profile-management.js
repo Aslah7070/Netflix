@@ -31,29 +31,28 @@ const uploadProfiles=async(req,res)=>{
 
     
 }
-
+ 
 const getprofiles=async(req,res)=>{
 
-const profileicons=await ProfileIcon.find()
+const profileicons=await ProfileIcon.find() 
 console.log("profileicons",profileicons);
 
 res.status(200).json({success:true,profileicons})
-
-}
-
-
+ 
+} 
 
 
-const createAvatar = async (req, res) => {
+
+ 
+const createAvatar = async (req, res) => { 
   try {
     // Check if files are uploaded
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: "No files uploaded!" });
     }
 
-    console.log("req.files", req.files);
+    console.log("req.files", req.files); 
 
-    // Map uploaded files to the required format
     const uploadedImages = req.files.map((file) => ({
       image: file.path,
     }));

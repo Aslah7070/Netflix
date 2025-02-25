@@ -191,6 +191,7 @@ const mapRatingToValue = (rating) => {
     "U/A15+": "15",
     "U/A18+": "18",
     "U/A13+":"13",
+    "U/A16+":"16",
   
   };
 

@@ -41,6 +41,13 @@ const generateOtp = async (req, res,next) => {
                 message: `No registration with ${email}. Please sign-up.`,
             });
         }
+
+        if (user.banned) {
+            return res.status(403).json({ 
+                success: false, 
+                message: "Your account has been banned by the admin." 
+            });
+        }
         const otp = crypto.randomInt(1000, 9999).toString(); 
         otpStorage[email] = otp; 
   console.log("111");
@@ -160,6 +167,9 @@ const verifyPremium = async (req, res) => {
     paymentMethod, 
     status: 'Completed', 
     transactionId:sessionId
+
+
+    
   });
 
   try {
@@ -183,15 +193,15 @@ const verifyPremium = async (req, res) => {
 
   const premiumToken = jwt.sign(payload, secretKey, { expiresIn: '30d' });
 
-  // Send the token as a cookie
+
   res.cookie('premiumToken', premiumToken, {
     httpOnly: false,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'Strict',
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    maxAge: 30 * 24 * 60 * 60 * 1000, 
   });
 
-  // Send success response with user details
+ 
   res.status(200).json({
     success: true,
     sessionId,
@@ -206,70 +216,8 @@ const verifyPremium = async (req, res) => {
 
 module.exports = verifyPremium;
 
-
- 
-
-
-// const verifyPremium = async (req, res) => {
-//     const { email, amount } = req.body;
-//     const { sessionId } = req.params;
-//   console.log("emaillllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll",email);
-  
-    
-//     const user = await User.findOne({ email: email }); 
-//     console.log("userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr ",user);
-    
-//     if (!user) {
-//       return res.status(404).json({ error: 'User not found' });
-//     }
-  
-    
-//     if (!sessionId) {
-//       return res.status(404).json({ error: 'Session not found' });
-//     }
-  
-//     console.log('Session Details:', sessionId);
-  
-    
-//     user.role = 'premium';
-//     user.premiumStartDate = new Date(); 
-//     user.amount+=amount
-//     await user.save();
-  
-//     const payload = {
-//       userId: user._id,
-//       email: user.email,
-//       role: user.role,
-//       amount: amount,
-      
-//     };
-  
-//     const secretKey = process.env.JWT_SECRET 
-  
-//     const premiumToken = jwt.sign(payload, secretKey, { expiresIn: '30d' }); 
-
-//     res.cookie('premiumToken', premiumToken, {
-//         httpOnly: false, 
-//         secure: process.env.NODE_ENV === 'production', 
-//         sameSite: 'Strict', 
-//         maxAge: 30 * 24 * 60 * 60 * 1000,
-//       });
-      
-  
-    
-//     res.status(200).json({
-//       success: true,
-//       sessionId,
-//       user: {
-//         email: user.email,
-//         role: user.role,
-//       },
-//       premiumToken, 
-//     });
-//   };
-
 const createPaymentIntent = async (req, res) => {
-        const { amount,userEmail } = req.body;
+        const { amount,userEmail  } = req.body;
      console.log("userEmail",userEmail);
      
         if (!amount) {
@@ -283,6 +231,7 @@ const createPaymentIntent = async (req, res) => {
             payment_method_types: ['card'],
             mode: 'payment',
             ui_mode: "embedded",
+            
             line_items: [
                 {
                     price_data: {
@@ -429,16 +378,21 @@ const signup = async (req, res) => {
 const login = async (req, res,next) => {
         const { email, password } = req.body;
         if (!email || !password) {
-            console.log("adsfd");
+            
             
             return next(new CustomError("all field are required",400))
 
         }
         const user = await User.findOne({ email: email })
         if (!user) {
-            res.status(404).json({ success: false, message:` no registration with ${email} . please sign-up` })
+           return res.status(404).json({ success: false, message:` no registration with ${email} . please sign-up` })
         }
-
+        if (user.banned) {
+            return res.status(403).json({ 
+                success: false, 
+                message: "Your account has been banned by the admin." 
+            });
+        }
         const isPasswordCorrect = await bcrypt.compare(password, user.password)
         console.log("dfa",isPasswordCorrect);
 
@@ -466,8 +420,6 @@ const login = async (req, res,next) => {
                     const differenceInTime = currentDate - premiumStartDate;
                     const differenceInDays = Math.floor(differenceInTime / (1000 * 60 * 60 * 24));
 
-            console.log("differenceInTime",differenceInTime);
-            console.log("differenceInDays",differenceInDays);
             
                   
                     const premiumValidityDays = 30;

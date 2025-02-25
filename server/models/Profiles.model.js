@@ -26,10 +26,7 @@ const profileSchema = new mongoose.Schema(
       trim: true,
     },
     filterMovies:[],
-    myList: {
-      type: [String],
-      default: [],
-    },
+    myList: [mongoose.Schema.Types.ObjectId],
     pinNumber:{
       type:String,
       default:""
