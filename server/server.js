@@ -20,6 +20,7 @@ app.use(cors({
     origin: "https://netflix-clone-asl.vercel.app",
     credentials: true,
 }));
+app.options('*', cors());
 app.use(express.json());
 app.use(cookieParser());
 
