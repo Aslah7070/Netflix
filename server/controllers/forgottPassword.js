@@ -32,7 +32,7 @@ const mailOptions={
     from :process.env.EMAIL_USER,
     to:user.email,
     subject:"reset passsword link",
-    text:`http://localhost:3000/reset_password/${user._id}/${token}`
+    text:`https://netflix-clone-asl.vercel.app/reset_password/${user._id}/${token}`
 }
 
 transporter.sendMail(mailOptions)
