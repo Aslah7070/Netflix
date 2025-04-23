@@ -73,7 +73,7 @@
 //     const fetchVideoUrl = async () => {
 //       try {
 //         setLoading(true);
-//         const url = `http://localhost:3000/stream/${movieId}`;
+//         const url = `https://netflix-clone-asl.vercel.app/stream/${movieId}`;
 //         setVideoUrl(url);
 //       } catch (error) {
 //         console.error("Error fetching video URL:", error);

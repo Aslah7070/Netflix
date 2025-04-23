@@ -29,13 +29,18 @@ const HomePagePremium = () => {
   const currentProfile = useSelector((state) => state.profile.currentProfile);
 
   const [menuVisible, setMenuVisible] = useState(false);
+  const [pToken,setPtocken]=useState(null)
   const [isMuted, setIsMuted] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [backgroundMovie, setBackgroundMovie] = useState(null);
 
   const primeToken = Cookies.get("premiumToken");
+  // setPtocken(primeToken)
+
+console.log("dfadsfadsfads");
 
   useEffect(() => {
+    console.log("prime toktok",primeToken);
     setShowModal(!primeToken);
   }, [primeToken]);
 

@@ -64,11 +64,11 @@ const HomePage = () => {
   const handleAccorrdian = (data) => {
     if (data.id !== show.id) {
       setShow(data)
-      console.log("data", data);
+ 
 
     } else {
       setShow("")
-      console.log("noop");
+
     }
 
   }
@@ -76,7 +76,7 @@ const HomePage = () => {
 
 
   const user = useSelector((state) => state.user.isLoggedIn)
-  console.log("user", user);
+
 
   const dispatch = useDispatch()
   const emailRef = useRef()

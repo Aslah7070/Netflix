@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setUserData } from "../../redux/slice";
 import api from "../../axiosInstance/api"; 
+import Cookies from 'js-cookie';
 
 const WelcomePage = () => {
   const location = useLocation();
@@ -36,12 +37,24 @@ const WelcomePage = () => {
         paymentMethod: "Credit Card", 
         transactionId: "someTransactionId", 
       });
-
-      const user = response.data.user;
-      console.log("Verified user:", user);
+      console.log("resy",response);
+      
+      const { user, premiumToken, expiryDate } = response.data;
+           console.log("user"+user+"premiumToken"+premiumToken+"expiryDate");
+           
+      const days = parseInt(expiryDate.replace('d', ''), 10);
+    
+      Cookies.set('sub', premiumToken, {
+        expires: days,  
+        secure: true,
+        sameSite: 'Strict',
+      });
+      const primeToken = Cookies.get("sub");
+      console.log("tokkk",primeToken);
+      
 
       dispatch(setUserData(user)); 
-      navigate("/browse"); 
+      // navigate("/browse"); 
     } catch (error) {
       console.error("Verification failed:", error);
       setError("There was an error verifying your payment. Please try again.");

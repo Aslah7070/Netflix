@@ -20,14 +20,14 @@ const dispatch=useDispatch()
 const price=useSelector((state)=>state.user.premiumPrice)
 
 const currentUser=useSelector((state)=>state.user.email)
-console.log("currentUseron picker",currentUser);
+
 
   const handlePaymentMethodSelect =async (method) => {
 
     try {
       const response= await api.post("/create-payment-intent",{amount:price,userEmail:currentUser})
      const user= response.data.primeUser
-     console.log("reereeadsfdsgsdfgsdfjhfdg",response);
+    
       dispatch(setClientSecret(response.data.clientSecret))
     dispatch(setUserData(user))
    
