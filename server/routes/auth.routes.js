@@ -19,7 +19,7 @@ router.post("/logout",tryCatch(auth.logOut))
 router.post("/checkignemail",tryCatch(auth.checkingEmail))
 router.post('/create-payment-intent',tryCatch(auth.createPaymentIntent));
 router.post('/verifypremium/:sessionId',tryCatch(auth.verifyPremium));
-
+   
 router.post("/generate-otp", tryCatch(auth.generateOtp)); 
 router.post("/login-otp", tryCatch(auth.loginWithOtp)); 
 

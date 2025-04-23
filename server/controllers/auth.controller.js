@@ -211,6 +211,7 @@ const verifyPremium = async (req, res) => {
       currentPlan: user.currentPlan,
     },
     premiumToken,
+    expiryDate: '30d'
   });
 };
 

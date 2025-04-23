@@ -24,10 +24,10 @@ router.get("/moviedetails/:movieId",userMovei.movieDetails)
 router.post("/tvshowuploading",moveies.uploadTvShow)
 // router.post("/tvshowseasonuploading/:id",upload,moveies.uploadEpisodes)
 router.get("/search",userMovei.movieSearch)
-router.get("/search",userMovei.movieSearch) 
+// router.get("/search",userMovei.movieSearch) 
 router.get("/namebasedsearch",userMovei.nameBasedSearch)
 router.get("/allshows",tvshows.allTvShows)
 router.post("/restrictedMovies/:id",userMovei.restrictedMovies)
 router.post("/deleterestrictedmovies",userMovei.removeFromRestricted)
 router.post("/ratingsortmovies",userMovei.movieFilterByRating)
-module.exports=router  
+module.exports=router   

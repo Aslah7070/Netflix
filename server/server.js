@@ -17,7 +17,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: "https://netflix-clone-asl.vercel.app",
+    origin: "http://localhost:3001",
     credentials: true,
 }));
 app.options('*', cors());
