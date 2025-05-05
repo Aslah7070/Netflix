@@ -44,7 +44,7 @@ console.log("dfadsfadsfads");
     if(!primeToken){
       console.log("prime tok");
       
-      setShowModal(true);
+      setShowModal(false);
     }else{
       setShowModal(false)
     }
