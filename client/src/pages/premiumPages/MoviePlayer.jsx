@@ -9,14 +9,14 @@ import { Modal, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import blockedImage from "../../assets/blockedwarning.webp"
 import { FaTimes } from "react-icons/fa";
-
+import Cookies from "js-cookie";
 const MoviePlayer = () => {
   const { movieId } = useParams();
   const [videoUrl, setVideoUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+  const primeToken = Cookies.get("sub");
 
 
 
@@ -82,7 +82,7 @@ const MoviePlayer = () => {
     return <div className="text-black text-center mt-10">Loading...</div>;
   }
 
-  if (error) {
+  if (!primeToken) {
     return (
       <Modal show={true} onHide={handleClosing} centered>
         <Modal.Body className="text-center bg-dark text-white p-4">

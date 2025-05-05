@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api=axios.create({
-    baseURL:"https://netflix-vskg.onrender.com",
+    baseURL:process.env.server_uil,
     withCredentials:true
 })
 

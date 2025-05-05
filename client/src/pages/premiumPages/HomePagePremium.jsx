@@ -34,20 +34,28 @@ const HomePagePremium = () => {
   const [showModal, setShowModal] = useState(false);
   const [backgroundMovie, setBackgroundMovie] = useState(null);
 
-  const primeToken = Cookies.get("premiumToken");
+  const primeToken = Cookies.get("sub");
   // setPtocken(primeToken)
 
 console.log("dfadsfadsfads");
 
   useEffect(() => {
     console.log("prime toktok",primeToken);
-    setShowModal(!primeToken);
+    if(!primeToken){
+      console.log("prime tok");
+      
+      setShowModal(true);
+    }else{
+      setShowModal(false)
+    }
+    
+  
   }, [primeToken]);
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await api.get("fetchmovies");
+        const response = await api.get("/fetchmovies");
         const moviess = response.data.data.filter(
           (movie) =>
             !currentProfile.blockedCollection.some(
@@ -64,7 +72,7 @@ console.log("dfadsfadsfads");
           setBackgroundMovie(randomMovie);
         }
       } catch (error) {
-        console.error("Error fetching movies:", error.message);
+        console.error("Error fetching movies:", error);
       }
     };
 
@@ -92,6 +100,8 @@ console.log("dfadsfadsfads");
 
 
   return (
+   <div>
+    <div>
     <div className="relative w-full bg-gray-950 h-full overflow-hidden pb-16">
       {showModal && (
         <Modal show={showModal} onHide={handleModalClose} centered>
@@ -119,12 +129,12 @@ console.log("dfadsfadsfads");
 
       <PrimeNavBar />
 
-      <div className="relative flex flex-col lg:flex-row justify-between items-center   z-10   text-white px-5 lg:px-10 py-5 mt-20 lg:mt-96">
+      <div className="relative flex flex-col lg:flex-row justify-between   md:items-cente  text-white px-5 lg:px-10 py-5 mt-20 lg:mt-96">
         <div className="flex flex-col space-y-4  text-center lg:text-left">
           <h1 className="text-2xl lg:text-4xl font-bold">
             {backgroundMovie?.title || "Guest"}
           </h1>
-          <div className="flex flex-wrap justify-center lg:justify-start space-x-3 space-y-2 lg:space-y-0">
+          <div className="flex flex-wrap justify-end items-end  space-x-3 space-y-2 lg:space-y-0">
             <button className="flex items-center px-4 py-2 text-sm bg-white text-black rounded-md hover:bg-red-700 sm:px-6 sm:py-3 sm:text-base">
               <FaPlay className="mr-1 sm:mr-2" />
               Play
@@ -133,12 +143,7 @@ console.log("dfadsfadsfads");
               <PiWarningCircle className="mr-1 sm:mr-2" />
               More Info
             </button>
-            <button
-              onClick={handleLogOut}
-              className="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 sm:px-6 sm:py-3 sm:text-base"
-            >
-              Logout
-            </button>
+         
           </div>
         </div>
 
@@ -159,8 +164,9 @@ console.log("dfadsfadsfads");
           )}
         </div>
       </div>
-
-      <div className="relative z-10 bg-opacity-90 text-white space-y-8 ">
+      </div>
+      </div>
+      <div className="relative z-10 bg-opacity-90 bg-black  text-white space-y-8 ">
         <Suspense fallback={<div>Loading...</div>}>
           <IndianMovies />
           <FunMovies />
@@ -169,7 +175,11 @@ console.log("dfadsfadsfads");
           <ThamilMovies />
         </Suspense>
       </div>
-    </div>
+   
+
+   
+   
+   </div>
   );
 };
 

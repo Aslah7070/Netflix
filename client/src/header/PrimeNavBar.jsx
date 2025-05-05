@@ -25,7 +25,6 @@ const PrimeNavBar = () => {
 const query=useSelector((state)=>state.movies.search)
 const profiles=useSelector((state)=>state.profile.Profiles)
 const activeProfile=useSelector((state)=>state.profile.currentProfile)
-console.log("activeProfile",activeProfile);
 console.log("query",query);
 console.log("profilesssss",profiles);
 
@@ -43,7 +42,7 @@ console.log("profilesData",profilesData);
   const [show, setShow] = useState(false);
    
 const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
-  const primeToken = Cookies.get("premiumToken");
+  const primeToken = Cookies.get("sub");
   console.log("token", primeToken);
   console.log("searchVisible", isSearchVisible);
 
@@ -251,7 +250,7 @@ const isSearchVisible=useSelector((state)=>state.movies.searchVisibility)
               onClick={toggleDropdown}       
             />
             {dropdownVisible && (
-              <div className="absolute right-0 mt-2 w-72 bg-black text-white rounded-md shadow-lg p-3 pt-5 py-2 z-50">
+              <div className="absolute right-0 mt-2 w-72 bg-black text-white rounded-md shadow-lg p-3 pt-5 py-2 z-100">
               {profilesData&&profilesData.map((profile) => (
                 <div className="flex" key={profile._id} onClick={()=>handleCurrentProfile(profile._id)}>
                   <img

@@ -40,7 +40,8 @@ const WelcomePage = () => {
       console.log("resy",response);
       
       const { user, premiumToken, expiryDate } = response.data;
-           console.log("user"+user+"premiumToken"+premiumToken+"expiryDate");
+           console.log("user"+user+"expiryDate"+expiryDate);
+           console.log("premiumToken"+premiumToken);
            
       const days = parseInt(expiryDate.replace('d', ''), 10);
     
@@ -54,7 +55,7 @@ const WelcomePage = () => {
       
 
       dispatch(setUserData(user)); 
-      // navigate("/browse"); 
+      navigate("/browse"); 
     } catch (error) {
       console.error("Verification failed:", error);
       setError("There was an error verifying your payment. Please try again.");

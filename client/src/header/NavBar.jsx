@@ -15,9 +15,9 @@ const navigate=useNavigate()
   
 const location=useLocation()
     let a=location.pathname===`/verifyemail`
-    console.log("aaa",a);
+ 
       const active=useSelector((state)=>state.user.isLoggedIn)
-      console.log("navactive",active);
+   
       
   useEffect(() => {
     const userCookie = Cookies.get("user");
