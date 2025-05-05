@@ -244,7 +244,7 @@ const createPaymentIntent = async (req, res) => {
                 },
             ],
 
-            return_url: 'http://localhost:3000/success/?session_id={CHECKOUT_SESSION_ID}'
+            return_url: `${process.env.URL_FRONTEND}/success/?session_id={CHECKOUT_SESSION_ID}`
         })
         
       
