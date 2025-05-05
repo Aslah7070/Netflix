@@ -106,7 +106,7 @@ console.log("dfadsfadsfads");
       {showModal && (
         <Modal show={showModal} onHide={handleModalClose} centered>
           <Modal.Body className="text-center bg-dark text-white p-4">
-            <h4 className="fw-bold">Your payment is pending.</h4>
+            <h4 className="fw-bold">Your payment is pending   sorry.</h4>
             <p className="mt-3">In the meantime, browse TV shows and movies.</p>
             <Button variant="light" onClick={handleModalClose} className="mt-3">
               OK
